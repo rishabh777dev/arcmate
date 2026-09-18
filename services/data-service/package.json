@@ -6,7 +6,6 @@
   "dependencies": {
     "@actionmate/shared-schema": "*",
     "@supabase/supabase-js": "^2.49.1",
-    "better-sqlite3": "^11.8.1",
     "dotenv": "^16.4.7"
   }
 }
