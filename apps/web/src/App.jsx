@@ -93,7 +93,9 @@ export default function App() {
 
     const token = localStorage.getItem('actionmate_token');
     const mId = activeMerchant?.id || '';
-    const wsUrl = `ws://${window.location.hostname}:4000?merchantId=${mId}`;
+    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const wsBase = import.meta.env.VITE_WS_URL || (isDev ? `ws://${window.location.hostname}:4000` : 'wss://actionmate-backend.onrender.com');
+    const wsUrl = `${wsBase}?merchantId=${mId}`;
 
     try {
       const ws = new WebSocket(wsUrl);
