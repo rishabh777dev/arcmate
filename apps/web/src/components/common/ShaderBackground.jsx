@@ -45,20 +45,18 @@ export default function ShaderBackground({ className = "", opacity, style = {} }
           start={{ x: 0, y: 0 }}
         />
 
-        {/* 2. Interactive WebGPU Shader Spotlight (ChromaFlow warm editorial fluid beam) */}
+        {/* 2. Interactive WebGPU Shader Simulation (ChromaFlow drives cursor fluid physics without murky body) */}
         <ChromaFlow
           id="trailFlow"
-          baseColor="#0e0d0a"
+          baseColor="#00000000"
           upColor="#ed6f5c"
           downColor="#e9b94a"
           leftColor="#d95a47"
           rightColor="#f08e7c"
-          intensity={1.25}
-          radius={3.0}
+          intensity={1.2}
+          radius={2.8}
           momentum={24}
-          visible={true}
-          opacity={0.45}
-          blendMode="screen"
+          visible={false}
         />
 
         {/* 3. Interactive Particle Grid driven by ChromaFlow liquid light */}
