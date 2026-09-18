@@ -1,0 +1,22 @@
+{
+  "name": "@actionmate/api-gateway",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "@actionmate/shared-schema": "*",
+    "@actionmate/data-service": "*",
+    "@actionmate/knowledge-service": "*",
+    "@actionmate/workflow-engine": "*",
+    "@actionmate/voice-service": "*",
+    "@actionmate/agent-orchestrator": "*",
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "ws": "^8.18.0",
+    "dotenv": "^16.4.7"
+  }
+}

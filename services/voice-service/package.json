@@ -1,0 +1,12 @@
+{
+  "name": "@actionmate/voice-service",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "dependencies": {
+    "@actionmate/shared-schema": "*",
+    "axios": "^1.7.9",
+    "form-data": "^4.0.2",
+    "dotenv": "^16.4.7"
+  }
+}

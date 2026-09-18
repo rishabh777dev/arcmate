@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: actionmate-backend
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install
+    startCommand: node services/api-gateway/src/server.js
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: GEMINI_REASONING_MODEL
+        value: gemini-3.1-flash-lite
+      - key: N8N_INSTANCE_URL
+        sync: false
+      - key: N8N_MCP_URL
+        sync: false
+      - key: N8N_ACCESS_TOKEN
+        sync: false
+      - key: N8N_WEBHOOK_URL
+        sync: false
+      - key: COGNEE_API_URL
+        sync: false
+      - key: COGNEE_TENANT_ID
+        sync: false
+      - key: COGNEE_USER_ID
+        sync: false

@@ -1,0 +1,11 @@
+{
+  "name": "@actionmate/knowledge-service",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "dependencies": {
+    "@actionmate/shared-schema": "*",
+    "@actionmate/data-service": "*",
+    "dotenv": "^16.4.7"
+  }
+}

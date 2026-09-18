@@ -1,0 +1,13 @@
+{
+  "name": "@actionmate/workflow-engine",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "dependencies": {
+    "@actionmate/shared-schema": "*",
+    "@actionmate/data-service": "*",
+    "@actionmate/knowledge-service": "*",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@actionmate/agent-orchestrator",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "dependencies": {
+    "@actionmate/shared-schema": "*",
+    "@actionmate/mcp-core": "*",
+    "@actionmate/data-service": "*",
+    "@actionmate/knowledge-service": "*",
+    "@actionmate/workflow-engine": "*",
+    "@actionmate/voice-service": "*",
+    "@google/genai": "^2.23.0",
+    "dotenv": "^16.4.7"
+  }
+}

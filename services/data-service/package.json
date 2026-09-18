@@ -1,0 +1,12 @@
+{
+  "name": "@actionmate/data-service",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "module",
+  "dependencies": {
+    "@actionmate/shared-schema": "*",
+    "@supabase/supabase-js": "^2.49.1",
+    "better-sqlite3": "^11.8.1",
+    "dotenv": "^16.4.7"
+  }
+}
