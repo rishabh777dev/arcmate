@@ -1,7 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
+import WebSocket from 'ws';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+if (!globalThis.WebSocket) {
+  globalThis.WebSocket = WebSocket;
+}
 
 class DataStore {
   constructor() {
@@ -21,6 +26,9 @@ class DataStore {
           auth: {
             persistSession: false,
             autoRefreshToken: false
+          },
+          realtime: {
+            transport: WebSocket
           }
         });
         console.log('[DataService] Connected to Supabase Cloud Instance at:', this.supabaseUrl);
