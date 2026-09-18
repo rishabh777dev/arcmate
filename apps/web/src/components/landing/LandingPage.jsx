@@ -15,6 +15,7 @@ import {
   Play
 } from 'lucide-react';
 import ShaderBackground from '../common/ShaderBackground';
+import ArcMateLogo from '../common/ArcMateLogo';
 import { playPaytmChime } from '../../services/soundboxAudio';
 
 export default function LandingPage({ onLaunchApp, onGoLogin }) {
@@ -41,7 +42,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
       tag: 'Radar',
       num: '01',
       title: 'Slump Cohort Isolation',
-      desc: 'Compares hourly UPI transaction streams against 14-day normal bands to isolate 47 inactive evening regulars.',
+      desc: 'Compares hourly transaction streams against 14-day normal bands to isolate 47 inactive evening regulars.',
       metric: '-18.4% isolated',
       actionText: 'Inspect Live Radar'
     },
@@ -50,18 +51,18 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
       category: 'voice',
       tag: 'Voice & Dialect',
       num: '02',
-      title: 'Sarvam Hinglish Synthesis',
-      desc: 'Dual-engine voice stack processing natural merchant queries in colloquial Hinglish with instant conversational turn-around.',
+      title: 'Vernacular Voice Intelligence',
+      desc: 'Conversational speech intelligence processing natural merchant queries in colloquial Hinglish with instant turnaround.',
       metric: 'Hindi / Hinglish',
-      actionText: 'Test Voice Node'
+      actionText: 'Test Voice Assistant'
     },
     {
       id: 'soundbox',
       category: 'hardware',
       tag: 'Hardware',
       num: '03',
-      title: 'Soundbox 3.0 Audio Gateway',
-      desc: 'Dual-sine wave Web Audio synthesis (784 Hz + 1046 Hz) for tactile merchant announcements right at the store billing counter.',
+      title: 'Countertop Audio Gateway',
+      desc: 'Dual-tone audio synthesis (784 Hz + 1046 Hz) for tactile merchant announcements right at the store billing counter.',
       metric: 'Dual-sine 784+1046Hz',
       actionText: 'Play Chime Now',
       isChime: true
@@ -69,19 +70,19 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
     {
       id: 'workflows',
       category: 'workflows',
-      tag: 'Studio',
+      tag: 'Workflows',
       num: '04',
-      title: 'Speech-to-n8n Compiler',
-      desc: 'Translates spoken retail intentions into executable, visual multi-node automation graphs with zero code.',
-      metric: 'JSON Graph Compiler',
-      actionText: 'Explore Nodes'
+      title: 'Speech-to-Workflow Engine',
+      desc: 'Translates spoken retail intentions into executable, visual multi-step automation workflows with zero code.',
+      metric: 'Zero-Code Automation',
+      actionText: 'Explore Workflows'
     },
     {
       id: 'guardrails',
       category: 'guardrail',
       tag: 'Guardrail',
       num: '05',
-      title: 'Cognee Margin Ceiling',
+      title: 'Autonomous Margin Guard',
       desc: 'Strict knowledge-graph policy verification ensuring no autonomous retention offer exceeds the merchant’s 15% margin limit.',
       metric: '15% Ceiling Strict',
       actionText: 'Verify Policies'
@@ -103,17 +104,10 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
           
           {/* Brand Mark */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full border border-[rgba(242,235,216,0.25)] bg-[#1e1c18] flex items-center justify-center font-serif italic text-base text-[#f2ebd8] shadow-sm">
-              AM
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-sans font-bold text-sm sm:text-base tracking-tight text-[#f2ebd8]">Paytm ActionMate</span>
-                <span className="hidden sm:inline-block text-[9.5px] font-mono font-semibold text-[#ed6f5c] bg-[#ed6f5c]/10 border border-[#ed6f5c]/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  Track 3
-                </span>
-              </div>
-            </div>
+            <ArcMateLogo className="w-8 h-8 rounded-xl shadow-md shrink-0" size={34} />
+            <span className="font-sans font-bold text-base sm:text-lg tracking-tight text-[#f2ebd8]">
+              Arc Mate
+            </span>
           </div>
 
           {/* Clean Navigation Links (no confusing superscript numbers) */}
@@ -138,28 +132,13 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             </a>
           </nav>
 
-          {/* Header Action Buttons */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => playPaytmChime('Paytm Soundbox 3.0 online. Battery 88 percent.')}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[rgba(242,235,216,0.04)] hover:bg-[rgba(242,235,216,0.08)] border border-[rgba(242,235,216,0.12)] text-[#f2ebd8] text-xs font-medium transition"
-            >
-              <Volume2 className="w-3.5 h-3.5 text-[#ed6f5c]" />
-              <span>Soundbox Audio</span>
-            </button>
-
-            <button
-              onClick={onGoLogin}
-              className="px-3.5 py-1.5 rounded-full bg-[rgba(242,235,216,0.04)] hover:bg-[rgba(242,235,216,0.08)] text-[#c8c0a8] hover:text-[#f2ebd8] border border-[rgba(242,235,216,0.12)] text-xs font-semibold transition"
-            >
-              Merchant Login
-            </button>
-
+          {/* Single Header Action Button */}
+          <div className="flex items-center">
             <button
               onClick={onLaunchApp}
-              className="btn-editorial btn-editorial-primary text-xs py-1.5 px-4"
+              className="btn-editorial btn-editorial-primary text-xs py-2 px-5 shadow-lg flex items-center gap-2"
             >
-              <span>Launch App</span>
+              <span>Get Started</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -179,37 +158,22 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             {/* Left Column: Editorial Display Typography & CTAs */}
             <div className="lg:col-span-7 space-y-7 text-left">
               
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(237,111,92,0.1)] border border-[rgba(237,111,92,0.25)] text-xs font-mono text-[#ed6f5c]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ed6f5c] animate-pulse" />
-                Autonomous Merchant Intelligence
-              </div>
-
               <h1 className="display-title text-4xl sm:text-6xl lg:text-7xl font-extrabold text-[#f2ebd8]">
                 The Autonomous AI Teammate for <em>Indian Merchants</em><span className="dot">.</span>
               </h1>
 
               <p className="lead-editorial text-base sm:text-lg max-w-2xl text-[#c8c0a8]">
-                Move seamlessly from <em>"What happened to my evening sales?"</em> to <em>"Auto-resolved with Gemini reasoning, n8n retention campaigns, and broadcast live via Soundbox 3.0."</em>
+                Move seamlessly from <em>"What happened to my evening sales?"</em> to <em>"Auto-resolved with intelligent store reasoning, automated retention workflows, and live countertop alerts."</em>
               </p>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <button
                   onClick={onLaunchApp}
-                  className="btn-editorial btn-editorial-primary text-sm py-3 px-6 shadow-xl group"
+                  className="btn-editorial btn-editorial-primary text-sm py-3.5 px-8 shadow-xl group flex items-center gap-2.5"
                 >
                   <span>Explore Live Demo (Sharma Café)</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-                </button>
-
-                <button
-                  onClick={() => {
-                    playPaytmChime('Paytm Soundbox: ₹14,280 settled. 47 inactive evening regulars offer dispatched.');
-                  }}
-                  className="btn-editorial btn-editorial-ghost text-sm py-3 px-6"
-                >
-                  <Volume2 className="w-4 h-4 text-[#ed6f5c]" />
-                  <span>Play Soundbox 3.0 Chime</span>
                 </button>
               </div>
 
@@ -232,25 +196,25 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="stat-ring mustard">15</span>
+                  <span className="stat-ring mustard">&lt;1s</span>
                   <div className="text-[11px] font-sans leading-tight">
-                    <b className="block text-[#f2ebd8] font-bold">RPM Limit</b>
-                    <span className="text-[#9a9382] uppercase tracking-wider font-mono text-[10px]">Gemini 3.1</span>
+                    <b className="block text-[#f2ebd8] font-bold">Instant</b>
+                    <span className="text-[#9a9382] uppercase tracking-wider font-mono text-[10px]">Turnaround</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="stat-ring">784</span>
+                  <span className="stat-ring">Live</span>
                   <div className="text-[11px] font-sans leading-tight">
-                    <b className="block text-[#f2ebd8] font-bold">Hz Chime</b>
-                    <span className="text-[#9a9382] uppercase tracking-wider font-mono text-[10px]">Soundbox 3.0</span>
+                    <b className="block text-[#f2ebd8] font-bold">Audio Alerts</b>
+                    <span className="text-[#9a9382] uppercase tracking-wider font-mono text-[10px]">Countertop</span>
                   </div>
                 </div>
               </div>
 
               {/* Bottom Status Info */}
               <div className="flex items-center text-[11px] font-mono text-[#6e6860] pt-4">
-                <span>⚡ Automated n8n workflow active · Instant merchant recovery</span>
+                <span>⚡ Automated retention workflows active · Instant merchant recovery</span>
               </div>
             </div>
 
@@ -316,12 +280,12 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                     </p>
                   </div>
 
-                  {/* Metric 3: Automated n8n Recovery Draft */}
+                  {/* Metric 3: Automated Workflow Recovery Draft */}
                   <div className="p-3.5 rounded-xl bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.06)] space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-mono uppercase tracking-wider text-[#e9b94a] flex items-center gap-1.5">
                         <Workflow className="w-3.5 h-3.5" />
-                        n8n ACTION DRAFT
+                        AUTOMATED WORKFLOW
                       </span>
                       <span className="text-[10px] font-mono text-emerald-400">Policy Passed</span>
                     </div>
@@ -408,18 +372,18 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               {/* Row 2: Live Telemetry Events */}
               <div className="marquee-wrapper">
                 <div className="marquee-track reverse text-xs font-mono text-[#c8c0a8]">
-                  <span>⚡ ₹14,280 settled via Paytm Soundbox</span>
+                  <span>⚡ ₹14,280 settled via store counter</span>
                   <span>⚡ Evening slump isolated (-18.4%)</span>
                   <span>⚡ 47 WhatsApp retention vouchers claimed</span>
-                  <span>⚡ Cognee 15% discount limit validated</span>
-                  <span>⚡ Sarvam AI voice prompt transcribed in Hinglish</span>
+                  <span>⚡ 15% margin guard limit validated</span>
+                  <span>⚡ Voice prompt transcribed in Hinglish</span>
                   <span>⚡ Sharma Café recovered ₹19,200 revenue</span>
                   {/* Duplicated for seamless loop */}
-                  <span>⚡ ₹14,280 settled via Paytm Soundbox</span>
+                  <span>⚡ ₹14,280 settled via store counter</span>
                   <span>⚡ Evening slump isolated (-18.4%)</span>
                   <span>⚡ 47 WhatsApp retention vouchers claimed</span>
-                  <span>⚡ Cognee 15% discount limit validated</span>
-                  <span>⚡ Sarvam AI voice prompt transcribed in Hinglish</span>
+                  <span>⚡ 15% margin guard limit validated</span>
+                  <span>⚡ Voice prompt transcribed in Hinglish</span>
                   <span>⚡ Sharma Café recovered ₹19,200 revenue</span>
                 </div>
               </div>
@@ -435,13 +399,13 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-8 space-y-6">
               <div className="label-editorial">
-                About ActionMate
+                About Arc Mate
               </div>
               <h2 className="display-title text-3xl sm:text-5xl font-extrabold text-[#f2ebd8]">
                 We treat store intelligence as an <em>autonomous teammate,</em> not a static spreadsheet<span className="dot">.</span>
               </h2>
               <p className="lead-editorial text-base sm:text-lg text-[#c8c0a8]">
-                Indian shopkeepers work 14 hours a day. When evening footfall drops 18%, they don't have time to download CSV files, build pivot tables, or write SQL queries. ActionMate acts continuously in the background: detecting revenue churn cohorts, reasoning through remedies, drafting automated n8n WhatsApp campaigns, and broadcasting results audibly via Paytm Soundbox 3.0.
+                Indian shopkeepers work 14 hours a day. When evening footfall drops 18%, they don't have time to download CSV files, build pivot tables, or write SQL queries. Arc Mate acts continuously in the background: detecting revenue churn cohorts, reasoning through remedies, drafting automated WhatsApp retention workflows, and broadcasting results audibly via countertop audio.
               </p>
               
               <div className="pt-4 flex items-center gap-4">
@@ -453,7 +417,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                   <ArrowRight className="w-3.5 h-3.5 text-[#ed6f5c]" />
                 </button>
                 <span className="text-xs font-mono text-[#6e6860]">
-                  Track 3 Finals · Built for India
+                  Built for Indian Merchants
                 </span>
               </div>
             </div>
@@ -466,7 +430,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 "92% of Indian retail slumps are caused by temporary external factors (weather, nearby roadwork, competitor discount weeks). If an automated retention campaign reaches regulars within 48 hours, 76% return immediately."
               </p>
               <div className="border-t border-[rgba(242,235,216,0.08)] pt-3 text-[11px] font-mono text-[#6e6860]">
-                Source: NCR Retail Sensor Ledger, 2026
+                Source: Retail Sensor Ledger, 2026
               </div>
             </div>
           </div>
@@ -484,7 +448,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               Engineered specifically for the Indian merchant workflow<span className="dot">.</span>
             </h2>
             <p className="lead-editorial text-sm sm:text-base text-[#c8c0a8]">
-              Unlike generic chat bots, ActionMate tightly unifies counter-top hardware, natural voice comprehension, dynamic execution graphs, and strict risk guardrails.
+              Unlike generic chat bots, Arc Mate tightly unifies countertop hardware, natural voice comprehension, dynamic automated workflows, and strict margin guardrails.
             </p>
           </div>
 
@@ -524,9 +488,9 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 <div className="w-10 h-10 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.1)] flex items-center justify-center text-[#e9b94a] group-hover:scale-110 transition">
                   <Bot className="w-5 h-5" />
                 </div>
-                <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Dual Voice Stack (Hinglish)</h3>
+                <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Vernacular Voice Intelligence</h3>
                 <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                  Blends <strong>Sarvam AI</strong> (Saaras STT & Bulbul TTS for authentic vernacular accents and colloquial Hinglish) with automatic failover to <strong>Gemini Live Multimodal Audio</strong>.
+                  Real-time conversational speech understanding in colloquial Hindi, English, and regional dialects with instant audio turnaround.
                 </p>
               </div>
               <div className="text-[11px] font-mono font-semibold text-[#e9b94a] flex items-center gap-1 group-hover:translate-x-1 transition">
@@ -534,29 +498,29 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               </div>
             </div>
 
-            {/* Card 03: Dynamic n8n Studio */}
+            {/* Card 03: Dynamic Workflow Engine */}
             <div className="p-7 rounded-2xl bg-[#161410]/80 border border-[rgba(242,235,216,0.08)] hover:border-[#ed6f5c]/50 transition-all flex flex-col justify-between space-y-5 group">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-sm text-[#ed6f5c] font-bold">03</span>
                   <span className="text-[10px] font-mono uppercase tracking-wider text-[#9a9382] bg-[#1e1c18] px-2.5 py-1 rounded-full border border-[rgba(242,235,216,0.06)]">
-                    Studio
+                    Workflows
                   </span>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.1)] flex items-center justify-center text-indigo-400 group-hover:scale-110 transition">
                   <Workflow className="w-5 h-5" />
                 </div>
-                <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Dynamic n8n Workflow Compiler</h3>
+                <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Dynamic Workflow Engine</h3>
                 <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                  Merchants articulate operational rules in speech (<em>"Agar koi regular 3 din na aaye to WhatsApp reminder bhejo"</em>). ActionMate compiles it into an executable, visual multi-node n8n workflow graph.
+                  Merchants articulate operational rules in speech (<em>"Agar koi regular 3 din na aaye to WhatsApp reminder bhejo"</em>). Arc Mate compiles it into an executable, visual automated workflow.
                 </p>
               </div>
               <div className="text-[11px] font-mono font-semibold text-indigo-400 flex items-center gap-1 group-hover:translate-x-1 transition">
-                <span>Speech-to-n8n compilation →</span>
+                <span>Speech-to-workflow compilation →</span>
               </div>
             </div>
 
-            {/* Card 04: Cognee Policy Memory */}
+            {/* Card 04: Intelligent Policy Memory */}
             <div className="p-7 rounded-2xl bg-[#161410]/80 border border-[rgba(242,235,216,0.08)] hover:border-[#ed6f5c]/50 transition-all flex flex-col justify-between space-y-5 group">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -568,9 +532,9 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 <div className="w-10 h-10 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.1)] flex items-center justify-center text-emerald-400 group-hover:scale-110 transition">
                   <Database className="w-5 h-5" />
                 </div>
-                <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Cognee Policy Memory</h3>
+                <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Intelligent Policy Memory</h3>
                 <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                  Store margins, working capital limits, and promotional rules are grounded in a semantic knowledge graph. ActionMate mathematically refuses any retention action exceeding the 15% discount cap.
+                  Store margins, working capital limits, and promotional rules are grounded in a semantic knowledge graph. Arc Mate mathematically refuses any retention action exceeding the 15% discount cap.
                 </p>
               </div>
               <div className="text-[11px] font-mono font-semibold text-emerald-400 flex items-center gap-1 group-hover:translate-x-1 transition">
@@ -578,7 +542,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               </div>
             </div>
 
-            {/* Card 05: Paytm Soundbox 3.0 */}
+            {/* Card 05: Soundbox Countertop Sync */}
             <div className="p-7 rounded-2xl bg-[#161410]/80 border border-[rgba(242,235,216,0.08)] hover:border-[#ed6f5c]/50 transition-all flex flex-col justify-between space-y-5 group">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -590,9 +554,9 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 <div className="w-10 h-10 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.1)] flex items-center justify-center text-[#ed6f5c] group-hover:scale-110 transition">
                   <Volume2 className="w-5 h-5" />
                 </div>
-                <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Paytm Soundbox 3.0 Sync</h3>
+                <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Countertop Audio Gateway</h3>
                 <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                  Transforms merchant alerts into instant audio chimes via Web Audio dual-sine wave synthesis (784 Hz + 1046 Hz). Confirms settlements and campaign dispatches audibly on the countertop.
+                  Transforms merchant alerts into instant audio chimes via dual-tone synthesis (784 Hz + 1046 Hz). Confirms settlements and campaign dispatches audibly on the countertop.
                 </p>
               </div>
               <div className="text-[11px] font-mono font-semibold text-[#ed6f5c] flex items-center gap-1 group-hover:translate-x-1 transition">
@@ -696,7 +660,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                   <span className="text-[11px] font-mono text-[#e9b94a]">{lab.metric}</span>
                   {lab.isChime ? (
                     <button
-                      onClick={() => playPaytmChime('Paytm Soundbox chime verification. System operating with zero latency.')}
+                      onClick={() => playPaytmChime('Countertop audio chime verification. System operating with zero latency.')}
                       className="btn-editorial btn-editorial-primary text-xs py-1.5 px-3 flex items-center gap-1.5"
                     >
                       <Play className="w-3 h-3 fill-current" />
@@ -741,7 +705,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               <span className="font-mono text-xl text-[#ed6f5c] font-black">01</span>
               <h4 className="font-sans font-bold text-base text-[#f2ebd8]">Detect & Ingest →</h4>
               <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                Paytm QR transactions and Soundbox receipts stream in. ActionMate models normal footfall vs hourly anomalies in real-time.
+                Store QR transactions and countertop receipts stream in. Arc Mate models normal footfall vs hourly anomalies in real-time.
               </p>
             </div>
 
@@ -750,16 +714,16 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               <span className="font-mono text-xl text-[#e9b94a] font-black">02</span>
               <h4 className="font-sans font-bold text-base text-[#f2ebd8]">Reason & Policy Check →</h4>
               <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                Gemini 3.1 Flash-Lite analyzes the slump (e.g. 18.4% drop) and formulates an offer, validating it strictly against Cognee margin policies.
+                Arc Mate analyzes the slump (e.g. 18.4% drop) and formulates an offer, validating it strictly against store margin guardrails.
               </p>
             </div>
 
             {/* Step 3 */}
             <div className="p-6 rounded-2xl bg-[#161410]/80 border border-[rgba(242,235,216,0.08)] space-y-3">
               <span className="font-mono text-xl text-indigo-400 font-black">03</span>
-              <h4 className="font-sans font-bold text-base text-[#f2ebd8]">Execute via n8n →</h4>
+              <h4 className="font-sans font-bold text-base text-[#f2ebd8]">Automated Execution →</h4>
               <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                Once approved via one tap or voice affirmative, n8n dispatches personalized WhatsApp vouchers to the 47 inactive regulars.
+                Once approved via one tap or voice affirmative, Arc Mate dispatches personalized WhatsApp retention offers to the 47 inactive regulars.
               </p>
             </div>
 
@@ -768,7 +732,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               <span className="font-mono text-xl text-emerald-400 font-black">04</span>
               <h4 className="font-sans font-bold text-base text-[#f2ebd8]">Announce Live</h4>
               <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                Paytm Soundbox 3.0 sounds the chime on the shop counter, announcing the campaign launch and tracking returned customer footfall.
+                Countertop audio chime confirms dispatch right at the store counter, announcing the campaign launch and tracking returned customer footfall.
               </p>
             </div>
 
@@ -798,7 +762,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               </div>
               <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Sharma Café</h3>
               <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                Suffered a sudden 18.4% slump during evening peak due to pavement work. ActionMate re-engaged 47 dormant regular tea drinkers within 48 hours.
+                Suffered a sudden 18.4% slump during evening peak due to pavement work. Arc Mate re-engaged 47 dormant regular tea drinkers within 48 hours.
               </p>
               <div className="pt-3 border-t border-[rgba(242,235,216,0.06)] flex items-center justify-between">
                 <span className="text-xs font-mono font-bold text-emerald-400">₹19,200 Recovered</span>
@@ -814,7 +778,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               </div>
               <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Amritsari Kulcha Hub</h3>
               <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                Owner utilized natural Hinglish speech to trigger automated weekend lunch coupons. Soundbox 3.0 confirmed dispatch without typing on any device.
+                Owner utilized natural Hinglish speech to trigger automated weekend lunch coupons. Countertop audio confirmed dispatch without typing on any device.
               </p>
               <div className="pt-3 border-t border-[rgba(242,235,216,0.06)] flex items-center justify-between">
                 <span className="text-xs font-mono font-bold text-emerald-400">+24% Weekend Rush</span>
@@ -830,7 +794,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               </div>
               <h3 className="font-sans font-bold text-lg text-[#f2ebd8]">Kolkata Daily Mart</h3>
               <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                Automated perishable stock clearance campaign created strictly within Cognee’s 12% margin ceiling, eliminating inventory spoilage.
+                Automated perishable stock clearance campaign created strictly within the store's 12% margin ceiling, eliminating inventory spoilage.
               </p>
               <div className="pt-3 border-t border-[rgba(242,235,216,0.06)] flex items-center justify-between">
                 <span className="text-xs font-mono font-bold text-emerald-400">0% Margin Breach</span>
@@ -903,7 +867,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 <ul className="space-y-3 text-xs text-[#c8c0a8] pt-4 border-t border-[rgba(242,235,216,0.08)]">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#ed6f5c] shrink-0" />
-                    <span>1 Paytm Soundbox 3.0 Sync</span>
+                    <span>1 Countertop Soundbox Sync</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#ed6f5c] shrink-0" />
@@ -911,7 +875,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#ed6f5c] shrink-0" />
-                    <span>Gemini 3.1 Flash-Lite Intelligence</span>
+                    <span>Autonomous Slump Detection & Insights</span>
                   </li>
                   <li className="flex items-center gap-2 text-[#6e6860]">
                     <span className="w-4 h-4 flex items-center justify-center font-bold">✕</span>
@@ -950,19 +914,19 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 <ul className="space-y-3 text-xs text-[#f2ebd8] pt-4 border-t border-[rgba(242,235,216,0.1)]">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#ed6f5c] shrink-0" />
-                    <span><strong>Dual Voice Engine:</strong> Sarvam + Gemini</span>
+                    <span><strong>Vernacular Voice Engine:</strong> Hinglish + Hindi</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#ed6f5c] shrink-0" />
-                    <span><strong>Automated n8n Workflows:</strong> WhatsApp Retention</span>
+                    <span><strong>Automated Workflows:</strong> WhatsApp Retention</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#ed6f5c] shrink-0" />
-                    <span><strong>Cognee Policy Engine:</strong> 15% Margin Guard</span>
+                    <span><strong>Policy Guard:</strong> Strict 15% Margin Cap</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#ed6f5c] shrink-0" />
-                    <span>Soundbox 3.0 Live Audio Chimes</span>
+                    <span>Countertop Live Audio Chimes</span>
                   </li>
                 </ul>
               </div>
@@ -1039,7 +1003,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             </div>
 
             <blockquote className="font-serif italic text-xl sm:text-2xl text-[#f2ebd8] leading-relaxed">
-              “Pichle hafte hamari shaam ki chai sales gir gayi thi. ActionMate ne notice kiya ki 47 regular patrons nahi aaye. AI ne 10% coupon bana kar WhatsApp bhej diya aur do din me ₹19,000 ki sales wapas aa gayi!”
+              “Pichle hafte hamari shaam ki chai sales gir gayi thi. Arc Mate ne notice kiya ki 47 regular patrons nahi aaye. AI ne 10% coupon bana kar WhatsApp bhej diya aur do din me ₹19,000 ki sales wapas aa gayi!”
             </blockquote>
 
             <div className="flex items-center justify-between pt-4 border-t border-[rgba(242,235,216,0.08)]">
@@ -1075,28 +1039,28 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             <div className="space-y-4">
               <div className="p-6 rounded-2xl bg-[#161410]/80 border border-[rgba(242,235,216,0.08)] space-y-2">
                 <h4 className="font-sans font-bold text-base text-[#f2ebd8]">
-                  Kya ActionMate bina pooche discount bhej sakta hai?
+                  Kya Arc Mate bina pooche discount bhej sakta hai?
                 </h4>
                 <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                  Nahi, bilkul nahi. ActionMate ke paas strict Human-in-the-Loop guardrail hai. Har ek campaign draft hokar Approval Queue mein aati hai. Jab tak merchant use approve nahi karta, tab tak ek bhi message ya discount trigger nahi hota.
+                  Nahi, bilkul nahi. Arc Mate ke paas strict Human-in-the-Loop guardrail hai. Har ek campaign draft hokar Approval Queue mein aati hai. Jab tak merchant use approve nahi karta, tab tak ek bhi message ya discount trigger nahi hota.
                 </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-[#161410]/80 border border-[rgba(242,235,216,0.08)] space-y-2">
                 <h4 className="font-sans font-bold text-base text-[#f2ebd8]">
-                  Paytm Soundbox 3.0 ke sath kaise connect hota hai?
+                  Countertop audio chimes kaise connect hote hain?
                 </h4>
                 <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                  ActionMate Paytm IoT gateway ke saath real-time telemetry connect karta hai. Jab bhi payment aati hai ya campaign approve hoti hai, Soundbox counter par 784 Hz + 1046 Hz voice chime ke sath announce karta hai.
+                  Arc Mate IoT countertop audio gateway ke saath real-time telemetry connect karta hai. Jab bhi payment aati hai ya campaign approve hoti hai, counter par 784 Hz + 1046 Hz voice chime ke sath announce karta hai.
                 </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-[#161410]/80 border border-[rgba(242,235,216,0.08)] space-y-2">
                 <h4 className="font-sans font-bold text-base text-[#f2ebd8]">
-                  Kaunsa AI model use hota hai? Rate limit issue to nahi aayega?
+                  Kya mujhe koi technical ya coding knowledge ki zaroorat hai?
                 </h4>
                 <p className="text-xs text-[#c8c0a8] leading-relaxed">
-                  ActionMate strictly <strong>Gemini 3.1 Flash-Lite</strong> use karta hai jisme 10-15 RPM ki high rate limit milti hai. Voice ke liye Sarvam AI aur Gemini Live ka dual engine hai jo token aur credit consume hone par automatic failover karta hai.
+                  Bilkul nahi. Arc Mate ko specially Indian shopkeepers ke daily workflow ke liye banaya gaya hai. Aap natural aawaz (Hinglish/Hindi) me baat kar sakte hain ya single-tap approval de sakte hain. Hamara intelligent engine background me 24/7 autonomous monitoring karta hai.
                 </p>
               </div>
             </div>
@@ -1118,23 +1082,16 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             </h2>
 
             <p className="lead-editorial text-sm sm:text-base max-w-xl mx-auto text-[#c8c0a8]">
-              Join the finals demonstration. Three clicks to deploy your store radar and link your Paytm Soundbox 3.0.
+              Ready to recover dormant customers? Three clicks to deploy your store radar and link your countertop audio.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
               <button
                 onClick={onLaunchApp}
-                className="btn-editorial btn-editorial-primary text-sm py-3.5 px-8 shadow-2xl"
+                className="btn-editorial btn-editorial-primary text-sm py-3.5 px-8 shadow-2xl flex items-center gap-2"
               >
-                <span>Launch Interactive App</span>
+                <span>Get Started</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={onGoLogin}
-                className="btn-editorial btn-editorial-ghost text-sm py-3.5 px-8"
-              >
-                <span>Merchant Login</span>
               </button>
             </div>
           </div>
@@ -1153,16 +1110,14 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             {/* Brand Column */}
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full border border-[rgba(242,235,216,0.2)] bg-[#1e1c18] flex items-center justify-center font-serif italic text-sm text-[#f2ebd8]">
-                  AM
-                </div>
-                <span className="font-sans font-bold text-base text-[#f2ebd8]">Paytm ActionMate</span>
+                <ArcMateLogo className="w-8 h-8 rounded-xl shadow-sm shrink-0" size={32} />
+                <span className="font-sans font-bold text-base text-[#f2ebd8]">Arc Mate</span>
               </div>
               <p className="text-xs text-[#9a9382] leading-relaxed">
-                The Autonomous AI Teammate for Indian Merchants. Built for the Paytm Build for India Hackathon Finals.
+                The Autonomous AI Teammate for Indian Merchants. Built for modern retail commerce.
               </p>
               <div className="text-[11px] font-mono text-[#6e6860]">
-                Apache-2.0 · Made in India
+                SaaS Platform · Made in India
               </div>
             </div>
 
@@ -1171,33 +1126,33 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               <h5 className="font-sans font-bold text-xs uppercase tracking-wider text-[#f2ebd8]">Systems</h5>
               <ul className="space-y-2 text-xs text-[#9a9382]">
                 <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">Anomaly Radar</a></li>
-                <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">Dual Voice Engine</a></li>
-                <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">n8n Workflow Studio</a></li>
-                <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">Cognee Policy Guard</a></li>
-                <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">Paytm Soundbox 3.0</a></li>
+                <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">Voice Assistant Engine</a></li>
+                <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">Automated Workflow Studio</a></li>
+                <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">Store Margin Guard</a></li>
+                <li><a href="#capabilities" className="hover:text-[#ed6f5c] transition">Countertop Audio Gateway</a></li>
               </ul>
             </div>
 
             {/* Navigation 2 */}
             <div className="space-y-3">
-              <h5 className="font-sans font-bold text-xs uppercase tracking-wider text-[#f2ebd8]">Hardware & Models</h5>
+              <h5 className="font-sans font-bold text-xs uppercase tracking-wider text-[#f2ebd8]">Platform Capabilities</h5>
               <ul className="space-y-2 text-xs text-[#9a9382]">
-                <li><span className="hover:text-[#f2ebd8] transition">Gemini 3.1 Flash-Lite</span></li>
-                <li><span className="hover:text-[#f2ebd8] transition">Sarvam AI Saaras STT</span></li>
-                <li><span className="hover:text-[#f2ebd8] transition">Sarvam AI Bulbul TTS</span></li>
-                <li><span className="hover:text-[#f2ebd8] transition">Web Audio 784/1046 Hz</span></li>
-                <li><span className="hover:text-[#f2ebd8] transition">Supabase Telemetry</span></li>
+                <li><span className="hover:text-[#f2ebd8] transition">Real-time Telemetry</span></li>
+                <li><span className="hover:text-[#f2ebd8] transition">Vernacular Voice (Hinglish)</span></li>
+                <li><span className="hover:text-[#f2ebd8] transition">Automated Retention Flows</span></li>
+                <li><span className="hover:text-[#f2ebd8] transition">Interactive Audit Ledger</span></li>
+                <li><span className="hover:text-[#f2ebd8] transition">Multi-Store Analytics</span></li>
               </ul>
             </div>
 
-            {/* Hackathon Track Info */}
+            {/* Operations Info */}
             <div className="space-y-3">
-              <h5 className="font-sans font-bold text-xs uppercase tracking-wider text-[#f2ebd8]">Hackathon Finals</h5>
+              <h5 className="font-sans font-bold text-xs uppercase tracking-wider text-[#f2ebd8]">Autonomous Operations</h5>
               <p className="text-xs text-[#9a9382] leading-relaxed">
-                Track 3 Finalist Build. Autonomous merchant telemetry, edge voice synthesis, and countertop audio feedback.
+                Autonomous merchant telemetry, edge voice synthesis, and real-time countertop audio feedback.
               </p>
               <div className="text-[11px] font-mono text-[#ed6f5c]">
-                ● Status: Ready for Evaluation
+                ● System: Live & Operational
               </div>
             </div>
 
@@ -1207,7 +1162,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
           <div className="pt-8 border-t border-[rgba(242,235,216,0.06)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#6e6860]">
             <div className="flex items-center gap-2">
               <span className="pulse-dot"></span>
-              <span>© {new Date().getFullYear()} Paytm ActionMate</span>
+              <span>© {new Date().getFullYear()} Arc Mate</span>
             </div>
             <div className="flex items-center gap-4">
               <span>Built with ❤️ for Indian Merchants</span>
@@ -1217,7 +1172,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
           {/* Mega Wordmark */}
           <div className="pt-4 text-center select-none opacity-20 pointer-events-none">
             <span className="font-sans font-black text-6xl sm:text-8xl lg:text-9xl tracking-tighter text-[#f2ebd8]">
-              Action<em className="font-serif italic font-normal text-[#ed6f5c]">Mate</em>.
+              Arc<em className="font-serif italic font-normal text-[#ed6f5c]">Mate</em>.
             </span>
           </div>
 

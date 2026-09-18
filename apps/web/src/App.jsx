@@ -166,17 +166,6 @@ export default function App() {
         const auditData = await auditRes.json();
         setAuditLogs(Array.isArray(auditData) ? auditData : []);
       }
-
-      // Initialize initial welcome message
-      const storeName = activeMerchant?.name || 'your store';
-      const owner = activeMerchant?.ownerName?.split(' ')[0] || 'Partner';
-      setMessages([
-        {
-          sender: 'actionmate',
-          text: `Welcome ${owner}! ActionMate is monitoring ${storeName}. Today's collections and transaction streams are running smoothly. How can I help you grow your business today?`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
     } catch (err) {
       console.error('Error loading store data:', err);
     }
