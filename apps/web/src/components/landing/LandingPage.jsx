@@ -94,8 +94,8 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
 
   return (
     <div className="min-h-screen text-[#f2ebd8] relative overflow-x-hidden selection:bg-[#ed6f5c]/30 selection:text-white">
-      {/* 1. Mouse-Reactive WebGPU Ambient Shader Canvas */}
-      <ShaderBackground />
+      {/* 1. Mouse-Reactive WebGPU Ambient Shader Canvas (Warm Coral & Amber Editorial Hue) */}
+      <ShaderBackground opacity={0.55} />
 
       {/* 2. Fixed Editorial Side Rails */}
       <div className="side-rail left hidden 2xl:flex" aria-hidden="true">

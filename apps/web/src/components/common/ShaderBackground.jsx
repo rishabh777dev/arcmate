@@ -17,15 +17,18 @@ import FlutedCanvas from './FlutedCanvas';
  * - Interactive dynamics: <CursorRipples> and <FilmGrain>
  * - Fallback: Automatic seamless fallback to FlutedCanvas if WebGPU is unsupported
  */
-export default function ShaderBackground({ className = "" }) {
+export default function ShaderBackground({ className = "", opacity, style = {} }) {
   const [hasShaderError, setHasShaderError] = useState(false);
 
   if (hasShaderError) {
-    return <FlutedCanvas className={className} />;
+    return <FlutedCanvas className={className} style={style} opacity={opacity} />;
   }
 
   return (
-    <div className={`fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#07090E] ${className}`}>
+    <div 
+      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#0e0d0a] ${className}`}
+      style={{ ...style, ...(opacity !== undefined ? { opacity } : {}) }}
+    >
       <Shader 
         className="w-full h-full block absolute inset-0"
         onError={(err) => {
@@ -33,35 +36,35 @@ export default function ShaderBackground({ className = "" }) {
           setHasShaderError(true);
         }}
       >
-        {/* 1. Base Ambient Dark Backdrop Shader */}
+        {/* 1. Base Ambient Dark Paper Backdrop Shader */}
         <LinearGradient
-          colorA="#07090E"
-          colorB="#0B0D14"
+          colorA="#0e0d0a"
+          colorB="#161410"
           colorSpace="hsl"
           end={{ x: 0, y: 1 }}
           start={{ x: 0, y: 0 }}
         />
 
-        {/* 2. Interactive WebGPU Shader Spotlight (ChromaFlow fluid luminous beam following cursor) */}
+        {/* 2. Interactive WebGPU Shader Spotlight (ChromaFlow warm editorial fluid beam) */}
         <ChromaFlow
           id="trailFlow"
-          baseColor="#07090E"
-          upColor="#00BAF2"
-          downColor="#002970"
-          leftColor="#7C3AED"
-          rightColor="#00BAF2"
-          intensity={1.5}
-          radius={3.2}
-          momentum={28}
+          baseColor="#0e0d0a"
+          upColor="#ed6f5c"
+          downColor="#e9b94a"
+          leftColor="#d95a47"
+          rightColor="#f08e7c"
+          intensity={1.25}
+          radius={3.0}
+          momentum={24}
           visible={true}
-          opacity={0.55}
+          opacity={0.45}
           blendMode="screen"
         />
 
         {/* 3. Interactive Particle Grid driven by ChromaFlow liquid light */}
         <DotGrid
           id="trailDots"
-          density={42}
+          density={38}
           dotSize={{
             type: "map",
             source: "trailFlow",
@@ -71,14 +74,14 @@ export default function ShaderBackground({ className = "" }) {
             outputMax: 1,
             outputMin: 0
           }}
-          twinkle={0.85}
+          twinkle={0.8}
           visible={false}
         />
 
-        {/* 4. Linear Gradient masked to DotGrid particles for luminous cyan/violet sheen */}
+        {/* 4. Linear Gradient masked to DotGrid particles for warm coral & amber sheen */}
         <LinearGradient
-          colorA="#00BAF2"
-          colorB="#A78BFA"
+          colorA="#ed6f5c"
+          colorB="#e9b94a"
           colorSpace="hsl"
           end={{ x: 1, y: 0 }}
           maskSource="trailDots"
@@ -88,7 +91,7 @@ export default function ShaderBackground({ className = "" }) {
 
         {/* 5. Real-time Cursor Waves & Cinematic Grain */}
         <CursorRipples />
-        <FilmGrain strength={0.07} />
+        <FilmGrain strength={0.06} />
       </Shader>
     </div>
   );

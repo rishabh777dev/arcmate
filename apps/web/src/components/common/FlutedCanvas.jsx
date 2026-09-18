@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from 'react';
  * Inspired by Emily's FallbackAuthCanvas and SavedMinds WebGPU ChromaFlow
  * Features fluid inertia mouse-tracking, radial color bloom, and fluted light ribs
  */
-export default function FlutedCanvas({ className = "" }) {
+export default function FlutedCanvas({ className = "", opacity, style = {} }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -49,11 +49,11 @@ export default function FlutedCanvas({ className = "" }) {
       current.x += velocity.x;
       current.y += velocity.y;
 
-      // Deep dark matte background
-      ctx.fillStyle = '#0B0C10';
+      // Deep dark paper background
+      ctx.fillStyle = '#0e0d0a';
       ctx.fillRect(0, 0, width, height);
 
-      // Primary Luminous Radial Bloom (Paytm Cyan + Deep Royal Blue)
+      // Primary Luminous Radial Bloom (Warm Coral + Amber/Gold)
       const speedMag = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
       const bloomRadius = Math.max(280, Math.min(520, 360 + speedMag * 5));
 
@@ -65,10 +65,10 @@ export default function FlutedCanvas({ className = "" }) {
         current.y,
         bloomRadius
       );
-      grad.addColorStop(0, 'rgba(0, 186, 242, 0.28)');     // Paytm Cyan
-      grad.addColorStop(0.35, 'rgba(0, 41, 112, 0.22)');   // Paytm Navy
-      grad.addColorStop(0.7, 'rgba(124, 58, 237, 0.12)');   // Violet Accent
-      grad.addColorStop(1, 'rgba(11, 12, 16, 0)');
+      grad.addColorStop(0, 'rgba(237, 111, 92, 0.22)');     // Warm Coral
+      grad.addColorStop(0.35, 'rgba(233, 185, 74, 0.16)');  // Warm Gold/Amber
+      grad.addColorStop(0.7, 'rgba(110, 116, 72, 0.10)');   // Olive/Earth
+      grad.addColorStop(1, 'rgba(14, 13, 10, 0)');
 
       ctx.fillStyle = grad;
       ctx.beginPath();
@@ -86,10 +86,10 @@ export default function FlutedCanvas({ className = "" }) {
       for (let i = -totalRibs / 2; i < totalRibs / 2; i++) {
         const x = i * ribW + Math.sin(time * 0.3 + i * 0.15) * 4;
         const ribGrad = ctx.createLinearGradient(x, -diag, x + ribW, -diag);
-        ribGrad.addColorStop(0, 'rgba(255, 255, 255, 0.025)');
-        ribGrad.addColorStop(0.2, 'rgba(255, 255, 255, 0.008)');
-        ribGrad.addColorStop(0.8, 'rgba(0, 0, 0, 0.03)');
-        ribGrad.addColorStop(1.0, 'rgba(255, 255, 255, 0.015)');
+        ribGrad.addColorStop(0, 'rgba(242, 235, 216, 0.02)');
+        ribGrad.addColorStop(0.2, 'rgba(242, 235, 216, 0.006)');
+        ribGrad.addColorStop(0.8, 'rgba(14, 13, 10, 0.04)');
+        ribGrad.addColorStop(1.0, 'rgba(242, 235, 216, 0.012)');
         ctx.fillStyle = ribGrad;
         ctx.fillRect(x, -diag, ribW, diag * 2);
       }
@@ -111,6 +111,7 @@ export default function FlutedCanvas({ className = "" }) {
     <canvas 
       ref={canvasRef} 
       className={`fixed inset-0 w-full h-full pointer-events-none z-0 ${className}`}
+      style={{ ...style, ...(opacity !== undefined ? { opacity } : {}) }}
     />
   );
 }
