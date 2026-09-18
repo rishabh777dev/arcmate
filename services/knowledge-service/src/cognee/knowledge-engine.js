@@ -11,29 +11,29 @@ export class CogneeKnowledgeEngine {
     // 1. Initial Knowledge Graph Nodes (Entities & Concepts)
     this.nodes = [
       {
-        id: 'ent_merchant_sharma',
-        label: 'Sharma Café & Snacks',
+        id: 'ent_merchant_active',
+        label: 'Athees Café',
         category: 'MERCHANT',
         type: 'Entity',
         properties: {
-          owner: 'Ramesh Sharma',
-          category: 'QSR / Chai & Snacks',
-          location: 'Sector 62, Noida, UP',
-          upiId: 'sharmacafe@paytm',
-          avgDailyFootfall: 180
+          owner: 'Atheeswaran R.',
+          category: 'Specialty Artisan Coffee & Gourmet Bakes',
+          location: '100ft Road, Indiranagar, Bangalore',
+          upiId: 'atheescafe@paytm',
+          avgDailyFootfall: 240
         }
       },
       {
         id: 'ent_soundbox_3',
-        label: 'Paytm Soundbox 3.0',
+        label: 'Paytm Soundbox 3.0 Pro',
         category: 'DEVICE',
         type: 'Entity',
         properties: {
-          deviceId: 'PAYTM_SBX_NOIDA_8892',
-          batteryLevel: 88,
+          deviceId: 'PAYTM_SBX_BLR_7781',
+          batteryLevel: 96,
           network: '4G Dual SIM',
           status: 'ONLINE',
-          lastChimeAt: '2026-09-18T06:10:49Z'
+          lastChimeAt: new Date().toISOString()
         }
       },
       {
@@ -112,13 +112,13 @@ export class CogneeKnowledgeEngine {
 
     // 2. Knowledge Graph Edges (Relationships / Links)
     this.edges = [
-      { id: 'e1', source: 'ent_merchant_sharma', target: 'ent_soundbox_3', relation: 'OPERATES', label: 'operates device' },
-      { id: 'e2', source: 'ent_merchant_sharma', target: 'ent_balance_sheet', relation: 'HOLDS_FINANCES', label: 'tracks financial health' },
-      { id: 'e3', source: 'ent_merchant_sharma', target: 'pol_discount_ceiling', relation: 'GOVERNED_BY', label: 'governed by policy' },
-      { id: 'e4', source: 'ent_merchant_sharma', target: 'pol_working_capital_repay', relation: 'BOUND_BY', label: 'bound by loan sweep' },
-      { id: 'e5', source: 'ent_merchant_sharma', target: 'coh_evening_regulars', relation: 'SERVES_COHORT', label: 'serves customer segment' },
+      { id: 'e1', source: 'ent_merchant_active', target: 'ent_soundbox_3', relation: 'OPERATES', label: 'operates device' },
+      { id: 'e2', source: 'ent_merchant_active', target: 'ent_balance_sheet', relation: 'HOLDS_FINANCES', label: 'tracks financial health' },
+      { id: 'e3', source: 'ent_merchant_active', target: 'pol_discount_ceiling', relation: 'GOVERNED_BY', label: 'governed by policy' },
+      { id: 'e4', source: 'ent_merchant_active', target: 'pol_working_capital_repay', relation: 'BOUND_BY', label: 'bound by loan sweep' },
+      { id: 'e5', source: 'ent_merchant_active', target: 'coh_evening_regulars', relation: 'SERVES_COHORT', label: 'serves customer segment' },
       { id: 'e6', source: 'coh_evening_regulars', target: 'ano_evening_sales_drop', relation: 'EXHIBITS', label: 'exhibits decline' },
-      { id: 'e7', source: 'ano_evening_sales_drop', target: 'act_n8n_reengagement', relation: 'MITIGATED_BY', label: 'mitigated by n8n workflow' },
+      { id: 'e7', source: 'ano_evening_sales_drop', target: 'act_n8n_reengagement', relation: 'MITIGATED_BY', label: 'mitigated by automation' },
       { id: 'e8', source: 'act_n8n_reengagement', target: 'pol_discount_ceiling', relation: 'VALIDATED_AGAINST', label: 'validated against 15% cap' },
       { id: 'e9', source: 'act_n8n_reengagement', target: 'ent_soundbox_3', relation: 'ANNOUNCES_VIA', label: 'announces chime via' }
     ];
@@ -143,15 +143,15 @@ export class CogneeKnowledgeEngine {
         id: 'kn_3',
         category: 'MACHINE_TELEMETRY',
         title: 'Soundbox 3.0 Operational Specs',
-        content: 'Paytm Soundbox 3.0 (ID: PAYTM_SBX_NOIDA_8892) is active on 4G dual-SIM with 88% battery, excellent signal, firmware v4.12.8-in.',
-        specs: { soundboxId: 'PAYTM_SBX_NOIDA_8892', battery: 88, status: 'ONLINE' }
+        content: 'Paytm Soundbox 3.0 Pro (ID: PAYTM_SBX_BLR_7781) is active on 4G dual-SIM with 96% battery, excellent signal, firmware v4.12.8-in.',
+        specs: { soundboxId: 'PAYTM_SBX_BLR_7781', battery: 96, status: 'ONLINE' }
       },
       {
         id: 'kn_4',
         category: 'MERCHANT_HABIT',
         title: 'Tone & Customer Communication Preference',
-        content: 'Merchant Ramesh Sharma prefers warm, polite Hinglish copy mentioning chai and evening snacks. Tone must feel personal and local.',
-        preference: { tone: 'warm Hinglish', keyPhrases: ['aapko miss kar rahe hain', 'shaam ki chai'] }
+        content: 'Athees Café prefers welcoming, artisanal tone highlighting specialty coffee roasts and fresh artisanal bakes.',
+        preference: { tone: 'warm artisanal', keyPhrases: ['specialty brew', 'fresh bakes'] }
       }
     ];
   }
@@ -159,10 +159,37 @@ export class CogneeKnowledgeEngine {
   /**
    * Returns complete ECL Knowledge Graph representation for frontend visualizers.
    */
-  getGraphData() {
+  getGraphData(merchant = null) {
+    // Dynamically align active merchant node
+    const nodes = this.nodes.map(n => {
+      if (n.id === 'ent_merchant_active' && merchant) {
+        return {
+          ...n,
+          label: merchant.name || n.label,
+          properties: {
+            ...n.properties,
+            owner: merchant.ownerName || n.properties.owner,
+            category: merchant.category || n.properties.category,
+            location: merchant.location || n.properties.location,
+            upiId: merchant.upiId || n.properties.upiId
+          }
+        };
+      }
+      if (n.id === 'ent_soundbox_3' && merchant?.soundboxDeviceId) {
+        return {
+          ...n,
+          properties: {
+            ...n.properties,
+            deviceId: merchant.soundboxDeviceId
+          }
+        };
+      }
+      return n;
+    });
+
     const triples = this.edges.map(e => {
-      const srcNode = this.nodes.find(n => n.id === e.source);
-      const tgtNode = this.nodes.find(n => n.id === e.target);
+      const srcNode = nodes.find(n => n.id === e.source);
+      const tgtNode = nodes.find(n => n.id === e.target);
       return {
         subject: srcNode ? srcNode.label : e.source,
         predicate: e.relation,
@@ -171,14 +198,20 @@ export class CogneeKnowledgeEngine {
     });
 
     return {
-      nodes: this.nodes,
+      nodes,
       edges: this.edges,
       triples,
+      cogneeCloud: {
+        connected: cogneeCloudService.isConfigured(),
+        endpoint: cogneeCloudService.baseUrl,
+        tenantId: cogneeCloudService.tenantId
+      },
       stats: {
-        totalNodes: this.nodes.length,
+        totalNodes: nodes.length,
         totalEdges: this.edges.length,
         totalTriples: triples.length,
-        policiesCount: this.nodes.filter(n => n.category === 'POLICY').length,
+        policiesCount: nodes.filter(n => n.category === 'POLICY').length,
+        cogneeConnected: cogneeCloudService.isConfigured(),
         lastUpdated: new Date().toISOString()
       }
     };
@@ -221,7 +254,7 @@ export class CogneeKnowledgeEngine {
     // Connect node to merchant
     this.edges.push({
       id: `e_${Date.now()}`,
-      source: 'ent_merchant_sharma',
+      source: 'ent_merchant_active',
       target: newNodeId,
       relation: category.toUpperCase() === 'POLICY' ? 'GOVERNED_BY' : 'INCORPORATES',
       label: category.toUpperCase() === 'POLICY' ? 'governed by' : 'incorporates'

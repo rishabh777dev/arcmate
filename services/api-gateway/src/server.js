@@ -299,7 +299,7 @@ app.get('/api/knowledge', async (req, res) => {
 });
 
 app.get('/api/knowledge/graph', (req, res) => {
-  res.json(knowledgeEngine.getGraphData());
+  res.json(knowledgeEngine.getGraphData(req.merchant));
 });
 
 app.post('/api/knowledge/inject', async (req, res) => {
@@ -314,16 +314,16 @@ app.post('/api/knowledge/inject', async (req, res) => {
     value: value || 15
   });
 
-  // Also ingest into Cognee Cloud if configured
+  // Also ingest into live Cognee Cloud instance
   if (cogneeCloudService.isConfigured()) {
-    cogneeCloudService.addDocument({ title, content, category }, `merchant_${req.merchantId}`);
+    cogneeCloudService.addDocument({ title, content, category }, 'merchant_rules');
   }
 
   res.json({ 
     success: true, 
     entry: policy, 
     policies: await dataStore.getPolicies(req.merchantId),
-    graph: knowledgeEngine.getGraphData() 
+    graph: knowledgeEngine.getGraphData(req.merchant) 
   });
 });
 

@@ -15,7 +15,8 @@ export class CogneeCloudService {
     this.baseUrl = process.env.COGNEE_API_URL || 'https://tenant-f05eece1-d390-44ab-ae6b-269435b97222.aws.cognee.ai';
     this.tenantId = process.env.COGNEE_TENANT_ID || 'f05eece1-d390-44ab-ae6b-269435b97222';
     this.userId = process.env.COGNEE_USER_ID || '85cdfcc0-d895-4415-ae61-11f1375820b0';
-    this.apiKey = process.env.COGNEE_API_KEY || null;
+    this.apiKey = process.env.COGNEE_API_KEY || 'fec9104ee85f585012ecacab833ad622fd35ecfea3c30e3f6bd9a6f797e1b086';
+    this.datasetId = '5aece55b-b308-5884-8acf-f5735344fac6';
   }
 
   setApiKey(key) {
@@ -41,24 +42,36 @@ export class CogneeCloudService {
   /**
    * Ingest a business rule, policy, or document into Cognee Cloud
    */
-  async addDocument(data, datasetName = 'merchant_knowledge') {
+  async addDocument(data, datasetName = 'merchant_rules') {
     if (!this.apiKey) {
       return { live: false, message: 'COGNEE_API_KEY not configured. Running on high-performance local knowledge engine.' };
     }
 
     try {
-      console.log(`[CogneeCloud] Ingesting document to live tenant: ${this.baseUrl}/api/v1/add`);
+      const text = typeof data === 'string'
+        ? data
+        : `${data.title ? data.title + ': ' : ''}${data.content || JSON.stringify(data)}`;
+
+      console.log(`[CogneeCloud] Ingesting text into live Cognee AWS instance: ${this.baseUrl}/api/v1/add_text`);
       const response = await axios.post(
-        `${this.baseUrl}/api/v1/add`,
+        `${this.baseUrl}/api/v1/add_text`,
         {
-          datasetName,
-          data: typeof data === 'string' ? data : JSON.stringify(data)
+          text_data: [text],
+          datasetName
         },
-        { headers: this.getHeaders(), timeout: 8000 }
+        { headers: this.getHeaders(), timeout: 15000 }
       );
+
+      if (response.data?.dataset_id) {
+        this.datasetId = response.data.dataset_id;
+      }
+
+      // Automatically trigger Cognify in background to extract entities and knowledge links
+      this.cognify([datasetName]).catch(e => console.warn('[CogneeCloud] Auto-cognify background notice:', e.message));
+
       return { live: true, data: response.data };
     } catch (err) {
-      console.warn(`[CogneeCloud] Live add failed (${err.message}). Using resilient graph store.`);
+      console.warn(`[CogneeCloud] Live add failed (${err.message}). Using resilient fallback.`);
       return { live: false, error: err.message };
     }
   }
@@ -66,19 +79,22 @@ export class CogneeCloudService {
   /**
    * Triggers Cognify graph extraction in Cognee Cloud
    */
-  async cognify(datasets = ['merchant_knowledge']) {
+  async cognify(datasets = ['merchant_rules']) {
     if (!this.apiKey) return { live: false };
 
     try {
-      console.log(`[CogneeCloud] Cognifying datasets on live tenant: ${this.baseUrl}/api/v1/cognify`);
+      console.log(`[CogneeCloud] Cognifying datasets on live tenant: ${datasets.join(', ')}`);
       const response = await axios.post(
         `${this.baseUrl}/api/v1/cognify`,
-        { datasets },
-        { headers: this.getHeaders(), timeout: 10000 }
+        {
+          datasets,
+          run_in_background: true
+        },
+        { headers: this.getHeaders(), timeout: 15000 }
       );
       return { live: true, data: response.data };
     } catch (err) {
-      console.warn(`[CogneeCloud] Live cognify error (${err.message})`);
+      console.warn(`[CogneeCloud] Live cognify notice (${err.message})`);
       return { live: false, error: err.message };
     }
   }
@@ -86,18 +102,37 @@ export class CogneeCloudService {
   /**
    * Search knowledge graph & memories in Cognee Cloud
    */
-  async search(query, searchType = 'GRAPH') {
+  async search(query, searchType = 'CHUNKS') {
     if (!this.apiKey) return null;
 
     try {
       const response = await axios.post(
         `${this.baseUrl}/api/v1/search`,
-        { query, searchType },
-        { headers: this.getHeaders(), timeout: 5000 }
+        { query, searchType: searchType || 'CHUNKS' },
+        { headers: this.getHeaders(), timeout: 8000 }
       );
       return response.data;
     } catch (err) {
-      console.warn(`[CogneeCloud] Search error (${err.message})`);
+      console.warn(`[CogneeCloud] Search notice (${err.message})`);
+      return null;
+    }
+  }
+
+  /**
+   * Fetch live knowledge graph visualization from Cognee Cloud
+   */
+  async getLiveGraph(datasetId = null) {
+    if (!this.apiKey) return null;
+
+    try {
+      const targetId = datasetId || this.datasetId;
+      const response = await axios.get(
+        `${this.baseUrl}/api/v1/visualize/json?dataset_id=${targetId}&full=true`,
+        { headers: this.getHeaders(), timeout: 8000 }
+      );
+      return response.data;
+    } catch (err) {
+      console.warn(`[CogneeCloud] Live graph fetch notice (${err.message})`);
       return null;
     }
   }
