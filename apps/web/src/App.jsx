@@ -182,7 +182,7 @@ export default function App() {
     }
   };
 
-  const handleSendMessage = async (text) => {
+  const handleSendMessage = async (text, model = 'gemini-3.1-flash-lite') => {
     if (!text.trim() || isProcessing) return;
 
     const userMsg = {
@@ -205,9 +205,11 @@ export default function App() {
         },
         body: JSON.stringify({
           message: text,
+          model,
           context: {
             merchantId: activeMerchant?.id,
-            merchantName: activeMerchant?.name
+            merchantName: activeMerchant?.name,
+            model
           }
         })
       });
@@ -384,6 +386,7 @@ export default function App() {
             <CopilotChat
               messages={messages}
               onSendMessage={handleSendMessage}
+              onClearMessages={() => setMessages([])}
               isProcessing={isProcessing}
               agentSteps={agentSteps}
               pendingAction={pendingAction}

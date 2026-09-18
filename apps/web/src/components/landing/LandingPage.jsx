@@ -39,7 +39,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
       id: 'radar',
       category: 'slump',
       tag: 'Radar',
-      num: 'Nº 01',
+      num: '01',
       title: 'Slump Cohort Isolation',
       desc: 'Compares hourly UPI transaction streams against 14-day normal bands to isolate 47 inactive evening regulars.',
       metric: '-18.4% isolated',
@@ -49,7 +49,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
       id: 'voice',
       category: 'voice',
       tag: 'Voice & Dialect',
-      num: 'Nº 02',
+      num: '02',
       title: 'Sarvam Hinglish Synthesis',
       desc: 'Dual-engine voice stack processing natural merchant queries in colloquial Hinglish with instant conversational turn-around.',
       metric: 'Hindi / Hinglish',
@@ -59,7 +59,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
       id: 'soundbox',
       category: 'hardware',
       tag: 'Hardware',
-      num: 'Nº 03',
+      num: '03',
       title: 'Soundbox 3.0 Audio Gateway',
       desc: 'Dual-sine wave Web Audio synthesis (784 Hz + 1046 Hz) for tactile merchant announcements right at the store billing counter.',
       metric: 'Dual-sine 784+1046Hz',
@@ -70,7 +70,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
       id: 'workflows',
       category: 'workflows',
       tag: 'Studio',
-      num: 'Nº 04',
+      num: '04',
       title: 'Speech-to-n8n Compiler',
       desc: 'Translates spoken retail intentions into executable, visual multi-node automation graphs with zero code.',
       metric: 'JSON Graph Compiler',
@@ -80,7 +80,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
       id: 'guardrails',
       category: 'guardrail',
       tag: 'Guardrail',
-      num: 'Nº 05',
+      num: '05',
       title: 'Cognee Margin Ceiling',
       desc: 'Strict knowledge-graph policy verification ensuring no autonomous retention offer exceeds the merchant’s 15% margin limit.',
       metric: '15% Ceiling Strict',
@@ -94,53 +94,15 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
 
   return (
     <div className="min-h-screen bg-[#0e0d0a] text-[#f2ebd8] relative overflow-x-hidden selection:bg-[#ed6f5c]/30 selection:text-white">
-      {/* 1. Mouse-Reactive WebGPU Ambient Shader Canvas (Matches other internal app views) */}
+      {/* 1. Mouse-Reactive WebGPU Ambient Shader Canvas */}
       <ShaderBackground opacity={0.35} />
 
-      {/* 2. Fixed Editorial Side Rails */}
-      <div className="side-rail left hidden 2xl:flex" aria-hidden="true">
-        <span className="rail-text">Soundbox 3.0 · Gemini 3.1 Flash-Lite · Autonomous Teammate</span>
-      </div>
-      <div className="side-rail right hidden 2xl:flex" aria-hidden="true">
-        <span className="rail-text">Paytm ActionMate — Vol. 01 · Track 3 Finalist · Build for India</span>
-      </div>
-
-      {/* 3. Top Metadata Strip */}
-      <aside className="topbar" aria-label="Edition Telemetry">
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 topbar-inner">
-          <span className="flex items-center gap-1.5">
-            <b>AM / 2026</b>
-            <span className="text-[#8b8676]">·</span>
-            <span>Vol. 01 / Finals Edition</span>
-          </span>
-
-          <span className="hidden md:inline-flex items-center gap-4 text-[#9a9382]">
-            <span>Filed under <b className="text-[#ed6f5c]">Merchant Autonomous Systems</b></span>
-            <span className="text-[#6e6860]">·</span>
-            <span>Indian Retail Intelligence</span>
-          </span>
-
-          <div className="flex items-center gap-5">
-            <button
-              onClick={() => playPaytmChime('Paytm Soundbox 3.0 hardware telemetry online. All store sensors active.')}
-              className="topbar-link flex items-center hover:text-[#ed6f5c] transition"
-              title="Test Soundbox Audio Telemetry"
-            >
-              <span className="pulse-dot"></span>
-              <span className="font-semibold text-[#f2ebd8]">Soundbox 3.0 Live</span>
-            </button>
-            <span className="text-[#6e6860]">|</span>
-            <span className="meta-code text-[10px]"><b>EN</b> · HI · TA · TE</span>
-          </div>
-        </div>
-      </aside>
-
-      {/* 4. Sticky Editorial Navigation Header */}
-      <header className="sticky top-0 z-40 border-b border-[rgba(242,235,216,0.08)] bg-[#0e0d0a]/80 backdrop-blur-xl transition-all">
+      {/* 2. Sticky Clean Navigation Header */}
+      <header className="sticky top-0 z-40 border-b border-[rgba(242,235,216,0.08)] bg-[#0e0d0a]/85 backdrop-blur-xl transition-all">
         <div className="max-w-7xl mx-auto px-6 sm:px-12 py-4 flex items-center justify-between gap-6">
           
-          {/* Brand Mark & Meta */}
-          <div className="flex items-center gap-4">
+          {/* Brand Mark */}
+          <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full border border-[rgba(242,235,216,0.25)] bg-[#1e1c18] flex items-center justify-center font-serif italic text-base text-[#f2ebd8] shadow-sm">
               AM
             </div>
@@ -151,28 +113,25 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                   Track 3
                 </span>
               </div>
-              <p className="text-[10px] font-mono tracking-widest text-[#6e6860] uppercase">
-                Studio Nº 01 · Bangalore / NCR / India
-              </p>
             </div>
           </div>
 
-          {/* Navigation Links with Superscript Indices */}
-          <nav className="hidden lg:flex items-center gap-7 text-xs font-medium text-[#c8c0a8]">
-            <a href="#capabilities" className="hover:text-[#ed6f5c] transition relative">
-              Capabilities<sup className="ml-1 text-[9px] text-[#ed6f5c] font-mono">06</sup>
+          {/* Clean Navigation Links (no confusing superscript numbers) */}
+          <nav className="hidden lg:flex items-center gap-8 text-xs font-medium text-[#c8c0a8]">
+            <a href="#capabilities" className="hover:text-[#ed6f5c] transition">
+              Capabilities
             </a>
-            <a href="#labs" className="hover:text-[#ed6f5c] transition relative">
-              Studio Labs<sup className="ml-1 text-[9px] text-[#ed6f5c] font-mono">05</sup>
+            <a href="#labs" className="hover:text-[#ed6f5c] transition">
+              Studio Labs
             </a>
-            <a href="#method" className="hover:text-[#ed6f5c] transition relative">
-              Pipeline<sup className="ml-1 text-[9px] text-[#ed6f5c] font-mono">04</sup>
+            <a href="#method" className="hover:text-[#ed6f5c] transition">
+              Pipeline
             </a>
-            <a href="#work" className="hover:text-[#ed6f5c] transition relative">
-              Selected Cases<sup className="ml-1 text-[9px] text-[#ed6f5c] font-mono">03</sup>
+            <a href="#work" className="hover:text-[#ed6f5c] transition">
+              Selected Cases
             </a>
-            <a href="#pricing" className="hover:text-[#ed6f5c] transition relative">
-              Pricing<sup className="ml-1 text-[9px] text-[#ed6f5c] font-mono">03</sup>
+            <a href="#pricing" className="hover:text-[#ed6f5c] transition">
+              Pricing
             </a>
             <a href="#faq" className="hover:text-[#ed6f5c] transition">
               FAQ
@@ -211,29 +170,18 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
       <main className="relative z-10 max-w-7xl mx-auto px-6 sm:px-12">
         
         {/* =================================================================
-            SECTION I: HERO / COVER PLATE
+            SECTION I: HERO
             ================================================================= */}
-        <section id="top" className="pt-12 pb-20 border-b border-[rgba(242,235,216,0.08)]">
-          
-          {/* Section Rule */}
-          <div className="sec-rule">
-            <span className="roman">I.</span>
-            <span className="meta-grp">
-              <span>Hero / Cover Plate</span>
-              <span className="dot-mark">•</span>
-              <span>Paytm ActionMate / Volume 01</span>
-            </span>
-            <span className="font-mono">001 / 008</span>
-          </div>
-
+        <section id="top" className="pt-10 pb-20 border-b border-[rgba(242,235,216,0.08)]">
           {/* Hero Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Column: Editorial Display Typography & CTAs */}
             <div className="lg:col-span-7 space-y-7 text-left">
               
-              <div className="label-editorial">
-                Autonomous Merchant Intelligence <span className="ix">· Nº 01</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(237,111,92,0.1)] border border-[rgba(237,111,92,0.25)] text-xs font-mono text-[#ed6f5c]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ed6f5c] animate-pulse" />
+                Autonomous Merchant Intelligence
               </div>
 
               <h1 className="display-title text-4xl sm:text-6xl lg:text-7xl font-extrabold text-[#f2ebd8]">
@@ -300,14 +248,13 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 </div>
               </div>
 
-              {/* Bottom Telemetry Meta */}
-              <div className="flex items-center justify-between text-[11px] font-mono text-[#6e6860] pt-4">
-                <span>↳ &nbsp; n8n workflow triggered &nbsp; · &nbsp; 3 minutes to recovery</span>
-                <span>12.9716° N · 77.5946° E</span>
+              {/* Bottom Status Info */}
+              <div className="flex items-center text-[11px] font-mono text-[#6e6860] pt-4">
+                <span>⚡ Automated n8n workflow active · Instant merchant recovery</span>
               </div>
             </div>
 
-            {/* Right Column: 3D Interactive Telemetry Card with Technical Frame */}
+            {/* Right Column: 3D Interactive Telemetry Card */}
             <div className="lg:col-span-5 relative">
               <div 
                 onMouseMove={handleMouseMove}
@@ -319,18 +266,14 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                 }}
                 className="relative rounded-2xl bg-[#161410]/90 border border-[rgba(242,235,216,0.14)] p-6 shadow-2xl backdrop-blur-xl cursor-pointer group hover:border-[#ed6f5c]/40 transition-all"
               >
-                {/* Technical Corner Brackets */}
+                {/* Subtle Corner Accents */}
                 <span className="corner tl"></span>
                 <span className="corner tr"></span>
                 <span className="corner bl"></span>
                 <span className="corner br"></span>
-
-                {/* Technical Annotations */}
-                <span className="annot annot-tl">FIG. 01 / AM-26</span>
-                <span className="annot annot-tr">PLATE Nº 01</span>
                 
                 {/* Top Terminal Bar */}
-                <div className="flex items-center justify-between pb-4 pt-3 border-b border-[rgba(242,235,216,0.08)]">
+                <div className="flex items-center justify-between pb-4 pt-1 border-b border-[rgba(242,235,216,0.08)]">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#ed6f5c]"></span>
                     <span className="w-2.5 h-2.5 rounded-full bg-[#e9b94a]"></span>
@@ -438,27 +381,27 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
               {/* Row 1: Indian Cities */}
               <div className="marquee-wrapper">
                 <div className="marquee-track text-xs font-mono text-[#9a9382]">
-                  <span>· 28.5355°N <b>Noida</b></span>
-                  <span>· 28.6139°N <b>New Delhi</b></span>
-                  <span>· 28.4595°N <b>Gurgaon</b></span>
-                  <span>· 12.9716°N <b>Bangalore</b></span>
-                  <span>· 19.0760°N <b>Mumbai</b></span>
-                  <span>· 26.9124°N <b>Jaipur</b></span>
-                  <span>· 17.3850°N <b>Hyderabad</b></span>
-                  <span>· 13.0827°N <b>Chennai</b></span>
-                  <span>· 22.5726°N <b>Kolkata</b></span>
-                  <span>· 18.5204°N <b>Pune</b></span>
+                  <span>• <b>Noida</b></span>
+                  <span>• <b>New Delhi</b></span>
+                  <span>• <b>Gurgaon</b></span>
+                  <span>• <b>Bangalore</b></span>
+                  <span>• <b>Mumbai</b></span>
+                  <span>• <b>Jaipur</b></span>
+                  <span>• <b>Hyderabad</b></span>
+                  <span>• <b>Chennai</b></span>
+                  <span>• <b>Kolkata</b></span>
+                  <span>• <b>Pune</b></span>
                   {/* Duplicated for seamless loop */}
-                  <span>· 28.5355°N <b>Noida</b></span>
-                  <span>· 28.6139°N <b>New Delhi</b></span>
-                  <span>· 28.4595°N <b>Gurgaon</b></span>
-                  <span>· 12.9716°N <b>Bangalore</b></span>
-                  <span>· 19.0760°N <b>Mumbai</b></span>
-                  <span>· 26.9124°N <b>Jaipur</b></span>
-                  <span>· 17.3850°N <b>Hyderabad</b></span>
-                  <span>· 13.0827°N <b>Chennai</b></span>
-                  <span>· 22.5726°N <b>Kolkata</b></span>
-                  <span>· 18.5204°N <b>Pune</b></span>
+                  <span>• <b>Noida</b></span>
+                  <span>• <b>New Delhi</b></span>
+                  <span>• <b>Gurgaon</b></span>
+                  <span>• <b>Bangalore</b></span>
+                  <span>• <b>Mumbai</b></span>
+                  <span>• <b>Jaipur</b></span>
+                  <span>• <b>Hyderabad</b></span>
+                  <span>• <b>Chennai</b></span>
+                  <span>• <b>Kolkata</b></span>
+                  <span>• <b>Pune</b></span>
                 </div>
               </div>
 
@@ -486,24 +429,13 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
         </section>
 
         {/* =================================================================
-            SECTION III: ABOUT / THE AUTONOMOUS SHIFT
+            SECTION II: ABOUT
             ================================================================= */}
         <section id="about" className="py-20 border-b border-[rgba(242,235,216,0.08)] text-left">
-          
-          <div className="sec-rule">
-            <span className="roman">II.</span>
-            <span className="meta-grp">
-              <span>About / The Autonomous Shift</span>
-              <span className="dot-mark">•</span>
-              <span>Indian Merchant Operations</span>
-            </span>
-            <span className="font-mono">002 / 008</span>
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-8 space-y-6">
               <div className="label-editorial">
-                The Merchant Problem <span className="ix">· Nº 02</span>
+                About ActionMate
               </div>
               <h2 className="display-title text-3xl sm:text-5xl font-extrabold text-[#f2ebd8]">
                 We treat store intelligence as an <em>autonomous teammate,</em> not a static spreadsheet<span className="dot">.</span>
@@ -521,7 +453,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
                   <ArrowRight className="w-3.5 h-3.5 text-[#ed6f5c]" />
                 </button>
                 <span className="text-xs font-mono text-[#6e6860]">
-                  Est. MMXXVI · Track 3 Finals
+                  Track 3 Finals · Built for India
                 </span>
               </div>
             </div>
@@ -541,23 +473,12 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
         </section>
 
         {/* =================================================================
-            SECTION IV: CAPABILITIES MATRIX (6 CORE SYSTEMS)
+            SECTION III: CAPABILITIES MATRIX
             ================================================================= */}
         <section id="capabilities" className="py-20 border-b border-[rgba(242,235,216,0.08)] text-left">
-          
-          <div className="sec-rule">
-            <span className="roman">III.</span>
-            <span className="meta-grp">
-              <span>Capabilities / Architectural Matrix</span>
-              <span className="dot-mark">•</span>
-              <span>6 Core Systems</span>
-            </span>
-            <span className="font-mono">003 / 008</span>
-          </div>
-
           <div className="max-w-3xl mb-12 space-y-3">
             <div className="label-editorial">
-              Ecosystem Modules <span className="ix">· Nº 03</span>
+              Core Capabilities
             </div>
             <h2 className="display-title text-3xl sm:text-4xl font-extrabold text-[#f2ebd8]">
               Engineered specifically for the Indian merchant workflow<span className="dot">.</span>
@@ -705,24 +626,13 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
         </section>
 
         {/* =================================================================
-            SECTION V: LABS / INTERACTIVE HARDWARE & LOGIC STUDIO
+            SECTION IV: LABS / INTERACTIVE HARDWARE & LOGIC STUDIO
             ================================================================= */}
         <section id="labs" className="py-20 border-b border-[rgba(242,235,216,0.08)] text-left">
-          
-          <div className="sec-rule">
-            <span className="roman">IV.</span>
-            <span className="meta-grp">
-              <span>Labs / Interactive Hardware & Logic Studio</span>
-              <span className="dot-mark">•</span>
-              <span>05 Active Systems</span>
-            </span>
-            <span className="font-mono">004 / 008</span>
-          </div>
-
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div className="space-y-3">
               <div className="label-editorial">
-                Studio Labs <span className="ix">· Nº 04</span>
+                Studio Labs
               </div>
               <h2 className="display-title text-3xl sm:text-4xl font-extrabold text-[#f2ebd8]">
                 A living catalog of merchant <em>intelligence</em> & hardware nodes<span className="dot">.</span>
@@ -809,23 +719,12 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
         </section>
 
         {/* =================================================================
-            SECTION VI: METHOD / THE 4-STAGE AUTONOMOUS LOOP
+            SECTION V: METHOD / THE 4-STAGE AUTONOMOUS LOOP
             ================================================================= */}
         <section id="method" className="py-20 border-b border-[rgba(242,235,216,0.08)] text-left">
-          
-          <div className="sec-rule">
-            <span className="roman">V.</span>
-            <span className="meta-grp">
-              <span>Method / The 4-Stage Autonomous Loop</span>
-              <span className="dot-mark">•</span>
-              <span>Continuous Recovery</span>
-            </span>
-            <span className="font-mono">005 / 008</span>
-          </div>
-
           <div className="max-w-3xl mb-12 space-y-3">
             <div className="label-editorial">
-              Pipeline Flow <span className="ix">· Nº 05</span>
+              The Autonomous Loop
             </div>
             <h2 className="display-title text-3xl sm:text-4xl font-extrabold text-[#f2ebd8]">
               From telemetry signals to countertop <em>resolution</em><span className="dot">.</span>
@@ -877,23 +776,12 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
         </section>
 
         {/* =================================================================
-            SECTION VII: SELECTED CASES / NCR MERCHANT IMPACT
+            SECTION VI: SELECTED CASES / NCR MERCHANT IMPACT
             ================================================================= */}
         <section id="work" className="py-20 border-b border-[rgba(242,235,216,0.08)] text-left">
-          
-          <div className="sec-rule">
-            <span className="roman">VI.</span>
-            <span className="meta-grp">
-              <span>Selected Cases / NCR Merchant Impact</span>
-              <span className="dot-mark">•</span>
-              <span>2026 Ledger</span>
-            </span>
-            <span className="font-mono">006 / 008</span>
-          </div>
-
           <div className="max-w-3xl mb-10 space-y-3">
             <div className="label-editorial">
-              Case Records <span className="ix">· Nº 06</span>
+              Merchant Impact Cases
             </div>
             <h2 className="display-title text-3xl sm:text-4xl font-extrabold text-[#f2ebd8]">
               Measurable recovery in active <em>retail stores</em><span className="dot">.</span>
@@ -958,19 +846,9 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             ================================================================= */}
         <section id="pricing" className="py-20 border-b border-[rgba(242,235,216,0.08)] text-left">
           
-          <div className="sec-rule">
-            <span className="roman">VII.</span>
-            <span className="meta-grp">
-              <span>Pricing / Plans for Every Merchant</span>
-              <span className="dot-mark">•</span>
-              <span>Scalable Autonomy</span>
-            </span>
-            <span className="font-mono">007 / 008</span>
-          </div>
-
           <div className="text-center max-w-2xl mx-auto space-y-4 mb-12">
             <div className="label-editorial justify-center">
-              Simple & Transparent <span className="ix">· Nº 07</span>
+              Simple & Transparent Pricing
             </div>
             <h2 className="display-title text-3xl sm:text-4xl font-extrabold text-[#f2ebd8]">
               Plans for every Indian merchant stall<span className="dot">.</span>
@@ -1149,14 +1027,10 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             ================================================================= */}
         <section id="testimonials" className="py-20 border-b border-[rgba(242,235,216,0.08)] text-left">
           
-          <div className="sec-rule">
-            <span className="roman">VIII.</span>
-            <span className="meta-grp">
-              <span>Testimonials / Merchant Voices</span>
-              <span className="dot-mark">•</span>
-              <span>Frontline Feedback</span>
-            </span>
-            <span className="font-mono">008 / 008</span>
+          <div className="max-w-4xl mx-auto mb-8 text-center">
+            <div className="label-editorial justify-center">
+              Merchant Voices
+            </div>
           </div>
 
           <div className="max-w-4xl mx-auto p-8 rounded-2xl bg-[#161410]/80 border border-[rgba(242,235,216,0.12)] space-y-6">
@@ -1191,7 +1065,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="text-center space-y-2 mb-8">
               <div className="label-editorial justify-center">
-                Questions & Answers <span className="ix">· FAQ</span>
+                Frequently Asked Questions
               </div>
               <h2 className="display-title text-3xl font-extrabold text-[#f2ebd8]">
                 Everything you need to know<span className="dot">.</span>
@@ -1236,7 +1110,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
         <section className="py-24 text-center">
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="label-editorial justify-center">
-              Deploy In Minutes <span className="ix">· FIN.</span>
+              Deploy In Minutes
             </div>
             
             <h2 className="display-title text-3xl sm:text-5xl font-extrabold text-[#f2ebd8]">
@@ -1329,15 +1203,14 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
 
           </div>
 
-          {/* Bottom Bar with Coordinates & Year */}
+          {/* Bottom Bar */}
           <div className="pt-8 border-t border-[rgba(242,235,216,0.06)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#6e6860]">
             <div className="flex items-center gap-2">
               <span className="pulse-dot"></span>
-              <span>© {new Date().getFullYear()} Paytm ActionMate · Volume 01</span>
+              <span>© {new Date().getFullYear()} Paytm ActionMate</span>
             </div>
             <div className="flex items-center gap-4">
-              <span>Bangalore · 12.9716° N, 77.5946° E</span>
-              <span className="text-[#ed6f5c]">♥ MMXXVI</span>
+              <span>Built with ❤️ for Indian Merchants</span>
             </div>
           </div>
 
