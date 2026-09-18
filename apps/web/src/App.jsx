@@ -10,6 +10,7 @@ import KnowledgeGraphView from './components/knowledge/KnowledgeGraphView';
 import WorkflowStudioView from './components/workflow/WorkflowStudioView';
 import CopilotChat from './components/copilot/CopilotChat';
 import AccountSettingsModal from './components/common/AccountSettingsModal';
+import ShaderBackground from './components/common/ShaderBackground';
 import { playPaytmChime } from './services/soundboxAudio';
 
 export default function App() {
@@ -327,8 +328,10 @@ export default function App() {
 
   // ROUTE: Merchant App Shell
   return (
-    <div className="flex h-screen bg-[#0E0F12] text-zinc-200 overflow-hidden font-sans">
-      
+    <div className="flex h-screen bg-[#0e0d0a] text-[#f2ebd8] overflow-hidden font-sans relative">
+      {/* Background WebGPU Shader Spotlight & Ripples */}
+      <ShaderBackground opacity={0.35} />
+
       {/* 1. Left Sidebar */}
       <LunorSidebar
         activeTab={activeTab}
@@ -342,20 +345,21 @@ export default function App() {
       />
 
       {/* 2. Main Center Workspace */}
-      <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-[#0E0F12] relative">
+      <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-transparent relative z-10">
         
-        {/* Top Header Bar */}
-        <header className="h-14 border-b border-white/[0.05] bg-[#121316] flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-white tracking-tight">{activeMerchant?.name || 'Athees Café'}</span>
-            <span className="text-zinc-600">•</span>
-            <span className="text-[11px] text-zinc-400 capitalize">{activeTab.replace('-', ' ')}</span>
+        {/* Top Header Bar with Editorial Metadata */}
+        <header className="h-14 border-b border-[rgba(242,235,216,0.08)] bg-[#12100d]/85 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <span className="text-xs font-bold text-[#f2ebd8] tracking-tight">{activeMerchant?.name || 'Athees Café'}</span>
+            <span className="text-[#6e6860]">•</span>
+            <span className="text-[11px] font-serif italic text-[#c8c0a8] capitalize tracking-wide">{activeTab.replace('-', ' ')}</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-semibold text-emerald-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              SaaS Multi-Tenant Cloud
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] text-[11px] text-[#c8c0a8]">
+              <span className="pulse-dot" />
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#9a9382]">Store Intelligence</span>
+              <span className="text-[10px] font-bold text-[#ed6f5c] font-mono">LIVE</span>
             </div>
           </div>
         </header>
@@ -412,26 +416,29 @@ export default function App() {
 
           {activeTab === 'audit' && (
             <div className="space-y-4 max-w-4xl mx-auto">
-              <div>
-                <h1 className="text-xl font-bold text-white tracking-tight">Audit & Activity Timeline</h1>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  Immutable record of system automations, approvals, and Soundbox hardware syncs.
+              <div className="space-y-1">
+                <span className="label-editorial text-[10px]"><span className="ix">PLATE VI</span> TIMELINE</span>
+                <h1 className="display-title text-2xl font-bold tracking-tight text-[#f2ebd8]">
+                  Audit & Activity <em>Timeline</em><span className="dot">.</span>
+                </h1>
+                <p className="lead-editorial text-xs text-[#9a9382]">
+                  Immutable ledger of autonomous actions, merchant approvals, and Soundbox hardware events.
                 </p>
               </div>
 
               <div className="lunor-card rounded-2xl p-5 shadow-sm space-y-3">
                 {auditLogs.map((log) => (
-                  <div key={log.id} className="p-3.5 rounded-xl bg-[#16171B] border border-white/[0.04] flex items-center justify-between text-xs">
+                  <div key={log.id} className="p-3.5 rounded-xl bg-[#1e1c18]/70 border border-[rgba(242,235,216,0.06)] flex items-center justify-between text-xs hover:border-[rgba(242,235,216,0.14)] transition">
                     <div>
-                      <div className="font-semibold text-white flex items-center gap-2">
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400">
+                      <div className="font-semibold text-[#f2ebd8] flex items-center gap-2">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#ed6f5c]/10 text-[#ed6f5c] border border-[#ed6f5c]/25">
                           {log.actor}
                         </span>
-                        <span>{log.actionType}</span>
+                        <span className="font-sans">{log.actionType}</span>
                       </div>
-                      <p className="text-zinc-400 text-[11px] mt-1">{log.details}</p>
+                      <p className="text-[#9a9382] text-[11px] mt-1 font-body">{log.details}</p>
                     </div>
-                    <span className="text-[10px] text-zinc-500 shrink-0 ml-4">
+                    <span className="text-[10px] text-[#6e6860] font-mono shrink-0 ml-4">
                       {log.timestamp ? new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent'}
                     </span>
                   </div>

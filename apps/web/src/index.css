@@ -4,51 +4,72 @@
 
 @layer base {
   body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #0E0F12;
-    color: #EDEDEF;
+    font-family: var(--sans);
+    background-color: #0e0d0a;
+    color: #f2ebd8;
     overflow-x: hidden;
   }
 }
 
-/* Lunor Minimalist Surfaces */
+/* Atelier Zero Minimalist Surfaces */
 .lunor-bg {
-  background-color: #0E0F12;
+  background-color: #0e0d0a;
+  color: #f2ebd8;
 }
 
 .lunor-sidebar {
-  background-color: #121316;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: rgba(18, 16, 13, 0.92);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(242, 235, 216, 0.08);
 }
 
 .lunor-card {
-  background-color: #16171B;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: rgba(22, 20, 16, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(242, 235, 216, 0.08);
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .lunor-card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(242, 235, 216, 0.16);
 }
 
 .lunor-inset {
-  background-color: #1D1E24;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: rgba(30, 28, 24, 0.75);
+  border: 1px solid rgba(242, 235, 216, 0.06);
 }
 
 .lunor-pill-active {
-  background-color: #222329;
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(237, 111, 92, 0.14);
+  color: #f2ebd8;
+  border: 1px solid rgba(237, 111, 92, 0.35);
+}
+
+.lunor-nav-active {
+  background-color: rgba(237, 111, 92, 0.12);
+  color: #f2ebd8;
+  border: 1px solid rgba(237, 111, 92, 0.3);
+}
+
+.lunor-nav-inactive {
+  color: #9a9382;
+  border: 1px solid transparent;
+}
+.lunor-nav-inactive:hover {
+  color: #f2ebd8;
+  background-color: rgba(242, 235, 216, 0.04);
 }
 
 .lunor-button-subtle {
-  background-color: #202126;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #D1D2D6;
+  background-color: rgba(30, 28, 24, 0.8);
+  border: 1px solid rgba(242, 235, 216, 0.1);
+  color: #c8c0a8;
+  transition: all 0.18s ease;
 }
 .lunor-button-subtle:hover {
-  background-color: #28292F;
-  color: #FFFFFF;
+  background-color: rgba(242, 235, 216, 0.08);
+  border-color: rgba(237, 111, 92, 0.4);
+  color: #ffffff;
 }
 
 /* Minimalist Scrollbar */
@@ -60,11 +81,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(242, 235, 216, 0.15);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(237, 111, 92, 0.5);
 }
 
 /* ==========================================================================

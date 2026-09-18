@@ -55,25 +55,31 @@ export default function OnboardingWizard({ merchant, onComplete }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-fadeIn">
-      <div className="relative w-full max-w-2xl bg-[#0e121b] border border-white/[0.1] rounded-3xl p-8 md:p-10 shadow-2xl overflow-hidden">
-        {/* Top gradient line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-2xl bg-[#161410] border border-[rgba(242,235,216,0.12)] rounded-2xl p-8 md:p-10 shadow-2xl overflow-hidden">
+        {/* Editorial corner brackets */}
+        <span className="corner tl" />
+        <span className="corner tr" />
+        <span className="corner bl" />
+        <span className="corner br" />
+
+        {/* Top hairline gradient */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#ed6f5c] to-transparent" />
 
         {/* Step Indicator */}
-        <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/[0.06]">
+        <div className="flex items-center justify-between mb-8 pb-6 border-b border-[rgba(242,235,216,0.08)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">
-              {step}
+            <div className="w-10 h-10 rounded-xl bg-[rgba(237,111,92,0.12)] border border-[rgba(237,111,92,0.25)] flex items-center justify-center text-[#ed6f5c] font-mono font-bold">
+              0{step}
             </div>
             <div>
-              <div className="text-[11px] font-semibold tracking-wider text-blue-400 uppercase">
-                Step {step} of 3 • Store Setup
+              <div className="font-mono text-[10px] tracking-widest uppercase text-[#ed6f5c]">
+                Plate 00 • Setup Sequence ({step}/3)
               </div>
-              <h2 className="text-lg font-bold text-white">
-                {step === 1 && 'Store Identity & Operating Hours'}
-                {step === 2 && 'Paytm Soundbox & Payments Sync'}
-                {step === 3 && 'Store Rules & Growth Guardrails'}
+              <h2 className="text-lg font-serif italic text-[#f2ebd8] font-normal">
+                {step === 1 && 'Store Identity & Operating Cadence'}
+                {step === 2 && 'Paytm Soundbox & Settlement Sync'}
+                {step === 3 && 'Autonomous Guardrails & Limits'}
               </h2>
             </div>
           </div>
@@ -82,12 +88,12 @@ export default function OnboardingWizard({ merchant, onComplete }) {
             {[1, 2, 3].map((s) => (
               <div
                 key={s}
-                className={`h-2 rounded-full transition-all ${
+                className={`h-1.5 rounded-full transition-all ${
                   s === step
-                    ? 'w-8 bg-blue-500'
+                    ? 'w-8 bg-[#ed6f5c]'
                     : s < step
-                    ? 'w-4 bg-emerald-500'
-                    : 'w-2 bg-white/10'
+                    ? 'w-4 bg-[#6e7448]'
+                    : 'w-2 bg-[rgba(242,235,216,0.1)]'
                 }`}
               />
             ))}
@@ -97,56 +103,56 @@ export default function OnboardingWizard({ merchant, onComplete }) {
         {/* STEP 1: Hours & Ticket Size */}
         {step === 1 && (
           <div className="space-y-6">
-            <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-start gap-3">
-              <Sparkles size={18} className="text-blue-400 mt-0.5 shrink-0" />
-              <div className="text-xs text-slate-300 leading-relaxed">
-                ActionMate learns your peak traffic hours to automatically identify regular customers who stop visiting and trigger timely re-engagement campaigns.
+            <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-start gap-3">
+              <Sparkles size={16} className="text-[#ed6f5c] mt-0.5 shrink-0" />
+              <div className="text-xs text-[#c8c0a8] leading-relaxed font-sans">
+                ActionMate learns your peak traffic hours to automatically identify regular patrons who stop visiting and trigger timely re-engagement campaigns.
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                  <Clock size={13} className="text-slate-400" /> Store Opening Time
+                <label className="block text-xs font-sans font-medium text-[#c8c0a8] mb-1.5 flex items-center gap-1.5">
+                  <Clock size={13} className="text-[#9a9382]" /> Store Opening Time
                 </label>
                 <input
                   type="text"
                   value={openTime}
                   onChange={(e) => setOpenTime(e.target.value)}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-[#1e1c18] border border-[rgba(242,235,216,0.1)] rounded-xl px-4 py-2.5 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-sans"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                  <Clock size={13} className="text-slate-400" /> Store Closing Time
+                <label className="block text-xs font-sans font-medium text-[#c8c0a8] mb-1.5 flex items-center gap-1.5">
+                  <Clock size={13} className="text-[#9a9382]" /> Store Closing Time
                 </label>
                 <input
                   type="text"
                   value={closeTime}
                   onChange={(e) => setCloseTime(e.target.value)}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-[#1e1c18] border border-[rgba(242,235,216,0.1)] rounded-xl px-4 py-2.5 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-sans"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                <Tag size={13} className="text-slate-400" /> Average Customer Bill / Order (₹)
+              <label className="block text-xs font-sans font-medium text-[#c8c0a8] mb-1.5 flex items-center gap-1.5">
+                <Tag size={13} className="text-[#9a9382]" /> Baseline Patron Order Size (₹)
               </label>
               <input
                 type="number"
                 value={avgTicket}
                 onChange={(e) => setAvgTicket(e.target.value)}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                className="w-full bg-[#1e1c18] border border-[rgba(242,235,216,0.1)] rounded-xl px-4 py-2.5 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-mono"
               />
-              <p className="text-[11px] text-slate-500 mt-1">Used to personalize promotion discount thresholds.</p>
+              <p className="text-[11px] text-[#9a9382] mt-1 font-mono">Calibrates promotional discount thresholds and minimum cart values.</p>
             </div>
 
             <div className="flex justify-end pt-4">
               <button
                 onClick={() => setStep(2)}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-6 py-3 rounded-xl shadow-lg transition-all"
+                className="btn-editorial btn-editorial-primary text-xs py-2.5 px-6 inline-flex items-center gap-2"
               >
                 Continue to Soundbox Sync
                 <ArrowRight size={14} />
@@ -158,53 +164,53 @@ export default function OnboardingWizard({ merchant, onComplete }) {
         {/* STEP 2: Soundbox & UPI */}
         {step === 2 && (
           <div className="space-y-6">
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-3">
-              <Volume2 size={18} className="text-emerald-400 mt-0.5 shrink-0" />
-              <div className="text-xs text-slate-300 leading-relaxed">
-                Your Paytm Soundbox 3.0 provides audio confirmation for received payments and voice summaries of daily business growth.
+            <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-start gap-3">
+              <Volume2 size={16} className="text-[#ed6f5c] mt-0.5 shrink-0" />
+              <div className="text-xs text-[#c8c0a8] leading-relaxed font-sans">
+                Your paired Paytm Soundbox provides instant chime confirmations on UPI collections and autonomous voice briefings on store performance.
               </div>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between">
+            <div className="p-5 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-center justify-between">
               <div>
-                <div className="text-xs text-slate-400 mb-0.5">Paired Paytm Soundbox Device</div>
-                <div className="text-sm font-bold text-white font-mono">{merchant?.soundboxDeviceId || 'PAYTM_SBX_BLR_7781'}</div>
-                <div className="text-[11px] text-emerald-400 flex items-center gap-1 mt-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Online • 4G High Signal • 96% Battery
+                <div className="text-xs text-[#9a9382] font-mono uppercase tracking-wider mb-0.5">Paired Paytm Hardware</div>
+                <div className="text-sm font-bold text-[#f2ebd8] font-mono">{merchant?.soundboxDeviceId || 'PAYTM_SBX_BLR_7781'}</div>
+                <div className="text-[10px] text-[#e9b94a] flex items-center gap-1.5 mt-1 font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#e9b94a] animate-pulse" />
+                  ONLINE • 4G ACTIVE • 96% BATT
                 </div>
               </div>
 
               <button
                 type="button"
                 onClick={handleTestChime}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono transition-all ${
                   chimeTested
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                    : 'bg-white/[0.06] hover:bg-white/[0.1] text-white border border-white/[0.1]'
+                    ? 'bg-[rgba(110,116,72,0.2)] text-[#c8c0a8] border border-[rgba(110,116,72,0.4)]'
+                    : 'btn-editorial btn-editorial-subtle'
                 }`}
               >
-                {chimeTested ? <Check size={14} /> : <Volume2 size={14} />}
-                {chimeTested ? 'Chime Played!' : 'Test Soundbox Chime'}
+                {chimeTested ? <Check size={14} className="text-[#6e7448]" /> : <Volume2 size={14} />}
+                {chimeTested ? 'Chime Broadcasted' : 'Test Soundbox Chime'}
               </button>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
-              <div className="text-xs text-slate-400 mb-1">Instant Settlement UPI Handle</div>
-              <div className="text-sm font-semibold text-white">{merchant?.upiId || 'atheescafe@paytm'}</div>
-              <div className="text-[11px] text-slate-500 mt-0.5">Settlements occur automatically every evening at 11:30 PM into your registered bank.</div>
+            <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)]">
+              <div className="text-xs text-[#9a9382] font-mono uppercase tracking-wider mb-1">Settlement UPI Handle</div>
+              <div className="text-sm font-semibold text-[#f2ebd8] font-mono">{merchant?.upiId || 'atheescafe@paytm'}</div>
+              <div className="text-[11px] text-[#9a9382] mt-1 font-sans">Automated nightly batch settlement occurs at 23:30 IST into registered banking account.</div>
             </div>
 
             <div className="flex justify-between items-center pt-4">
               <button
                 onClick={() => setStep(1)}
-                className="text-xs font-semibold text-slate-400 hover:text-white"
+                className="btn-editorial btn-editorial-subtle text-xs py-2 px-4"
               >
                 Back
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-6 py-3 rounded-xl shadow-lg transition-all"
+                className="btn-editorial btn-editorial-primary text-xs py-2.5 px-6 inline-flex items-center gap-2"
               >
                 Continue to Store Guardrails
                 <ArrowRight size={14} />
@@ -216,17 +222,17 @@ export default function OnboardingWizard({ merchant, onComplete }) {
         {/* STEP 3: Store Rules & Ceilings */}
         {step === 3 && (
           <div className="space-y-6">
-            <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-start gap-3">
-              <ShieldCheck size={18} className="text-purple-400 mt-0.5 shrink-0" />
-              <div className="text-xs text-slate-300 leading-relaxed">
-                ActionMate operates with strict merchant guardrails. Your AI assistant will never execute discounts or campaigns that exceed these limits without your explicit authorization.
+            <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-start gap-3">
+              <ShieldCheck size={16} className="text-[#ed6f5c] mt-0.5 shrink-0" />
+              <div className="text-xs text-[#c8c0a8] leading-relaxed font-sans">
+                ActionMate enforces strict merchant guardrails. The copilot will never execute promotional campaigns that breach these margins without your explicit cryptographic approval.
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Maximum Promotional Discount Cap (%)
+              <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)]">
+                <label className="block text-xs font-sans font-medium text-[#c8c0a8] mb-2">
+                  Promotional Discount Ceiling (%)
                 </label>
                 <div className="flex items-center gap-3">
                   <input
@@ -236,50 +242,50 @@ export default function OnboardingWizard({ merchant, onComplete }) {
                     step="1"
                     value={discountCeiling}
                     onChange={(e) => setDiscountCeiling(Number(e.target.value))}
-                    className="flex-1 accent-blue-500"
+                    className="flex-1 accent-[#ed6f5c]"
                   />
-                  <span className="text-sm font-bold text-white w-12 text-right">{discountCeiling}%</span>
+                  <span className="text-sm font-mono font-bold text-[#f2ebd8] w-12 text-right">{discountCeiling}%</span>
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1">Recommended: 10% - 15% for optimal margins.</p>
+                <p className="text-[11px] text-[#9a9382] font-mono mt-2">Recommended ceiling: 10% - 15% for retail coffee & bakeries.</p>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)]">
+                <label className="block text-xs font-sans font-medium text-[#c8c0a8] mb-2">
                   Minimum Order Value for Offers (₹)
                 </label>
                 <input
                   type="number"
                   value={minOrder}
                   onChange={(e) => setMinOrder(Number(e.target.value))}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-[#161410] border border-[rgba(242,235,216,0.1)] rounded-xl px-4 py-2 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-mono"
                 />
-                <p className="text-[11px] text-slate-500 mt-1">Protects your average ticket size.</p>
+                <p className="text-[11px] text-[#9a9382] font-mono mt-2">Protects unit economic margins.</p>
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(110,116,72,0.25)] flex items-center justify-between">
               <div>
-                <div className="text-xs font-bold text-emerald-300">Automated Patron Re-engagement</div>
-                <div className="text-[11px] text-slate-400">Notifies regular customers after 14 days of inactivity with your approved offer.</div>
+                <div className="text-xs font-semibold text-[#f2ebd8]">Autonomous Patron Re-engagement</div>
+                <div className="text-[11px] text-[#9a9382] font-sans mt-0.5">Identifies at-risk patrons inactive after 14 days and queues customized WhatsApp incentives.</div>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold">
-                <CheckCircle2 size={16} /> Active
+              <div className="flex items-center gap-1.5 text-[10px] text-[#c8c0a8] bg-[rgba(110,116,72,0.15)] border border-[rgba(110,116,72,0.3)] px-2.5 py-1 rounded-full font-mono uppercase">
+                <CheckCircle2 size={13} className="text-[#6e7448]" /> Active
               </div>
             </div>
 
             <div className="flex justify-between items-center pt-4">
               <button
                 onClick={() => setStep(2)}
-                className="text-xs font-semibold text-slate-400 hover:text-white"
+                className="btn-editorial btn-editorial-subtle text-xs py-2 px-4"
               >
                 Back
               </button>
               <button
                 onClick={handleFinish}
                 disabled={submitting}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold px-8 py-3 rounded-xl shadow-xl transition-all disabled:opacity-50"
+                className="btn-editorial btn-editorial-primary text-xs py-2.5 px-8 inline-flex items-center gap-2"
               >
-                {submitting ? 'Setting up Workspace...' : 'Launch Store Dashboard'}
+                {submitting ? 'Calibrating Workspace...' : 'Launch Store Dashboard'}
                 <ArrowRight size={14} />
               </button>
             </div>

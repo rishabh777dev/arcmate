@@ -114,19 +114,18 @@ export default function WorkflowStudioView() {
     <div className="space-y-6 max-w-6xl mx-auto text-xs">
       
       {/* 1. Header Card */}
-      <div className="lunor-card p-6 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="lunor-card p-6 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden">
+        <span className="corner tl"></span>
+        <span className="corner tr"></span>
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Workflow className="w-4 h-4 text-blue-400" />
-            <h2 className="text-base font-bold text-white tracking-tight">
-              Store Automation Studio
-            </h2>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30">
-              Live Triggers
-            </span>
+          <div className="label-editorial text-[10px] mb-1">
+            <span className="ix">PLATE 05</span> WORKFLOW STUDIO & DIRECTIVES
           </div>
-          <p className="text-zinc-400 max-w-2xl text-xs">
-            Describe store rules or customer triggers in simple words. ActionMate automatically configures conditions, WhatsApp customer perks, and Soundbox audio confirmation.
+          <h1 className="display-title text-2xl font-bold tracking-tight text-[#f2ebd8]">
+            Store Automation <em>Studio</em><span className="dot">.</span>
+          </h1>
+          <p className="lead-editorial text-xs text-[#9a9382] max-w-2xl mt-1">
+            Describe merchant triggers or store rules in plain English or Hinglish. ActionMate synthesizes deterministic n8n graph pipelines with guardrails and hardware loops.
           </p>
         </div>
 
@@ -134,17 +133,17 @@ export default function WorkflowStudioView() {
           <button
             onClick={handleDownloadN8nJson}
             disabled={!selectedWorkflow}
-            className="lunor-button-subtle px-3 py-1.5 rounded-xl font-medium transition flex items-center gap-1.5 text-zinc-300 hover:text-white"
+            className="btn-editorial btn-editorial-ghost text-xs"
             title="Download automation definition"
           >
-            <Download className="w-3.5 h-3.5 text-blue-400" />
-            <span>Export Automation</span>
+            <Download className="w-3.5 h-3.5 text-[#ed6f5c]" />
+            <span>Export Definition</span>
           </button>
 
           <button
             onClick={handleTestRun}
             disabled={isRunning || !selectedWorkflow}
-            className="px-4 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition flex items-center gap-1.5 shadow-md disabled:opacity-50"
+            className="btn-editorial btn-editorial-primary text-xs"
           >
             {isRunning ? (
               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -157,10 +156,10 @@ export default function WorkflowStudioView() {
       </div>
 
       {/* 2. Natural Language Prompt Synthesizer */}
-      <div className="lunor-card p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center gap-3">
-        <div className="flex items-center gap-2 text-zinc-400 shrink-0">
-          <Sparkles className="w-4 h-4 text-blue-400" />
-          <span className="font-semibold text-white">Create Automation:</span>
+      <div className="lunor-card p-4 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center gap-3 relative overflow-hidden">
+        <div className="flex items-center gap-2 text-[#ed6f5c] shrink-0 font-mono text-xs">
+          <Sparkles className="w-4 h-4" />
+          <span className="font-semibold text-[#f2ebd8] font-sans">Directive:</span>
         </div>
         <input
           type="text"
@@ -168,20 +167,20 @@ export default function WorkflowStudioView() {
           onChange={e => setNlPrompt(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSynthesize()}
           placeholder="e.g. 'Agar koi customer 3 din tak na aaye to WhatsApp reminder bhejo aur 10% discount offer do'"
-          className="flex-1 bg-[#1A1B20] border border-white/[0.08] rounded-xl px-4 py-2 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-blue-500"
+          className="flex-1 bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] rounded-xl px-4 py-2 text-[#f2ebd8] placeholder-[#6e6860] text-xs focus:outline-none focus:border-[#ed6f5c] font-sans"
         />
         <button
           onClick={handleSynthesize}
           disabled={isSynthesizing}
-          className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition flex items-center gap-1.5 shrink-0 shadow-md disabled:opacity-50"
+          className="btn-editorial btn-editorial-primary text-xs shrink-0 py-2"
         >
           {isSynthesizing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
-          <span>Create Automation</span>
+          <span>Synthesize Graph</span>
         </button>
       </div>
 
       {/* 3. Workflow Selector Pills */}
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         {workflows.map(wf => (
           <button
             key={wf.id}
@@ -190,16 +189,10 @@ export default function WorkflowStudioView() {
               if (wf.nodes?.length > 0) setSelectedNode(wf.nodes[0]);
               setExecutionResult(null);
             }}
-            className={`px-3.5 py-2 rounded-xl text-left whitespace-nowrap transition border text-xs ${
-              selectedWorkflow?.id === wf.id
-                ? 'bg-[#1E2028] text-white border-[#00BAF2] font-semibold shadow-sm'
-                : 'bg-[#14151B] text-zinc-400 border-white/[0.06] hover:text-white hover:border-white/[0.12]'
-            }`}
+            className={`editorial-pill ${selectedWorkflow?.id === wf.id ? 'active' : ''}`}
           >
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#00BAF2]"></span>
-              <span>{wf.name.length > 36 ? wf.name.slice(0, 34) + '...' : wf.name}</span>
-            </div>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ed6f5c]"></span>
+            <span>{wf.name.length > 36 ? wf.name.slice(0, 34) + '...' : wf.name}</span>
           </button>
         ))}
       </div>
@@ -208,19 +201,22 @@ export default function WorkflowStudioView() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left 8 Cols: Interactive Visual Node Pipeline */}
-        <div className="lg:col-span-8 lunor-card rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-6">
-          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+        <div className="lg:col-span-8 lunor-card rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-6 relative overflow-hidden">
+          <span className="corner tl"></span>
+          <span className="corner tr"></span>
+          
+          <div className="flex items-center justify-between pb-3 border-b border-[rgba(242,235,216,0.06)]">
             <div>
-              <h3 className="font-bold text-white text-sm">{selectedWorkflow?.name}</h3>
-              <p className="text-zinc-400 text-xs mt-0.5">{selectedWorkflow?.description || selectedWorkflow?.prompt}</p>
+              <h3 className="font-bold text-[#f2ebd8] text-sm font-sans">{selectedWorkflow?.name}</h3>
+              <p className="text-[#9a9382] text-xs mt-0.5 font-body">{selectedWorkflow?.description || selectedWorkflow?.prompt}</p>
             </div>
-            <span className="px-2.5 py-1 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">
-              {selectedWorkflow?.nodes?.length || 0} Connected Nodes
+            <span className="px-2.5 py-1 rounded-full bg-[#6e7448]/15 text-[#6e7448] border border-[#6e7448]/30 text-[10px] font-mono font-bold">
+              {selectedWorkflow?.nodes?.length || 0} Nodes
             </span>
           </div>
 
           {/* Nodes Horizontal Pipeline Flow */}
-          <div className="py-8 px-4 bg-[#111216] rounded-xl border border-white/[0.05] overflow-x-auto">
+          <div className="py-8 px-4 bg-[#12100d]/90 rounded-xl border border-[rgba(242,235,216,0.06)] overflow-x-auto">
             <div className="flex items-center gap-4 min-w-[760px] relative">
               {selectedWorkflow?.nodes?.map((node, i) => {
                 const isActive = activeStepIndex === i;
@@ -233,30 +229,30 @@ export default function WorkflowStudioView() {
                       onClick={() => setSelectedNode(node)}
                       className={`w-52 p-3.5 rounded-xl border transition-all cursor-pointer text-left relative ${
                         isActive
-                          ? 'bg-amber-500/20 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.3)] scale-105 z-20'
+                          ? 'bg-[#e9b94a]/20 border-[#e9b94a] shadow-[0_0_20px_rgba(233,185,74,0.3)] scale-105 z-20'
                           : isSelected
-                          ? 'bg-[#1C1D24] border-[#00BAF2] shadow-md z-10'
+                          ? 'bg-[#1e1c18] border-[#ed6f5c] shadow-md z-10'
                           : isCompleted
-                          ? 'bg-[#15161C] border-emerald-500/50'
-                          : 'bg-[#15161C] border-white/[0.07] hover:border-white/[0.15]'
+                          ? 'bg-[#161410] border-[#6e7448]/50'
+                          : 'bg-[#161410] border-[rgba(242,235,216,0.08)] hover:border-[rgba(242,235,216,0.18)]'
                       }`}
                     >
                       {/* Status indicator dot */}
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[9px] font-mono uppercase font-bold text-[#00BAF2]">
+                        <span className="text-[9px] font-mono uppercase font-bold text-[#ed6f5c]">
                           Step 0{i + 1}
                         </span>
                         {isActive ? (
-                          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                          <span className="w-2 h-2 rounded-full bg-[#e9b94a] animate-ping"></span>
                         ) : isCompleted ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#6e7448]" />
                         ) : (
-                          <span className="w-2 h-2 rounded-full bg-zinc-600"></span>
+                          <span className="w-2 h-2 rounded-full bg-[#6e6860]"></span>
                         )}
                       </div>
 
-                      <h4 className="font-bold text-white text-xs leading-snug">{node.name}</h4>
-                      <p className="text-[10px] text-zinc-400 font-mono mt-1 truncate">
+                      <h4 className="font-bold text-[#f2ebd8] text-xs leading-snug font-sans">{node.name}</h4>
+                      <p className="text-[10px] text-[#9a9382] font-mono mt-1 truncate">
                         {node.type.replace('n8n-nodes-base.', '')}
                       </p>
                     </div>
@@ -264,7 +260,7 @@ export default function WorkflowStudioView() {
                     {/* Connecting arrow */}
                     {i < (selectedWorkflow?.nodes?.length || 0) - 1 && (
                       <div className="flex items-center justify-center shrink-0">
-                        <ArrowRight className={`w-4 h-4 ${isActive || isCompleted ? 'text-[#00BAF2]' : 'text-zinc-600'}`} />
+                        <ArrowRight className={`w-4 h-4 ${isActive || isCompleted ? 'text-[#ed6f5c]' : 'text-[#6e6860]'}`} />
                       </div>
                     )}
                   </React.Fragment>
@@ -275,33 +271,33 @@ export default function WorkflowStudioView() {
 
           {/* Execution Trace Logs (If executed) */}
           {executionResult && (
-            <div className="p-4 bg-[#111216] rounded-xl border border-emerald-500/30 space-y-3">
+            <div className="p-4 bg-[#12100d] rounded-xl border border-[#6e7448]/40 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span className="font-bold text-white">Execution Trace Verified</span>
+                  <CheckCircle2 className="w-4 h-4 text-[#6e7448]" />
+                  <span className="font-bold text-[#f2ebd8] font-sans">Execution Trace Verified</span>
                 </div>
-                <span className="font-mono text-zinc-400 text-[10px]">
+                <span className="font-mono text-[#9a9382] text-[10px]">
                   Total: {executionResult.totalExecutionTimeMs}ms • ID: {executionResult.executionId}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <div className="p-2 bg-[#17181F] rounded-lg border border-white/[0.05]">
-                  <span className="text-[10px] text-zinc-500 uppercase block">Audience</span>
-                  <span className="text-sm font-bold text-white">{executionResult.targetAudienceCount} Patrons</span>
+                <div className="p-2 bg-[#1e1c18] rounded-lg border border-[rgba(242,235,216,0.06)]">
+                  <span className="text-[9px] text-[#6e6860] uppercase font-mono block">Audience</span>
+                  <span className="text-sm font-bold text-[#f2ebd8] font-mono">{executionResult.targetAudienceCount} Patrons</span>
                 </div>
-                <div className="p-2 bg-[#17181F] rounded-lg border border-white/[0.05]">
-                  <span className="text-[10px] text-zinc-500 uppercase block">Dispatched</span>
-                  <span className="text-sm font-bold text-emerald-400">{executionResult.messagesDispatched} WhatsApp</span>
+                <div className="p-2 bg-[#1e1c18] rounded-lg border border-[rgba(242,235,216,0.06)]">
+                  <span className="text-[9px] text-[#6e6860] uppercase font-mono block">Dispatched</span>
+                  <span className="text-sm font-bold text-[#6e7448] font-mono">{executionResult.messagesDispatched} WhatsApp</span>
                 </div>
-                <div className="p-2 bg-[#17181F] rounded-lg border border-white/[0.05]">
-                  <span className="text-[10px] text-zinc-500 uppercase block">Soundbox Sync</span>
-                  <span className="text-sm font-bold text-[#00BAF2]">Chime Triggered</span>
+                <div className="p-2 bg-[#1e1c18] rounded-lg border border-[rgba(242,235,216,0.06)]">
+                  <span className="text-[9px] text-[#6e6860] uppercase font-mono block">Soundbox Sync</span>
+                  <span className="text-sm font-bold text-[#ed6f5c] font-mono">Chime Triggered</span>
                 </div>
-                <div className="p-2 bg-[#17181F] rounded-lg border border-white/[0.05]">
-                  <span className="text-[10px] text-zinc-500 uppercase block">Cognee Policy</span>
-                  <span className="text-sm font-bold text-emerald-400">10% &lt;= 15% Cap</span>
+                <div className="p-2 bg-[#1e1c18] rounded-lg border border-[rgba(242,235,216,0.06)]">
+                  <span className="text-[9px] text-[#6e6860] uppercase font-mono block">Ceiling Guard</span>
+                  <span className="text-sm font-bold text-[#6e7448] font-mono">10% &lt;= 15% Cap</span>
                 </div>
               </div>
             </div>
@@ -309,15 +305,17 @@ export default function WorkflowStudioView() {
         </div>
 
         {/* Right 4 Cols: Node Inspector & Payload */}
-        <div className="lg:col-span-4 lunor-card rounded-2xl p-5 flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-4 lunor-card rounded-2xl p-5 flex flex-col justify-between space-y-4 relative overflow-hidden">
+          <span className="corner tl"></span>
+          <span className="corner br"></span>
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+            <div className="flex items-center justify-between pb-3 border-b border-[rgba(242,235,216,0.06)]">
               <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-[#00BAF2]" />
-                <h3 className="font-bold text-white">Node Inspector</h3>
+                <Terminal className="w-4 h-4 text-[#ed6f5c]" />
+                <h3 className="font-bold text-[#f2ebd8] font-sans">Node Inspector</h3>
               </div>
               {selectedNode && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#1A1B20] text-zinc-300 border border-white/[0.06]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#1e1c18] text-[#9a9382] border border-[rgba(242,235,216,0.08)]">
                   v{selectedNode.typeVersion || 1}
                 </span>
               )}
@@ -326,53 +324,53 @@ export default function WorkflowStudioView() {
             {selectedNode ? (
               <div className="pt-4 space-y-3">
                 <div>
-                  <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-semibold">Node Name</span>
-                  <h4 className="text-sm font-bold text-white mt-0.5">{selectedNode.name}</h4>
-                  <span className="text-[10px] font-mono text-[#00BAF2]">{selectedNode.type}</span>
+                  <span className="text-[9px] text-[#6e6860] uppercase tracking-wider font-mono">Node Identifier</span>
+                  <h4 className="text-sm font-bold text-[#f2ebd8] mt-0.5 font-sans">{selectedNode.name}</h4>
+                  <span className="text-[10px] font-mono text-[#ed6f5c]">{selectedNode.type}</span>
                 </div>
 
-                <div className="p-3 bg-[#131417] rounded-xl border border-white/[0.06] space-y-1.5">
-                  <span className="text-[10px] text-zinc-400 uppercase font-semibold block">Configured Parameters</span>
-                  <pre className="text-[11px] text-zinc-300 font-mono overflow-x-auto whitespace-pre-wrap">
+                <div className="p-3 bg-[#12100d] rounded-xl border border-[rgba(242,235,216,0.06)] space-y-1.5">
+                  <span className="text-[9px] text-[#9a9382] uppercase font-mono block">Configured Parameters</span>
+                  <pre className="text-[11px] text-[#c8c0a8] font-mono overflow-x-auto whitespace-pre-wrap">
                     {JSON.stringify(selectedNode.parameters || {}, null, 2)}
                   </pre>
                 </div>
 
                 {selectedNode.name?.includes('Policy') && (
-                  <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl space-y-1 text-emerald-300">
-                    <div className="flex items-center gap-1.5 font-bold">
+                  <div className="p-3 bg-[#1e1c18] border border-[#6e7448]/30 rounded-xl space-y-1 text-[#6e7448]">
+                    <div className="flex items-center gap-1.5 font-bold font-mono text-xs">
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span>Cognee Guardrail Node</span>
                     </div>
-                    <p className="text-[11px] text-zinc-300 leading-relaxed">
+                    <p className="text-[11px] text-[#9a9382] leading-relaxed font-body">
                       Checks discount rate against merchant margin policies before triggering WhatsApp or SMS gateways.
                     </p>
                   </div>
                 )}
 
                 {selectedNode.name?.includes('Soundbox') && (
-                  <div className="p-3 bg-[#00BAF2]/10 border border-[#00BAF2]/20 rounded-xl space-y-1 text-[#00BAF2]">
-                    <div className="flex items-center gap-1.5 font-bold">
+                  <div className="p-3 bg-[#1e1c18] border border-[#ed6f5c]/30 rounded-xl space-y-1 text-[#ed6f5c]">
+                    <div className="flex items-center gap-1.5 font-bold font-mono text-xs">
                       <Volume2 className="w-3.5 h-3.5" />
                       <span>Soundbox Hardware Loop</span>
                     </div>
-                    <p className="text-[11px] text-zinc-300 leading-relaxed">
+                    <p className="text-[11px] text-[#9a9382] leading-relaxed font-body">
                       Plays instant voice confirmation over Paytm Soundbox 3.0 speaker upon campaign dispatch.
                     </p>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="pt-12 text-center text-zinc-500">
+              <div className="pt-12 text-center text-[#6e6860] font-mono text-xs">
                 Click on any node in the canvas to inspect its configuration and parameters.
               </div>
             )}
           </div>
 
-          <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-zinc-400 text-[11px]">
+          <div className="pt-3 border-t border-[rgba(242,235,216,0.06)] flex items-center justify-between text-[#9a9382] text-[11px] font-mono">
             <span>n8n Pipeline Engine:</span>
-            <span className="font-semibold text-emerald-400 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Ready
+            <span className="font-semibold text-[#6e7448] flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#6e7448]"></span> Ready
             </span>
           </div>
         </div>

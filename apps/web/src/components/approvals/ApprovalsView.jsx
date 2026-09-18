@@ -6,65 +6,71 @@ export default function ApprovalsView({ pendingAction, onApprove, onReject, onGo
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2 text-xs text-zinc-400 font-medium">
-          <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
-          <span>Approval Queue</span>
+        <div className="label-editorial text-[10px]">
+          <span className="ix">PLATE 04</span> HUMAN-IN-THE-LOOP AUTHORIZATION
         </div>
-        <h1 className="text-xl font-bold text-white tracking-tight mt-1">Store Action Approvals</h1>
-        <p className="text-xs text-zinc-400 mt-0.5">
-          All external customer communications and budget offers pause here for merchant authorization.
+        <h1 className="display-title text-2xl font-bold tracking-tight text-[#f2ebd8] mt-1">
+          Store Action <em>Approvals</em><span className="dot">.</span>
+        </h1>
+        <p className="lead-editorial text-xs text-[#9a9382] mt-0.5">
+          All external customer dispatches, WhatsApp blasts, and margin perks halt here for merchant authorization.
         </p>
       </div>
 
       {pendingAction ? (
-        <div className="lunor-card rounded-2xl p-6 shadow-sm space-y-5 border-amber-500/30">
-          <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
+        <div className="lunor-card rounded-2xl p-6 shadow-sm space-y-5 border-[#ed6f5c]/35 relative overflow-hidden">
+          <span className="corner tl"></span>
+          <span className="corner br"></span>
+          
+          <div className="flex items-center justify-between pb-4 border-b border-[rgba(242,235,216,0.06)]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[#ed6f5c]/15 border border-[#ed6f5c]/30 text-[#ed6f5c] flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider block">Action Pending</span>
-                <h4 className="text-base font-bold text-white">{pendingAction.title}</h4>
+                <span className="text-[10px] font-mono font-semibold text-[#9a9382] uppercase tracking-wider block">Action Pending</span>
+                <h4 className="text-base font-bold text-[#f2ebd8] font-sans">{pendingAction.title}</h4>
               </div>
             </div>
-            <span className="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded-full">
+            <span className="text-[10px] font-mono font-semibold px-2.5 py-1 bg-[#ed6f5c]/15 text-[#ed6f5c] border border-[#ed6f5c]/30 rounded-full">
               {pendingAction.audienceSize || 38} Patrons
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div className="p-3.5 rounded-xl bg-[#1D1E24] border border-white/[0.05]">
-              <span className="text-zinc-500 block text-[11px]">Audience Cohort</span>
-              <span className="text-sm font-semibold text-white mt-1 block">{pendingAction.targetSegment || 'Inactive Regulars'}</span>
-              <span className="text-[10px] text-zinc-500">Missed visits in last 14 days</span>
+            <div className="p-3.5 rounded-xl bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.08)]">
+              <span className="text-[#6e6860] block text-[10px] font-mono uppercase">Audience Cohort</span>
+              <span className="text-sm font-semibold text-[#f2ebd8] mt-1 block font-sans">{pendingAction.targetSegment || 'Inactive Regulars'}</span>
+              <span className="text-[10px] text-[#9a9382] font-mono">14-day absence threshold</span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#1D1E24] border border-white/[0.05]">
-              <span className="text-zinc-500 block text-[11px]">Proposed Offer</span>
-              <span className="text-sm font-semibold text-emerald-400 mt-1 block">{pendingAction.discountPercent || 10}% OFF &gt; ₹249</span>
-              <span className="text-[10px] text-zinc-500">Valid: 5 Days</span>
+            <div className="p-3.5 rounded-xl bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.08)]">
+              <span className="text-[#6e6860] block text-[10px] font-mono uppercase">Proposed Offer</span>
+              <span className="text-sm font-semibold text-[#e9b94a] mt-1 block font-mono">{pendingAction.discountPercent || 10}% OFF &gt; ₹249</span>
+              <span className="text-[10px] text-[#9a9382] font-mono">Validity: 5 Days</span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#1D1E24] border border-white/[0.05]">
-              <span className="text-zinc-500 block text-[11px]">Store Policy Check</span>
-              <span className="text-sm font-semibold text-emerald-400 mt-1 block">Passed Ceiling</span>
-              <span className="text-[10px] text-zinc-500">Within 15% discount cap</span>
+            <div className="p-3.5 rounded-xl bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.08)]">
+              <span className="text-[#6e6860] block text-[10px] font-mono uppercase">Store Policy Check</span>
+              <span className="text-sm font-semibold text-[#6e7448] mt-1 block font-mono">Passed Ceiling</span>
+              <span className="text-[10px] text-[#9a9382] font-mono">Within 15% discount cap</span>
             </div>
           </div>
 
-          <div className="p-4 bg-[#1A1B20] border border-white/[0.06] rounded-xl text-xs space-y-1">
-            <div className="font-semibold text-zinc-300 flex items-center gap-1.5">
-              <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
-              <span>Simulated WhatsApp & SMS Dispatch Copy:</span>
+          <div className="p-4 bg-[#1e1c18]/90 border border-[rgba(242,235,216,0.08)] rounded-xl text-xs space-y-1.5">
+            <div className="font-semibold text-[#c8c0a8] flex items-center gap-1.5 font-sans">
+              <MessageSquare className="w-3.5 h-3.5 text-[#ed6f5c]" />
+              <span>Simulated WhatsApp & SMS Customer Dispatch Copy:</span>
             </div>
-            <p className="text-zinc-300 font-mono text-xs pt-1 italic">"{pendingAction.offerText}"</p>
+            <p className="text-[#f2ebd8] font-mono text-xs pt-1 italic bg-[#161410] p-3 rounded-lg border border-[rgba(242,235,216,0.06)]">
+              "{pendingAction.offerText}"
+            </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
             <button
               onClick={onApprove}
-              className="w-full sm:flex-1 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center justify-center gap-2"
+              className="btn-editorial btn-editorial-primary w-full sm:flex-1 justify-center text-xs py-2.5"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>Authorize & Dispatch Campaign</span>
@@ -72,7 +78,7 @@ export default function ApprovalsView({ pendingAction, onApprove, onReject, onGo
 
             <button
               onClick={onGoToCopilot}
-              className="w-full sm:w-auto px-4 py-2.5 lunor-button-subtle rounded-xl text-xs font-medium transition flex items-center justify-center gap-2"
+              className="btn-editorial btn-editorial-ghost w-full sm:w-auto justify-center text-xs py-2.5"
             >
               <span>Review in AI Assistant</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -80,20 +86,22 @@ export default function ApprovalsView({ pendingAction, onApprove, onReject, onGo
 
             <button
               onClick={onReject}
-              className="w-full sm:w-auto px-4 py-2.5 text-zinc-400 hover:text-rose-400 text-xs font-medium transition"
+              className="w-full sm:w-auto px-4 py-2.5 text-[#9a9382] hover:text-[#ed6f5c] text-xs font-mono transition"
             >
               Reject Action
             </button>
           </div>
         </div>
       ) : (
-        <div className="lunor-card rounded-2xl p-12 text-center space-y-3">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/20">
+        <div className="lunor-card rounded-2xl p-12 text-center space-y-3 relative overflow-hidden">
+          <span className="corner tl"></span>
+          <span className="corner br"></span>
+          <div className="w-12 h-12 rounded-xl bg-[#6e7448]/15 text-[#6e7448] flex items-center justify-center mx-auto border border-[#6e7448]/30">
             <CheckCircle2 className="w-6 h-6" />
           </div>
-          <h4 className="text-sm font-bold text-white">Approval Queue is Clear</h4>
-          <p className="text-xs text-zinc-400 max-w-sm mx-auto">
-            ActionMate has no pending campaign or budget authorization requests. When an anomaly is detected and an action is drafted, it will appear here.
+          <h4 className="display-title text-base font-bold text-[#f2ebd8]">Approval Queue is Clear</h4>
+          <p className="lead-editorial text-xs text-[#9a9382] max-w-sm mx-auto">
+            ActionMate has no pending campaign or budget authorization requests. When an anomaly is detected and an action is drafted, it will pause here.
           </p>
         </div>
       )}

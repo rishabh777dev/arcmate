@@ -131,67 +131,69 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-[#090b10] font-sans selection:bg-indigo-500/30">
-      {/* Background with Procedural Shaders */}
-      <ShaderBackground opacity={0.35} />
-
-      {/* Decorative Blur Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-[#0e0d0a] font-sans selection:bg-[#ed6f5c]/30">
+      {/* Background with WebGPU Procedural Shaders */}
+      <ShaderBackground opacity={0.38} />
 
       {/* Main Container */}
-      <div className="relative z-10 w-full max-w-xl mx-auto">
+      <div className="relative z-10 w-full max-w-xl mx-auto py-8">
         {/* Navigation Return */}
         <div className="mb-6 flex items-center justify-between">
           <button 
             onClick={onGoHome}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] px-3.5 py-1.5 rounded-full backdrop-blur-md"
+            className="editorial-pill"
           >
-            <ChevronLeft size={14} /> Back to Overview
+            <ChevronLeft size={14} className="text-[#ed6f5c]" /> Return to Portal
           </button>
           
-          <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[11px] font-medium backdrop-blur-md">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Cloud Database Connected
+          <div className="flex items-center gap-2 bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] text-[#c8c0a8] px-3 py-1 rounded-full text-[11px] font-mono backdrop-blur-md">
+            <span className="pulse-dot" />
+            <span>Cloud Database Connected</span>
           </div>
         </div>
 
-        {/* Card */}
-        <div className="bg-[#0e121b]/80 backdrop-blur-2xl border border-white/[0.08] rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
-          {/* Subtle top glow line */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
+        {/* Editorial Card */}
+        <div className="bg-[#161410]/90 backdrop-blur-2xl border border-[rgba(242,235,216,0.12)] rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+          {/* Technical Corner Brackets */}
+          <span className="corner tl"></span>
+          <span className="corner tr"></span>
+          <span className="corner bl"></span>
+          <span className="corner br"></span>
 
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 p-0.5 shadow-lg shadow-blue-500/20 mb-4">
-              <img src="/logo.png" alt="ActionMate" className="w-full h-full object-cover rounded-[14px]" />
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#1e1c18] border border-[rgba(242,235,216,0.12)] p-1 shadow-lg mb-4">
+              <img src="/logo.png" alt="ActionMate" className="w-full h-full object-contain rounded-xl" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white mb-2">
-              Paytm Merchant ActionMate
+            <div className="label-editorial text-[10px] justify-center mb-2">
+              <span className="ix">PLATE 00</span> AUTONOMOUS MERCHANT ACCESS
+            </div>
+            <h1 className="display-title text-2xl md:text-3xl text-[#f2ebd8] mb-2">
+              Paytm Merchant <em>ActionMate</em><span className="dot">.</span>
             </h1>
-            <p className="text-sm text-slate-400 max-w-md mx-auto">
-              The autonomous AI teammate built for Indian merchants. Manage revenue, grow patrons, and automate store operations.
+            <p className="lead-editorial text-xs text-[#9a9382] max-w-md mx-auto">
+              The autonomous AI teammate engineered for modern Indian merchants. Continuous revenue monitoring, patron retention, and hardware automation.
             </p>
           </div>
 
           {/* Tab Selector */}
-          <div className="flex items-center bg-white/[0.04] p-1 rounded-xl border border-white/[0.06] mb-6">
+          <div className="flex items-center bg-[#1e1c18]/80 p-1 rounded-xl border border-[rgba(242,235,216,0.08)] mb-6">
             <button
               onClick={() => { setTab('login'); setError(null); }}
-              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all font-sans ${
                 tab === 'login'
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#ed6f5c] text-white shadow-md'
+                  : 'text-[#9a9382] hover:text-[#f2ebd8]'
               }`}
             >
               Sign In to Store
             </button>
             <button
               onClick={() => { setTab('signup'); setError(null); }}
-              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all font-sans ${
                 tab === 'signup'
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#ed6f5c] text-white shadow-md'
+                  : 'text-[#9a9382] hover:text-[#f2ebd8]'
               }`}
             >
               Register New Store
@@ -200,7 +202,7 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3 text-red-400 text-xs">
+            <div className="mb-6 p-3.5 rounded-xl bg-red-500/10 border border-red-500/25 flex items-start gap-3 text-[#ed6f5c] text-xs font-sans">
               <AlertCircle size={16} className="shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -210,29 +212,29 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
           {tab === 'login' && (
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Store Email</label>
+                <label className="block text-xs font-medium text-[#c8c0a8] mb-1.5 font-sans">Store Email</label>
                 <div className="relative">
-                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6e6860]" />
                   <input
                     type="email"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     placeholder="e.g. athees@atheescafe.com"
-                    className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/60 transition-all"
+                    className="w-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] rounded-xl pl-10 pr-4 py-3 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] transition-all font-sans"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
+                <label className="block text-xs font-medium text-[#c8c0a8] mb-1.5 font-sans">Password</label>
                 <div className="relative">
-                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6e6860]" />
                   <input
                     type="password"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     placeholder="Enter your account password"
-                    className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/60 transition-all"
+                    className="w-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] rounded-xl pl-10 pr-4 py-3 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] transition-all font-sans"
                   />
                 </div>
               </div>
@@ -240,7 +242,7 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="btn-editorial btn-editorial-primary w-full justify-center mt-2"
               >
                 {loading ? (
                   <>
@@ -249,20 +251,20 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
                   </>
                 ) : (
                   <>
-                    Sign In to Store Dashboard
+                    <span>Sign In to Store Dashboard</span>
                     <ArrowRight size={16} />
                   </>
                 )}
               </button>
 
               {/* Quick Demo Pre-fill */}
-              <div className="pt-4 border-t border-white/[0.06] text-center">
+              <div className="pt-4 border-t border-[rgba(242,235,216,0.06)] text-center">
                 <button
                   type="button"
                   onClick={handleQuickDemo}
-                  className="inline-flex items-center gap-2 text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 px-3.5 py-1.5 rounded-lg transition-all"
+                  className="editorial-pill text-xs font-mono"
                 >
-                  <Coffee size={14} />
+                  <Coffee size={14} className="text-[#ed6f5c]" />
                   Try Verified Test Store (Athees Café)
                 </button>
               </div>
@@ -274,30 +276,30 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
             <form onSubmit={handleSignup} className="space-y-3.5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Store / Business Name *</label>
+                  <label className="block text-xs font-medium text-[#c8c0a8] mb-1 font-sans">Store / Business Name *</label>
                   <div className="relative">
-                    <Store size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <Store size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6e6860]" />
                     <input
                       type="text"
                       required
                       value={signupStoreName}
                       onChange={(e) => setSignupStoreName(e.target.value)}
                       placeholder="e.g. Royal Chai Point"
-                      className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/60"
+                      className="w-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-sans"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Owner Name</label>
+                  <label className="block text-xs font-medium text-[#c8c0a8] mb-1 font-sans">Owner Name</label>
                   <div className="relative">
-                    <User size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <User size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6e6860]" />
                     <input
                       type="text"
                       value={signupOwnerName}
                       onChange={(e) => setSignupOwnerName(e.target.value)}
                       placeholder="e.g. Rajesh Kumar"
-                      className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/60"
+                      className="w-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-sans"
                     />
                   </div>
                 </div>
@@ -305,31 +307,31 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Email Address *</label>
+                  <label className="block text-xs font-medium text-[#c8c0a8] mb-1 font-sans">Email Address *</label>
                   <div className="relative">
-                    <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6e6860]" />
                     <input
                       type="email"
                       required
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       placeholder="store@example.com"
-                      className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/60"
+                      className="w-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-sans"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Password *</label>
+                  <label className="block text-xs font-medium text-[#c8c0a8] mb-1 font-sans">Password *</label>
                   <div className="relative">
-                    <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6e6860]" />
                     <input
                       type="password"
                       required
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       placeholder="Min 6 characters"
-                      className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/60"
+                      className="w-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-sans"
                     />
                   </div>
                 </div>
@@ -337,13 +339,13 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Category</label>
+                  <label className="block text-xs font-medium text-[#c8c0a8] mb-1 font-sans">Category</label>
                   <div className="relative">
-                    <Tag size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <Tag size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6e6860]" />
                     <select
                       value={signupCategory}
                       onChange={(e) => setSignupCategory(e.target.value)}
-                      className="w-full bg-[#121622] border border-white/[0.08] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white focus:outline-none focus:border-blue-500/60"
+                      className="w-full bg-[#1e1c18] border border-[rgba(242,235,216,0.1)] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#f2ebd8] focus:outline-none focus:border-[#ed6f5c] font-sans"
                     >
                       <option value="Quick Service Restaurant / Café">Quick Service Restaurant / Café</option>
                       <option value="Specialty Bakery & Pastry">Specialty Bakery & Pastry</option>
@@ -355,15 +357,15 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">Location / City</label>
+                  <label className="block text-xs font-medium text-[#c8c0a8] mb-1 font-sans">Location / City</label>
                   <div className="relative">
-                    <MapPin size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <MapPin size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6e6860]" />
                     <input
                       type="text"
                       value={signupLocation}
                       onChange={(e) => setSignupLocation(e.target.value)}
                       placeholder="City, State"
-                      className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/60"
+                      className="w-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#f2ebd8] placeholder-[#6e6860] focus:outline-none focus:border-[#ed6f5c] font-sans"
                     />
                   </div>
                 </div>
@@ -372,7 +374,7 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 transition-all disabled:opacity-50 text-sm"
+                className="btn-editorial btn-editorial-primary w-full justify-center mt-3"
               >
                 {loading ? (
                   <>
@@ -381,7 +383,7 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
                   </>
                 ) : (
                   <>
-                    Complete Registration & Launch Store
+                    <span>Complete Registration & Launch Store</span>
                     <ArrowRight size={16} />
                   </>
                 )}
@@ -390,13 +392,13 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
           )}
 
           {/* Footer Security Badges */}
-          <div className="mt-8 pt-6 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500">
+          <div className="mt-8 pt-6 border-t border-[rgba(242,235,216,0.06)] flex items-center justify-between text-[10px] text-[#6e6860] font-mono">
             <span className="flex items-center gap-1.5">
-              <ShieldCheck size={14} className="text-emerald-500" />
+              <ShieldCheck size={14} className="text-[#6e7448]" />
               Row-Level Tenant Security
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 size={14} className="text-blue-500" />
+              <CheckCircle2 size={14} className="text-[#ed6f5c]" />
               Paytm Soundbox 3.0 Compatible
             </span>
           </div>
