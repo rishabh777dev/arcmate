@@ -4,8 +4,8 @@ export const PRESET_WORKFLOWS_DATA = [
   // 1. PRIMARY FLAGSHIP (User's Exact Request: Invoices to Excel & End of Day WhatsApp Revenue)
   {
     id: 'wf_invoice_excel_whatsapp',
-    name: 'Invoice Auto-Sync to Excel & Daily WhatsApp Revenue',
-    description: 'For every new payment, automatically append the invoice to the store Excel sheet and announce via Soundbox. At the end of the day (10 PM), compile all invoices and send today\'s total revenue to your WhatsApp.',
+    name: 'Invoice Auto-Sync to Sales Ledger & Daily WhatsApp Revenue',
+    description: 'For every new payment, automatically append the invoice to the store Sales Ledger (CSV) and announce via Soundbox. At the end of the day (6 PM), compile all invoices and send today\'s total revenue to your WhatsApp.',
     category: 'Store Accounting & Daily Settlement',
     status: 'ACTIVE',
     nodes: [
@@ -15,7 +15,7 @@ export const PRESET_WORKFLOWS_DATA = [
         position: { x: -320, y: 120 },
         data: {
           title: 'Store Accounting & Daily Revenue Flow',
-          content: 'Simple Store Automation: For every new payment, an invoice is generated, logged into your Excel sheet, and announced on the Countertop Soundbox. At the end of the day, all invoices and total collection are compiled and sent directly to your WhatsApp.',
+          content: 'Store Automation: For every new payment, an invoice is generated, logged into your Store Sales Ledger (CSV), and announced on the Countertop Soundbox. At the end of the day, all invoices and total collections are compiled and sent directly to your WhatsApp.',
           badge: 'Daily Store Automation'
         }
       },
@@ -40,25 +40,26 @@ export const PRESET_WORKFLOWS_DATA = [
         }
       },
 
-      // Action 1: Google Sheet Append
+      // Action 1: Sales Ledger CSV Append
       {
         id: 'node_excel_sync',
         type: 'n8nNode',
         position: { x: 380, y: 80 },
         data: {
-          name: 'Auto-Sync to Google Sheet',
+          name: 'Auto-Sync to Sales Ledger (CSV)',
           subtitle: 'append invoice row real-time',
           category: 'action',
           iconName: 'FileSpreadsheet',
           color: '#10b981',
           status: 'ready',
           parameters: {
-            googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit',
-            spreadsheetName: 'Athees_Cafe_Sales_Ledger',
-            worksheet: 'Invoices_Log',
+            ledgerFileName: 'Athees_Cafe_Invoices_Ledger_2026-09-19.csv',
+            format: 'Verified CSV & Live Accounting Ledger',
             action: 'APPEND_ROW_ON_PAYMENT',
-            connectionStatus: 'VERIFIED_CONNECTED',
-            columns: ['Invoice #', 'Date & Time', 'Customer', 'Amount (₹)', 'Payment Method', 'GST (5%)', 'Status']
+            connectionStatus: 'VERIFIED_ACTIVE',
+            totalInvoices: 54,
+            totalRevenue: '₹58,450.00',
+            columns: ['Invoice #', 'Time', 'Customer', 'Amount (₹)', 'Payment Method', 'GST (5%)', 'Status', 'Ordered Items']
           }
         }
       },
@@ -117,35 +118,35 @@ export const PRESET_WORKFLOWS_DATA = [
           color: '#38bdf8',
           status: 'ready',
           parameters: {
-            source: 'Google_Sheet_Ledger + Live Invoices',
+            source: 'Store_Sales_Ledger + Live Invoices',
             metricsToCompute: [
-              'Total Revenue Collected',
-              'Total Invoices Count',
-              'UPI vs Cash Breakdown',
+              'Total Revenue Collected (₹58,450)',
+              'Total Invoices Count (54)',
+              'UPI vs Card vs Cash Breakdown',
               'Highlight of the Day',
-              'Peak Hour'
+              'Peak Hour (4:30 PM - 6:00 PM)'
             ]
           }
         }
       },
 
-      // WhatsApp Summary to Merchant (with Google Sheet link!)
+      // WhatsApp Summary to Merchant (with Verified Store Ledger summary!)
       {
         id: 'node_whatsapp_summary',
         type: 'n8nNode',
         position: { x: 680, y: 390 },
         data: {
           name: 'Send WhatsApp 6 PM Summary',
-          subtitle: 'daily highlight & sheet link',
+          subtitle: 'daily highlight & ledger audit',
           category: 'action',
           iconName: 'MessageSquare',
           color: '#22c55e',
           status: 'ready',
           parameters: {
             recipientPhone: '+91 98765 43210',
-            googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit',
-            messageFormat: '✨ Store 6:00 PM Daily Summary:\n\n📊 Total Revenue: ₹{totalRevenue} across {totalInvoices} invoices\n💳 UPI: ₹48,200 | Card: ₹6,800 | Cash: ₹3,450\n🔥 Peak Rush: 4:30 PM - 6:00 PM\n⚡ Pending Settlement: ₹14,200 (Tonight 11:30 PM)\n\n🔗 Live Google Sheet Ledger:\n{googleSheetUrl}',
-            attachPdfSummary: true
+            ledgerFile: 'Athees_Cafe_Invoices_Ledger_2026-09-19.csv',
+            messageFormat: '✨ Store 6:00 PM Daily Summary:\n\n📊 Total Revenue: ₹{totalRevenue} across {totalInvoices} invoices\n💳 UPI: ₹48,200 | Card: ₹6,800 | Cash: ₹3,450\n🔥 Peak Rush: 4:30 PM - 6:00 PM\n⚡ Pending Settlement: ₹14,200 (Tonight 11:30 PM)\n\n📁 Verified Store Ledger:\nAthees_Cafe_Invoices_Ledger.csv (Synced & Audited)',
+            attachCsvSummary: true
           }
         }
       }

@@ -1,4 +1,4 @@
-// Single Source of Truth for Store Accounting, Live Invoices, Google Sheet & CSV Exports
+// Single Source of Truth for Store Accounting, Live Invoices & CSV Ledger Exports
 // Athees Café, 100ft Road, Indiranagar, Bangalore
 // Total Revenue: ₹58,450 across 54 Invoices (UPI: ₹48,200 | Card: ₹6,800 | Cash: ₹3,450)
 
