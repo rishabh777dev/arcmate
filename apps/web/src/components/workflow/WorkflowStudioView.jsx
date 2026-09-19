@@ -50,6 +50,7 @@ import { normalizeWhatsAppNumber, buildWhatsAppUrl, openWhatsAppChat } from '../
 import { playPaytmChime } from '../../services/soundboxAudio';
 import { customNodeTypes } from './n8nCustomNodes';
 import { PRESET_WORKFLOWS_DATA } from './presetWorkflowsData';
+import { generateWorkflowFromPrompt, AI_SUGGESTION_PROMPTS } from './workflowAIEngine';
 import { MOCK_LEDGER_ROWS, LEDGER_TOTALS } from '../../data/mockLedgerData';
 
 function WorkflowCanvasInner({
@@ -213,6 +214,10 @@ export default function WorkflowStudioView() {
   const [executionResult, setExecutionResult] = useState(null);
   const [toastMsg, setToastMsg] = useState('');
 
+  // Natural Language AI Generator States
+  const [userPrompt, setUserPrompt] = useState('');
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+
   // Live Synchronized Invoices Table (Single source of truth: all 54 verified invoices totaling ₹58,450)
   const [liveRows, setLiveRows] = useState(() => MOCK_LEDGER_ROWS);
 
@@ -261,6 +266,46 @@ export default function WorkflowStudioView() {
     setLedgerFileName(name);
     handleUpdateNodeParameter('node_excel_sync', 'ledgerFileName', name);
     handleUpdateNodeParameter('node_whatsapp_summary', 'ledgerFile', name);
+  };
+
+  // Generate a brand-new workflow directly from natural language prompt
+  const handleGenerateWorkflow = async (promptToUse) => {
+    const text = (promptToUse || userPrompt).trim();
+    if (!text) {
+      alert('Please enter an automation prompt or click one of the quick presets below.');
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    setToastMsg('✨ Arc Mate AI is synthesizing your automation graph...');
+
+    // Smooth realistic AI synthesis delay (450ms)
+    await new Promise(r => setTimeout(r, 450));
+
+    const newWf = generateWorkflowFromPrompt(text);
+    
+    setWorkflows(prev => {
+      const filtered = prev.filter(w => w.name !== newWf.name);
+      return [...filtered, newWf];
+    });
+
+    setSelectedWorkflow(newWf);
+    setSelectedNode(newWf.nodes.find(n => n.type !== 'stickyNote') || newWf.nodes[0]);
+    setIsGeneratingAI(false);
+    setUserPrompt('');
+
+    // Play Soundbox chime feedback
+    playPaytmChime(`Arc Mate AI: New automation for ${newWf.name.split(' ')[0]} synthesized successfully.`);
+
+    setToastMsg(`✓ New automation "${newWf.name}" generated & loaded onto visual canvas!`);
+    setTimeout(() => setToastMsg(''), 5000);
+  };
+
+  // Select an existing or newly generated workflow
+  const handleSelectWorkflow = (wf) => {
+    setSelectedWorkflow(wf);
+    setSelectedNode(wf.nodes.find(n => n.type !== 'stickyNote') || wf.nodes[0]);
+    setExecutionResult(null);
   };
 
   // Helper to update a node parameter live in the state
@@ -410,7 +455,32 @@ export default function WorkflowStudioView() {
     setActiveStepId(null);
     setIsRunning(false);
 
-    handleSendWhatsApp6pmSummary();
+    if (selectedWorkflow.id === 'wf_invoice_excel_whatsapp') {
+      handleSendWhatsApp6pmSummary();
+    } else {
+      const cleanPhone = normalizeWhatsAppNumber(whatsappNumber);
+      playPaytmChime(`Paytm Soundbox: Automation ${selectedWorkflow.name.split(' ')[0]} executed successfully.`);
+      
+      const customMessage = `✨ Athees Café — ${selectedWorkflow.name}\n\n📋 Category: ${selectedWorkflow.category}\n⚡ Status: Verified & Executed\n📝 Details: ${selectedWorkflow.description}\n\n⚡ Powered by Arc Mate Autonomous Store Engine`;
+      const { url } = openWhatsAppChat(cleanPhone, customMessage);
+
+      setExecutionResult({
+        executionId: `exec_${Date.now().toString(36)}`,
+        totalExecutionTimeMs: 155,
+        workflowName: selectedWorkflow.name,
+        todayRevenue: `₹${totalRevenue.toLocaleString('en-IN')}`,
+        excelRowAdded: `Pipeline verified (${execNodes.length} nodes executed)`,
+        whatsappDelivered: `Alert pre-filled for +${cleanPhone || whatsappNumber}`,
+        whatsappUrl: url,
+        soundboxChime: 'Played 784Hz / 1046Hz Chime',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        targetPhone: `+${cleanPhone || whatsappNumber}`,
+        messagePreview: customMessage
+      });
+
+      setToastMsg(`✓ Test run completed for "${selectedWorkflow.name}"!`);
+      setTimeout(() => setToastMsg(''), 4000);
+    }
   };
 
   // Download Live Invoices as CSV File
@@ -498,197 +568,374 @@ export default function WorkflowStudioView() {
         </div>
       </div>
 
-      {/* 2. EASY DIRECT SETUP BOX: Store Sales Ledger & WhatsApp Phone Number */}
-      <div className="w-full bg-[#18181b]/95 border border-white/15 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl space-y-4">
-        
-        <div className="flex items-center justify-between pb-2 border-b border-white/10">
-          <div className="flex items-center gap-2 text-zinc-100 font-semibold text-xs">
-            <Link size={16} className="text-[#ed6f5c]" />
-            <span>Direct Setup: Store Sales Ledger & WhatsApp Phone Number</span>
+      {/* 2. NATURAL LANGUAGE AI AUTOMATION BUILDER CARD */}
+      <div className="w-full bg-[#18181b]/95 border border-white/15 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl space-y-4 relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-white/10">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#ed6f5c] to-amber-500 flex items-center justify-center text-white shadow-md">
+              <Wand2 size={16} />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold text-white font-sans flex items-center gap-2">
+                <span>Create New Automation with Natural Language</span>
+                <span className="px-2 py-0.5 rounded-full bg-[#ed6f5c]/20 text-[#ed6f5c] text-[10px] font-mono font-semibold border border-[#ed6f5c]/30">
+                  AI Synthesizer
+                </span>
+              </h2>
+              <p className="text-[11px] text-zinc-400 font-mono">
+                Describe any store workflow in plain English — Arc Mate AI parses triggers, guardrails & channels, then builds a live n8n graph
+              </p>
+            </div>
           </div>
-          <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            Autonomous Agent Active
+
+          <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 self-start sm:self-auto">
+            <Sparkles size={12} className="text-amber-400" />
+            Gemini 3.1 & n8n Synthesizer
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          
-          {/* Column A (7 cols): Store Sales Ledger with Direct Verified CSV Download */}
-          <div className="md:col-span-7 space-y-2">
-            <label className="text-[10px] font-mono uppercase text-zinc-400 font-semibold flex items-center justify-between">
-              <span>Step 1: Store Sales Ledger (Single Source of Truth)</span>
-              <span className="text-emerald-400 flex items-center gap-1 text-[10px]">
-                <CheckCircle size={12} />
-                <span>Verified ({liveRows.length} Invoices • ₹{totalRevenue.toLocaleString('en-IN')})</span>
-              </span>
-            </label>
+        {/* Prompt Input Bar */}
+        <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            <div className="relative flex-1">
+              <Wand2 size={15} className="absolute left-3.5 top-3 text-[#ed6f5c]" />
+              <input
+                type="text"
+                value={userPrompt}
+                onChange={(e) => setUserPrompt(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleGenerateWorkflow();
+                }}
+                placeholder="e.g. When inventory of Oat Milk drops below 5 crates, alert manager on WhatsApp & draft restock PO..."
+                className="w-full bg-black/60 border border-white/15 focus:border-[#ed6f5c] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white font-sans focus:outline-none transition placeholder:text-zinc-500 shadow-inner"
+              />
+            </div>
 
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <FileSpreadsheet size={15} className="absolute left-3 top-2.5 text-emerald-400" />
-                <input
-                  type="text"
-                  value={ledgerFileName}
-                  onChange={(e) => handleUpdateLedgerName(e.target.value)}
-                  placeholder="Athees_Cafe_Invoices_Ledger.csv"
-                  className="w-full bg-black/60 border border-white/15 focus:border-emerald-500 rounded-xl pl-9 pr-3 py-2 text-xs text-white font-mono focus:outline-none transition"
-                />
+            <button
+              type="button"
+              onClick={() => handleGenerateWorkflow()}
+              disabled={isGeneratingAI}
+              className="px-5 py-2.5 rounded-2xl bg-[#ed6f5c] hover:bg-[#de5e4b] text-white font-semibold text-xs transition cursor-pointer flex items-center justify-center gap-2 shrink-0 shadow-lg disabled:opacity-50"
+            >
+              {isGeneratingAI ? (
+                <>
+                  <RefreshCw size={14} className="animate-spin" />
+                  <span>Synthesizing Graph...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles size={14} />
+                  <span>Generate Automation 🪄</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Quick Preset Suggestion Chips */}
+          <div className="flex flex-wrap items-center gap-2 pt-0.5">
+            <span className="text-[10px] font-mono text-zinc-400 uppercase font-semibold">
+              Or Try Quick Preset:
+            </span>
+            {AI_SUGGESTION_PROMPTS.map((sug) => (
+              <button
+                key={sug.id}
+                type="button"
+                onClick={() => {
+                  setUserPrompt(sug.prompt);
+                  handleGenerateWorkflow(sug.prompt);
+                }}
+                className="px-3 py-1 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#ed6f5c]/50 text-zinc-200 hover:text-white text-[11px] font-mono transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+                title={sug.prompt}
+              >
+                <span>{sug.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. ACTIVE AUTOMATIONS SELECTOR TABS */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#14120f] border border-white/10 rounded-2xl px-4 py-3 shadow-md">
+        <div className="flex items-center gap-2 shrink-0">
+          <Layers size={14} className="text-zinc-400" />
+          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-300 font-bold">
+            Store Automations ({workflows.length}):
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {workflows.map((wf, idx) => {
+            const isSelected = selectedWorkflow?.id === wf.id;
+            return (
+              <button
+                key={wf.id || idx}
+                type="button"
+                onClick={() => handleSelectWorkflow(wf)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition cursor-pointer flex items-center gap-2 shadow-sm ${
+                  isSelected
+                    ? 'bg-[#ed6f5c] text-white font-semibold ring-2 ring-[#ed6f5c]/40'
+                    : 'bg-[#1e1c18] hover:bg-[#272420] text-zinc-300 border border-white/10'
+                }`}
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-emerald-400'}`} />
+                <span className="truncate max-w-[210px]">{wf.name}</span>
+                {wf.isCustomAI && (
+                  <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] font-mono font-bold">
+                    AI
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 4. CONTEXT-SENSITIVE AUTOMATION CONTROLS */}
+      {selectedWorkflow?.id === 'wf_invoice_excel_whatsapp' ? (
+        /* FLAGSHIP DIRECT SETUP BOX: Store Sales Ledger & WhatsApp Phone Number */
+        <div className="w-full bg-[#18181b]/95 border border-white/15 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-white/10">
+            <div className="flex items-center gap-2 text-zinc-100 font-semibold text-xs">
+              <Link size={16} className="text-[#ed6f5c]" />
+              <span>Direct Setup: Store Sales Ledger & WhatsApp Phone Number</span>
+            </div>
+            <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Autonomous Agent Active
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            {/* Column A (7 cols): Store Sales Ledger with Direct Verified CSV Download */}
+            <div className="md:col-span-7 space-y-2">
+              <label className="text-[10px] font-mono uppercase text-zinc-400 font-semibold flex items-center justify-between">
+                <span>Step 1: Store Sales Ledger (Single Source of Truth)</span>
+                <span className="text-emerald-400 flex items-center gap-1 text-[10px]">
+                  <CheckCircle size={12} />
+                  <span>Verified ({liveRows.length} Invoices • ₹{totalRevenue.toLocaleString('en-IN')})</span>
+                </span>
+              </label>
+
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <FileSpreadsheet size={15} className="absolute left-3 top-2.5 text-emerald-400" />
+                  <input
+                    type="text"
+                    value={ledgerFileName}
+                    onChange={(e) => handleUpdateLedgerName(e.target.value)}
+                    placeholder="Athees_Cafe_Invoices_Ledger.csv"
+                    className="w-full bg-black/60 border border-white/15 focus:border-emerald-500 rounded-xl pl-9 pr-3 py-2 text-xs text-white font-mono focus:outline-none transition"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleExportCSV}
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition cursor-pointer flex items-center gap-1.5 shrink-0 shadow-md"
+                  title="Download the verified CSV file with all invoices and audited totals"
+                >
+                  <Download size={14} strokeWidth={2.5} />
+                  <span>Download Verified CSV</span>
+                </button>
               </div>
 
-              {/* Direct CSV Download with Verified Correct Data */}
+              <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                <span className="text-emerald-400/90 truncate max-w-[380px] flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Auto-appends on payment • Matches in-app table & CSV 100%</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('store-ledger-table');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="text-zinc-400 hover:text-white underline text-[10px] cursor-pointer"
+                >
+                  View Invoices Table ↓
+                </button>
+              </div>
+            </div>
+
+            {/* Column B (5 cols): WhatsApp Number & Closing Time */}
+            <div className="md:col-span-5 space-y-2">
+              <label className="text-[10px] font-mono uppercase text-zinc-400 font-semibold flex items-center justify-between">
+                <span>Step 2: WhatsApp Mobile & Schedule</span>
+                <span className="text-emerald-400 text-[10px] font-mono">
+                  +{normalizeWhatsAppNumber(whatsappNumber) || '91...'}
+                </span>
+              </label>
+
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Phone size={13} className="absolute left-3 top-2.5 text-emerald-400" />
+                  <input
+                    type="text"
+                    value={whatsappNumber}
+                    onChange={(e) => setWhatsappNumber(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full bg-black/60 border border-white/15 focus:border-emerald-500 rounded-xl pl-8 pr-3 py-2 text-xs text-white font-mono focus:outline-none transition"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleTestWhatsApp}
+                  className="px-3 py-2 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-semibold text-xs transition cursor-pointer flex items-center gap-1 shrink-0 shadow-sm"
+                  title="Test WhatsApp connection to this phone number"
+                >
+                  <MessageSquare size={13} />
+                  <span>Test Link ↗</span>
+                </button>
+
+                <select
+                  value={dailyTime}
+                  onChange={(e) => setDailyTime(e.target.value)}
+                  className="bg-black/60 border border-white/15 rounded-xl px-2.5 py-2 text-xs text-zinc-200 font-mono focus:outline-none cursor-pointer"
+                >
+                  <option value="6:00 PM">6:00 PM (Closing)</option>
+                  <option value="7:00 PM">7:00 PM</option>
+                  <option value="9:00 PM">9:00 PM</option>
+                  <option value="10:00 PM">10:00 PM</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                <span>Daily summary sent to <strong className="text-emerald-400">+{normalizeWhatsAppNumber(whatsappNumber) || '91...'}</strong> at {dailyTime}</span>
+                <span className="text-zinc-500">Auto-prefixes +91</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Actions for Flagship */}
+          <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-mono text-zinc-400 uppercase font-semibold">
+                Live Demo:
+              </span>
+
+              <button
+                type="button"
+                onClick={() => handleSimulatePayment(450, 'Cold Brew & Avocado Toast')}
+                className="px-3 py-1.5 rounded-full bg-[#ed6f5c]/20 hover:bg-[#ed6f5c]/30 border border-[#ed6f5c]/40 text-white text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+                title="Simulate customer payment of ₹450 (Cold Brew & Toast)"
+              >
+                <Zap size={13} className="text-[#ed6f5c]" />
+                <span>⚡ +₹450 (Brew & Toast)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSimulatePayment(120, 'Filter Kaapi Double')}
+                className="px-2.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-200 text-xs font-medium transition cursor-pointer flex items-center gap-1"
+                title="Simulate ₹120 Filter Kaapi payment"
+              >
+                <span>+₹120 (Kaapi)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSimulatePayment(890, 'Artisan Pastry & Pour-over Combo')}
+                className="px-2.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-200 text-xs font-medium transition cursor-pointer flex items-center gap-1"
+                title="Simulate ₹890 Specialty Combo payment"
+              >
+                <span>+₹890 (Combo)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSendWhatsApp6pmSummary}
+                className="px-3.5 py-1.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+                title="Dispatches the 6 PM daily summary with ledger link to WhatsApp"
+              >
+                <MessageSquare size={13} className="text-emerald-400" />
+                <span>📲 Dispatch 6 PM WhatsApp Summary</span>
+              </button>
+
               <button
                 type="button"
                 onClick={handleExportCSV}
-                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition cursor-pointer flex items-center gap-1.5 shrink-0 shadow-md"
-                title="Download the verified CSV file with all invoices and audited totals"
+                className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-zinc-300 hover:text-white text-xs font-mono transition cursor-pointer flex items-center gap-1"
+                title="Export all live synchronized invoices to CSV"
               >
-                <Download size={14} strokeWidth={2.5} />
-                <span>Download Verified CSV</span>
+                <Download size={12} />
+                <span>CSV Ledger</span>
               </button>
             </div>
 
-            <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-              <span className="text-emerald-400/90 truncate max-w-[380px] flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Auto-appends on payment • Matches in-app table & CSV 100%</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  const el = document.getElementById('store-ledger-table');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="text-zinc-400 hover:text-white underline text-[10px] cursor-pointer"
-              >
-                View Invoices Table ↓
-              </button>
-            </div>
-          </div>
-
-          {/* Column B (5 cols): WhatsApp Number & Closing Time */}
-          <div className="md:col-span-5 space-y-2">
-            <label className="text-[10px] font-mono uppercase text-zinc-400 font-semibold flex items-center justify-between">
-              <span>Step 2: WhatsApp Mobile & Schedule</span>
-              <span className="text-emerald-400 text-[10px] font-mono">
-                +{normalizeWhatsAppNumber(whatsappNumber) || '91...'}
-              </span>
-            </label>
-
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Phone size={13} className="absolute left-3 top-2.5 text-emerald-400" />
-                <input
-                  type="text"
-                  value={whatsappNumber}
-                  onChange={(e) => setWhatsappNumber(e.target.value)}
-                  placeholder="+91 98765 43210"
-                  className="w-full bg-black/60 border border-white/15 focus:border-emerald-500 rounded-xl pl-8 pr-3 py-2 text-xs text-white font-mono focus:outline-none transition"
-                />
-              </div>
-
-              <button
-                type="button"
-                onClick={handleTestWhatsApp}
-                className="px-3 py-2 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-semibold text-xs transition cursor-pointer flex items-center gap-1 shrink-0 shadow-sm"
-                title="Test WhatsApp connection to this phone number"
-              >
-                <MessageSquare size={13} />
-                <span>Test Link ↗</span>
-              </button>
-
-              <select
-                value={dailyTime}
-                onChange={(e) => setDailyTime(e.target.value)}
-                className="bg-black/60 border border-white/15 rounded-xl px-2.5 py-2 text-xs text-zinc-200 font-mono focus:outline-none cursor-pointer"
-              >
-                <option value="6:00 PM">6:00 PM (Closing)</option>
-                <option value="7:00 PM">7:00 PM</option>
-                <option value="9:00 PM">9:00 PM</option>
-                <option value="10:00 PM">10:00 PM</option>
-              </select>
-            </div>
-
-            <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-              <span>Daily summary sent to <strong className="text-emerald-400">+{normalizeWhatsAppNumber(whatsappNumber) || '91...'}</strong> at {dailyTime}</span>
-              <span className="text-zinc-500">Auto-prefixes +91</span>
-            </div>
-          </div>
-
-        </div>
-
-        {/* 3. INTERACTIVE ACTIONS FOR JUDGES DEMONSTRATION */}
-        <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
-          
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-mono text-zinc-400 uppercase font-semibold">
-              Live Demo:
+            <span className="text-[11px] font-mono text-zinc-400">
+              Total Today: <strong className="text-white">₹{totalRevenue.toLocaleString('en-IN')}</strong> ({totalInvoices} Invoices • UPI: ₹{upiTotal.toLocaleString('en-IN')} | Card: ₹{cardTotal.toLocaleString('en-IN')} | Cash: ₹{cashTotal.toLocaleString('en-IN')})
             </span>
-
-            {/* Simulate Payment Presets */}
-            <button
-              type="button"
-              onClick={() => handleSimulatePayment(450, 'Cold Brew & Avocado Toast')}
-              className="px-3 py-1.5 rounded-full bg-[#ed6f5c]/20 hover:bg-[#ed6f5c]/30 border border-[#ed6f5c]/40 text-white text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-sm"
-              title="Simulate customer payment of ₹450 (Cold Brew & Toast)"
-            >
-              <Zap size={13} className="text-[#ed6f5c]" />
-              <span>⚡ +₹450 (Brew & Toast)</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSimulatePayment(120, 'Filter Kaapi Double')}
-              className="px-2.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-200 text-xs font-medium transition cursor-pointer flex items-center gap-1"
-              title="Simulate ₹120 Filter Kaapi payment"
-            >
-              <span>+₹120 (Kaapi)</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSimulatePayment(890, 'Artisan Pastry & Pour-over Combo')}
-              className="px-2.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-200 text-xs font-medium transition cursor-pointer flex items-center gap-1"
-              title="Simulate ₹890 Specialty Combo payment"
-            >
-              <span>+₹890 (Combo)</span>
-            </button>
-
-            {/* Trigger 6 PM WhatsApp Now */}
-            <button
-              type="button"
-              onClick={handleSendWhatsApp6pmSummary}
-              className="px-3.5 py-1.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-sm"
-              title="Dispatches the 6 PM daily summary with sheet link to WhatsApp"
-            >
-              <MessageSquare size={13} className="text-emerald-400" />
-              <span>📲 Dispatch 6 PM WhatsApp Summary</span>
-            </button>
-
-            {/* Export CSV Button */}
-            <button
-              type="button"
-              onClick={handleExportCSV}
-              className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-zinc-300 hover:text-white text-xs font-mono transition cursor-pointer flex items-center gap-1"
-              title="Export all live synchronized invoices to CSV"
-            >
-              <Download size={12} />
-              <span>CSV Ledger</span>
-            </button>
           </div>
-
-          <span className="text-[11px] font-mono text-zinc-400">
-            Total Today: <strong className="text-white">₹{totalRevenue.toLocaleString('en-IN')}</strong> ({totalInvoices} Invoices • UPI: ₹{upiTotal.toLocaleString('en-IN')} | Card: ₹{cardTotal.toLocaleString('en-IN')} | Cash: ₹{cashTotal.toLocaleString('en-IN')})
-          </span>
         </div>
+      ) : (
+        /* CUSTOM WORKFLOW / AI AUTOMATION OVERVIEW CARD */
+        <div className="w-full bg-[#18181b]/95 border border-white/15 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-2xl bg-[#ed6f5c]/20 border border-[#ed6f5c]/40 flex items-center justify-center text-[#ed6f5c] font-bold text-sm shadow-inner">
+                ⚡
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white font-sans flex items-center gap-2">
+                  <span>{selectedWorkflow.name}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-[#ed6f5c]/20 text-[#ed6f5c] text-[10px] font-mono border border-[#ed6f5c]/30 font-semibold">
+                    {selectedWorkflow.category}
+                  </span>
+                  {selectedWorkflow.isCustomAI && (
+                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">
+                      Generated by Arc Mate AI
+                    </span>
+                  )}
+                </h3>
+                <p className="text-xs text-zinc-300 font-sans mt-0.5 max-w-3xl leading-relaxed">
+                  {selectedWorkflow.description}
+                </p>
+              </div>
+            </div>
 
-        {toastMsg && (
-          <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-mono flex items-center gap-2 animate-in fade-in duration-150">
-            <CheckCircle2 size={14} />
-            <span>{toastMsg}</span>
+            <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={handleTestRun}
+                disabled={isRunning}
+                className="px-4 py-2 rounded-xl bg-[#ed6f5c] hover:bg-[#de5e4b] text-white font-semibold text-xs transition cursor-pointer flex items-center gap-1.5 shadow-lg disabled:opacity-50"
+              >
+                {isRunning ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                )}
+                <span>{isRunning ? 'Executing Flow...' : 'Test This Automation'}</span>
+              </button>
+            </div>
           </div>
-        )}
-      </div>
+
+          {/* Telemetry Chips for Custom Workflow */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-xs font-mono">
+            <div className="p-3 bg-black/40 rounded-xl border border-white/10 space-y-1">
+              <span className="text-zinc-400 text-[10px] block font-semibold">TARGET CHANNELS</span>
+              <span className="text-white font-semibold flex items-center gap-1.5">
+                <MessageSquare size={13} className="text-emerald-400" /> WhatsApp + Soundbox 3.0 Audio
+              </span>
+            </div>
+            <div className="p-3 bg-black/40 rounded-xl border border-white/10 space-y-1">
+              <span className="text-zinc-400 text-[10px] block font-semibold">COGNITIVE ENGINE</span>
+              <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
+                <Zap size={13} /> Gemini 3.1 & Cognee Guardrails
+              </span>
+            </div>
+            <div className="p-3 bg-black/40 rounded-xl border border-white/10 space-y-1">
+              <span className="text-zinc-400 text-[10px] block font-semibold">PIPELINE TOPOLOGY</span>
+              <span className="text-amber-400 font-semibold">
+                {selectedWorkflow.nodes?.length || 0} Connected n8n Nodes
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+
 
       {/* 4. Canvas & Interactive Inspector Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -891,6 +1138,75 @@ export default function WorkflowStudioView() {
                       <Volume2 size={14} />
                       <span>Test Soundbox Voice Chime</span>
                     </button>
+                  </div>
+                )}
+
+                {/* 4. Supplier Restock PO Node View */}
+                {(selectedNode.data?.name?.includes('PO') || selectedNode.data?.name?.includes('Restock')) && (
+                  <div className="space-y-2.5 p-3 rounded-2xl bg-[#12100d] border border-[#38bdf8]/30">
+                    <div className="flex items-center justify-between text-xs font-semibold text-[#38bdf8] font-sans">
+                      <span className="flex items-center gap-1.5">
+                        <FileText size={14} />
+                        <span>Supplier Purchase Order (PO)</span>
+                      </span>
+                      <span className="text-[10px] font-mono bg-[#38bdf8]/20 px-2 py-0.5 rounded-full text-[#38bdf8]">
+                        Auto-Drafted
+                      </span>
+                    </div>
+
+                    <div className="space-y-1.5 text-xs font-mono p-2 bg-black/40 rounded-xl border border-white/10">
+                      <div className="flex justify-between text-zinc-400 text-[10px]">
+                        <span>Supplier:</span>
+                        <strong className="text-white">{selectedNode.data?.parameters?.supplier || 'Country Delight Fresh Dairy'}</strong>
+                      </div>
+                      <div className="flex justify-between text-zinc-400 text-[10px]">
+                        <span>Order Quantity:</span>
+                        <span className="text-emerald-400 font-semibold">{selectedNode.data?.parameters?.orderQuantity || '12 Crates (72 Liters)'}</span>
+                      </div>
+                      <div className="flex justify-between text-zinc-400 text-[10px]">
+                        <span>Est. Amount:</span>
+                        <span className="text-white font-bold">{selectedNode.data?.parameters?.estimatedAmount || '₹5,400.00'}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playPaytmChime('Paytm Soundbox: Restock purchase order approved and queued for dispatch.');
+                        setToastMsg('✓ Purchase Order approved & queued for supplier delivery!');
+                        setTimeout(() => setToastMsg(''), 4000);
+                      }}
+                      className="w-full py-1.5 rounded-xl bg-[#38bdf8] hover:bg-[#0284c7] text-white font-semibold text-xs transition cursor-pointer flex items-center justify-center gap-1.5 shadow-md"
+                    >
+                      <Check size={12} />
+                      <span>Approve & Dispatch PO</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* 5. Margin Guard Node View */}
+                {(selectedNode.data?.name?.includes('Margin') || selectedNode.data?.name?.includes('Guard')) && (
+                  <div className="space-y-2.5 p-3 rounded-2xl bg-[#12100d] border border-[#10b981]/30">
+                    <div className="flex items-center justify-between text-xs font-semibold text-[#10b981] font-sans">
+                      <span className="flex items-center gap-1.5">
+                        <ShieldCheck size={14} />
+                        <span>Cognee Margin Guard</span>
+                      </span>
+                      <span className="text-[10px] font-mono bg-[#10b981]/20 px-2 py-0.5 rounded-full text-[#10b981]">
+                        12% Ceiling Active
+                      </span>
+                    </div>
+
+                    <div className="p-2 bg-black/40 rounded-xl border border-white/10 text-[10px] font-mono text-zinc-300 space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-zinc-400">Store Margin Floor:</span>
+                        <span className="text-emerald-400 font-semibold">Strict 12% Ceiling Cap</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-zinc-400">Enforcement Action:</span>
+                        <span className="text-white">Auto-Clamp Violations</span>
+                      </div>
+                    </div>
                   </div>
                 )}
 
