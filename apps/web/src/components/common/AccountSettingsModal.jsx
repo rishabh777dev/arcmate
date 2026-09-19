@@ -194,8 +194,8 @@ export default function AccountSettingsModal({ isOpen, onClose, merchant, onUpda
             
             <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-center justify-between">
               <div>
-                <div className="text-xs font-semibold text-[#f2ebd8]">Paytm Soundbox 3.0 Pro</div>
-                <div className="text-[11px] text-[#9a9382] font-mono mt-0.5">Terminal ID: {merchant?.soundboxDeviceId || 'PAYTM_SBX_BLR_7781'}</div>
+                <div className="text-xs font-semibold text-[#f2ebd8]">Countertop Soundbox Pro</div>
+                <div className="text-[11px] text-[#9a9382] font-mono mt-0.5">Terminal ID: {merchant?.soundboxDeviceId || 'SBX_BLR_7781'}</div>
               </div>
               <div className="flex items-center gap-2 text-[10px] text-[#e9b94a] bg-[rgba(233,185,74,0.1)] border border-[rgba(233,185,74,0.25)] px-3 py-1 rounded-full font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#e9b94a] animate-pulse" />
@@ -208,7 +208,7 @@ export default function AccountSettingsModal({ isOpen, onClose, merchant, onUpda
           <div className="pt-1">
             <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(237,111,92,0.2)] flex items-center justify-between">
               <div>
-                <div className="text-xs font-semibold text-[#f2ebd8]">ActionMate Growth Plan</div>
+                <div className="text-xs font-semibold text-[#f2ebd8]">Arc Mate Growth Plan</div>
                 <div className="text-[11px] text-[#9a9382] font-sans mt-0.5">Autonomous Agent Assistant, Invoicing & Patron Re-engagement</div>
               </div>
               <span className="text-[10px] font-mono font-medium text-[#ed6f5c] bg-[rgba(237,111,92,0.1)] border border-[rgba(237,111,92,0.25)] px-2.5 py-1 rounded-full uppercase tracking-wider">

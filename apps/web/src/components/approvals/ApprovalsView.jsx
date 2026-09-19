@@ -7,7 +7,7 @@ export default function ApprovalsView({ pendingAction, onApprove, onReject, onGo
       {/* Header */}
       <div>
         <div className="label-editorial text-[10px]">
-          <span className="ix">PLATE 04</span> HUMAN-IN-THE-LOOP AUTHORIZATION
+          HUMAN-IN-THE-LOOP AUTHORIZATION
         </div>
         <h1 className="display-title text-2xl font-bold tracking-tight text-[#f2ebd8] mt-1">
           Store Action <em>Approvals</em><span className="dot">.</span>
@@ -101,7 +101,7 @@ export default function ApprovalsView({ pendingAction, onApprove, onReject, onGo
           </div>
           <h4 className="display-title text-base font-bold text-[#f2ebd8]">Approval Queue is Clear</h4>
           <p className="lead-editorial text-xs text-[#9a9382] max-w-sm mx-auto">
-            ActionMate has no pending campaign or budget authorization requests. When an anomaly is detected and an action is drafted, it will pause here.
+            Arc Mate has no pending campaign or budget authorization requests. When an anomaly is detected and an action is drafted, it will pause here.
           </p>
         </div>
       )}

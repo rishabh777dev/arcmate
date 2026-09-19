@@ -123,7 +123,7 @@ export default function KnowledgeGraphView() {
         <span className="corner tr"></span>
         <div>
           <div className="label-editorial text-[10px] mb-1">
-            <span className="ix">PLATE 06</span> KNOWLEDGE TOPOLOGY & POLICY GRAPH
+            KNOWLEDGE TOPOLOGY & POLICY GRAPH
           </div>
           <h1 className="display-title text-2xl font-bold tracking-tight text-[#f2ebd8]">
             Store Rules & <em>Knowledge</em><span className="dot">.</span>

@@ -96,7 +96,7 @@ export default function WorkflowStudioView() {
       });
       const result = await res.json();
       setExecutionResult(result);
-      playPaytmChime('Ding! Paytm Soundbox: Campaign 47 customers ko successfully bhej di gayi hai.');
+      playPaytmChime('Ding! Countertop Soundbox: Campaign 47 customers ko successfully bhej di gayi hai.');
     } catch (err) {
       console.error('Workflow execution error:', err);
     } finally {
@@ -119,13 +119,13 @@ export default function WorkflowStudioView() {
         <span className="corner tr"></span>
         <div>
           <div className="label-editorial text-[10px] mb-1">
-            <span className="ix">PLATE 05</span> WORKFLOW STUDIO & DIRECTIVES
+            WORKFLOW STUDIO & DIRECTIVES
           </div>
           <h1 className="display-title text-2xl font-bold tracking-tight text-[#f2ebd8]">
             Store Automation <em>Studio</em><span className="dot">.</span>
           </h1>
           <p className="lead-editorial text-xs text-[#9a9382] max-w-2xl mt-1">
-            Describe merchant triggers or store rules in plain English or Hinglish. ActionMate synthesizes deterministic n8n graph pipelines with guardrails and hardware loops.
+            Describe merchant triggers or store rules in plain English or Hinglish. Arc Mate synthesizes deterministic workflow pipelines with guardrails and hardware loops.
           </p>
         </div>
 
@@ -355,7 +355,7 @@ export default function WorkflowStudioView() {
                       <span>Soundbox Hardware Loop</span>
                     </div>
                     <p className="text-[11px] text-[#9a9382] leading-relaxed font-body">
-                      Plays instant voice confirmation over Paytm Soundbox 3.0 speaker upon campaign dispatch.
+                      Plays instant voice confirmation over Soundbox 3.0 speaker upon campaign dispatch.
                     </p>
                   </div>
                 )}

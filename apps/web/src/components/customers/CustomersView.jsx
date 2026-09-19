@@ -31,7 +31,7 @@ export default function CustomersView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="label-editorial text-[10px]">
-            <span className="ix">PLATE 03</span> PATRON COHORTS & RETENTION
+            PATRON COHORTS & RETENTION
           </div>
           <h1 className="display-title text-2xl font-bold tracking-tight text-[#f2ebd8] mt-1">
             Patron <em>Directory</em><span className="dot">.</span>

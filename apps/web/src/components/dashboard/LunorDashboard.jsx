@@ -89,7 +89,7 @@ export default function LunorDashboard({
       {/* 1. Header & Greeting */}
       <div className="space-y-2">
         <div className="label-editorial text-[10px]">
-          <span className="ix">PLATE 01</span> STORE INTELLIGENCE & TELEMETRY
+          STORE INTELLIGENCE & TELEMETRY
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
           <div>
@@ -156,7 +156,7 @@ export default function LunorDashboard({
               {todayOrders} Orders
             </div>
             <p className="text-[11px] text-[#9a9382] mt-1 font-mono">
-              Paytm QR & Card POS
+              Store QR & Card POS
             </p>
           </div>
           <div className="stat-ring">
@@ -378,7 +378,7 @@ export default function LunorDashboard({
             </div>
 
             <p className="lead-editorial text-xs text-[#9a9382] leading-relaxed">
-              ActionMate isolated 38 regular patrons absent for 14+ days. This proposal personalizes a high-margin tea & bake bundle strictly within your 15% discount cap.
+              Arc Mate isolated 38 regular patrons absent for 14+ days. This proposal personalizes a high-margin tea & bake bundle strictly within your 15% discount cap.
             </p>
 
             <div className="flex items-center gap-2 pt-2 border-t border-[rgba(242,235,216,0.06)]">

@@ -11,6 +11,7 @@ import WorkflowStudioView from './components/workflow/WorkflowStudioView';
 import CopilotChat from './components/copilot/CopilotChat';
 import AccountSettingsModal from './components/common/AccountSettingsModal';
 import ShaderBackground from './components/common/ShaderBackground';
+import ArcMateLogo from './components/common/ArcMateLogo';
 import { playPaytmChime } from './services/soundboxAudio';
 
 export default function App() {
@@ -48,7 +49,7 @@ export default function App() {
   // Assistant State
   const [messages, setMessages] = useState([]);
   const [agentSteps, setAgentSteps] = useState([
-    { step: 'MONITORING', status: 'COMPLETED', details: 'ActionMate AI teammate active and monitoring store signals.' }
+    { step: 'MONITORING', status: 'COMPLETED', details: 'Arc Mate intelligence active and monitoring store signals.' }
   ]);
   const [pendingAction, setPendingAction] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -255,7 +256,7 @@ export default function App() {
         {
           sender: 'actionmate',
           role: 'assistant',
-          text: `Success! Campaign has been approved and dispatched to customer channels. Paytm Soundbox chime sounded.`,
+          text: `Success! Campaign has been approved and dispatched to customer channels. Countertop Soundbox chime sounded.`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
@@ -329,7 +330,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         pendingApprovalsCount={pendingAction ? 1 : 0}
         activeMerchant={activeMerchant}
-        onPlayChime={() => playPaytmChime(`Paytm Soundbox: Audio verification passed for ${activeMerchant?.name || 'Store'}.`)}
+        onPlayChime={() => playPaytmChime(`Countertop Soundbox: Audio verification passed for ${activeMerchant?.name || 'Store'}.`)}
         onExitToLanding={() => navigateTo('landing')}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onLogout={handleLogout}
@@ -341,6 +342,7 @@ export default function App() {
         {/* Top Header Bar with Editorial Metadata */}
         <header className="h-14 border-b border-[rgba(242,235,216,0.08)] bg-[#12100d]/85 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
           <div className="flex items-center gap-2.5">
+            <ArcMateLogo size={22} className="w-5 h-5 rounded-md shadow-sm shrink-0" />
             <span className="text-xs font-bold text-[#f2ebd8] tracking-tight">{activeMerchant?.name || 'Athees Café'}</span>
             <span className="text-[#6e6860]">•</span>
             <span className="text-[11px] font-serif italic text-[#c8c0a8] capitalize tracking-wide">{activeTab.replace('-', ' ')}</span>
@@ -365,7 +367,7 @@ export default function App() {
                 setActiveTab('copilot');
                 if (prompt) handleSendMessage(prompt);
               }}
-              onPlayChime={() => playPaytmChime(`Paytm Soundbox: ₹${summary?.todayCollection || 24850} received today on Paytm QR.`)}
+              onPlayChime={() => playPaytmChime(`Countertop Soundbox: ₹${summary?.todayCollection || 24850} received today on store QR.`)}
               onApproveAction={() => setActiveTab('approvals')}
               onNavigateTab={(tab) => setActiveTab(tab)}
             />

@@ -44,7 +44,7 @@ export default function OnboardingWizard({ merchant, onComplete }) {
           onboardingCompleted: true
         })
       });
-      playPaytmChime(`Congratulations! ${merchant?.name || 'Your store'} is now live on Paytm Merchant ActionMate.`);
+      playPaytmChime(`Congratulations! ${merchant?.name || 'Your store'} is now live on Arc Mate.`);
       onComplete();
     } catch (err) {
       console.warn('Onboarding error, proceeding:', err);
@@ -74,11 +74,11 @@ export default function OnboardingWizard({ merchant, onComplete }) {
             </div>
             <div>
               <div className="font-mono text-[10px] tracking-widest uppercase text-[#ed6f5c]">
-                Plate 00 • Setup Sequence ({step}/3)
+                Setup Sequence ({step}/3)
               </div>
               <h2 className="text-lg font-serif italic text-[#f2ebd8] font-normal">
                 {step === 1 && 'Store Identity & Operating Cadence'}
-                {step === 2 && 'Paytm Soundbox & Settlement Sync'}
+                {step === 2 && 'Soundbox & Settlement Sync'}
                 {step === 3 && 'Autonomous Guardrails & Limits'}
               </h2>
             </div>
@@ -106,7 +106,7 @@ export default function OnboardingWizard({ merchant, onComplete }) {
             <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-start gap-3">
               <Sparkles size={16} className="text-[#ed6f5c] mt-0.5 shrink-0" />
               <div className="text-xs text-[#c8c0a8] leading-relaxed font-sans">
-                ActionMate learns your peak traffic hours to automatically identify regular patrons who stop visiting and trigger timely re-engagement campaigns.
+                Arc Mate learns your peak traffic hours to automatically identify regular patrons who stop visiting and trigger timely re-engagement campaigns.
               </div>
             </div>
 
@@ -167,13 +167,13 @@ export default function OnboardingWizard({ merchant, onComplete }) {
             <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-start gap-3">
               <Volume2 size={16} className="text-[#ed6f5c] mt-0.5 shrink-0" />
               <div className="text-xs text-[#c8c0a8] leading-relaxed font-sans">
-                Your paired Paytm Soundbox provides instant chime confirmations on UPI collections and autonomous voice briefings on store performance.
+                Your paired Countertop Soundbox provides instant chime confirmations on UPI collections and autonomous voice briefings on store performance.
               </div>
             </div>
 
             <div className="p-5 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-center justify-between">
               <div>
-                <div className="text-xs text-[#9a9382] font-mono uppercase tracking-wider mb-0.5">Paired Paytm Hardware</div>
+                <div className="text-xs text-[#9a9382] font-mono uppercase tracking-wider mb-0.5">Paired Countertop Hardware</div>
                 <div className="text-sm font-bold text-[#f2ebd8] font-mono">{merchant?.soundboxDeviceId || 'PAYTM_SBX_BLR_7781'}</div>
                 <div className="text-[10px] text-[#e9b94a] flex items-center gap-1.5 mt-1 font-mono">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#e9b94a] animate-pulse" />
@@ -225,7 +225,7 @@ export default function OnboardingWizard({ merchant, onComplete }) {
             <div className="p-4 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] flex items-start gap-3">
               <ShieldCheck size={16} className="text-[#ed6f5c] mt-0.5 shrink-0" />
               <div className="text-xs text-[#c8c0a8] leading-relaxed font-sans">
-                ActionMate enforces strict merchant guardrails. The copilot will never execute promotional campaigns that breach these margins without your explicit cryptographic approval.
+                Arc Mate enforces strict merchant guardrails. The copilot will never execute promotional campaigns that breach these margins without your explicit cryptographic approval.
               </div>
             </div>
 

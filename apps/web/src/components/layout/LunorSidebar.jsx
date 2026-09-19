@@ -13,6 +13,7 @@ import {
   Sparkles,
   ChevronRight
 } from 'lucide-react';
+import ArcMateLogo from '../common/ArcMateLogo';
 
 export default function LunorSidebar({ 
   activeTab, 
@@ -45,7 +46,7 @@ export default function LunorSidebar({
           className="flex items-center justify-between p-2.5 rounded-xl bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] hover:border-[#ed6f5c]/40 transition cursor-pointer group shadow-sm"
         >
           <div className="flex items-center gap-2.5 min-w-0">
-            <img src="/logo.png" alt="ActionMate Logo" className="w-7 h-7 rounded-lg shadow-sm object-contain border border-[rgba(242,235,216,0.12)]" />
+            <ArcMateLogo size={28} className="w-7 h-7 rounded-lg shadow-sm shrink-0" />
             <div className="min-w-0">
               <span className="font-semibold text-[#f2ebd8] tracking-tight block truncate font-sans">
                 {activeMerchant?.name || 'Athees Café'}
@@ -142,7 +143,7 @@ export default function LunorSidebar({
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold text-[#f2ebd8] flex items-center gap-1.5">
               <Volume2 className="w-3.5 h-3.5 text-[#ed6f5c]" />
-              Paytm Soundbox 3.0 Pro
+              Countertop Soundbox Pro
             </span>
             <span className="pulse-dot"></span>
           </div>
@@ -180,7 +181,7 @@ export default function LunorSidebar({
           onClick={onExitToLanding}
           className="w-full py-1.5 text-center text-[10px] text-[#6e6860] hover:text-[#ed6f5c] transition block font-mono"
         >
-          ← Return to Marketing Portal
+          ← Return to Landing Page
         </button>
 
       </div>

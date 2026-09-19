@@ -20,6 +20,7 @@ import {
   Paperclip
 } from 'lucide-react';
 import { playPaytmChime } from '../../services/soundboxAudio';
+import ArcMateLogo from '../common/ArcMateLogo';
 
 const AVAILABLE_MODELS = [
   {
@@ -259,7 +260,7 @@ export default function CopilotChat({
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-xs text-zinc-300 transition cursor-pointer mb-5 shadow-sm"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#ed6f5c] animate-pulse" />
-              <span>ActionMate Autonomous Teammate 2.0</span>
+              <span>Arc Mate Autonomous Teammate 2.0</span>
               <ArrowRight size={12} className="text-zinc-500" />
             </div>
 
@@ -392,9 +393,7 @@ export default function CopilotChat({
                   className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   {!isUser && (
-                    <div className="w-7 h-7 rounded-full bg-[#ed6f5c]/20 border border-[#ed6f5c]/30 flex items-center justify-center text-[#ed6f5c] shrink-0 mt-0.5">
-                      <Bot size={14} />
-                    </div>
+                    <ArcMateLogo size={24} className="w-7 h-7 rounded-lg shadow-sm shrink-0 mt-0.5" />
                   )}
 
                   <div className="max-w-[85%] space-y-1.5">
@@ -518,7 +517,7 @@ export default function CopilotChat({
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask ActionMate anything..."
+                placeholder="Ask Arc Mate anything..."
                 rows={1}
                 className="flex-1 bg-transparent border-0 resize-none text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none font-sans py-1"
               />
@@ -573,7 +572,7 @@ export default function CopilotChat({
                   <span className="font-mono text-[10px] bg-[#6e7448]/20 px-2 py-0.5 rounded-full">15% Cap</span>
                 </div>
                 <p className="text-zinc-400 text-[11px]">
-                  All proposals drafted by ActionMate are verified against your 15% discount limit.
+                  All proposals drafted by Arc Mate are verified against your 15% discount limit.
                 </p>
               </div>
 

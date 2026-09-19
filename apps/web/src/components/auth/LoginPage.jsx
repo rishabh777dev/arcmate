@@ -15,6 +15,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import ShaderBackground from '../common/ShaderBackground';
+import ArcMateLogo from '../common/ArcMateLogo';
 import { playPaytmChime } from '../../services/soundboxAudio';
 
 export default function LoginPage({ onLoginSuccess, onGoHome }) {
@@ -114,7 +115,7 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
         localStorage.setItem('actionmate_user', JSON.stringify(data.user));
       }
 
-      playPaytmChime(`Welcome to ActionMate, ${data.merchant?.name || signupStoreName}! Account setup complete.`);
+      playPaytmChime(`Welcome to Arc Mate, ${data.merchant?.name || signupStoreName}! Account setup complete.`);
       onLoginSuccess(data);
     } catch (err) {
       setError(err.message);
@@ -162,17 +163,17 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
 
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#1e1c18] border border-[rgba(242,235,216,0.12)] p-1 shadow-lg mb-4">
-              <img src="/logo.png" alt="ActionMate" className="w-full h-full object-contain rounded-xl" />
+            <div className="inline-flex items-center justify-center mb-4">
+              <ArcMateLogo size={56} className="w-14 h-14 rounded-2xl shadow-xl" />
             </div>
             <div className="label-editorial text-[10px] justify-center mb-2">
-              <span className="ix">PLATE 00</span> AUTONOMOUS MERCHANT ACCESS
+              AUTONOMOUS MERCHANT ACCESS
             </div>
             <h1 className="display-title text-2xl md:text-3xl text-[#f2ebd8] mb-2">
-              Paytm Merchant <em>ActionMate</em><span className="dot">.</span>
+              Arc <em>Mate</em><span className="dot">.</span>
             </h1>
             <p className="lead-editorial text-xs text-[#9a9382] max-w-md mx-auto">
-              The autonomous AI teammate engineered for modern Indian merchants. Continuous revenue monitoring, patron retention, and hardware automation.
+              The autonomous intelligence platform engineered for modern merchants. Continuous revenue monitoring, patron retention, and hardware automation.
             </p>
           </div>
 
@@ -399,7 +400,7 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
             </span>
             <span className="flex items-center gap-1.5">
               <CheckCircle2 size={14} className="text-[#ed6f5c]" />
-              Paytm Soundbox 3.0 Compatible
+              Soundbox 3.0 Compatible
             </span>
           </div>
         </div>
