@@ -63,7 +63,7 @@ export default function CopilotChat({
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
   const [isContextPopoverOpen, setIsContextPopoverOpen] = useState(false);
   const [isGuardrailModalOpen, setIsGuardrailModalOpen] = useState(false);
-  const [isThinkingOpen, setIsThinkingOpen] = useState(true);
+  const [isThinkingOpen, setIsThinkingOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -146,10 +146,10 @@ export default function CopilotChat({
   };
 
   const quickPrompts = [
-    "Check today's collections & settlement status",
-    "Identify regular customers who stopped visiting",
-    "Create automated winback campaign for lost regulars",
-    "Verify store 15% discount policy in Cognee"
+    "Give a full store audit of revenue and costing",
+    "Check if there is any bug flow in our workflows",
+    "Show supplier invoices and pending bills",
+    "Where are our shipments and restock packages?"
   ];
 
   const currentModelObj = AVAILABLE_MODELS.find(m => m.id === selectedModel) || AVAILABLE_MODELS[0];
@@ -278,7 +278,7 @@ export default function CopilotChat({
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask anything about today's collections, invoices, or customer campaigns..."
+                placeholder="Ask anything about store audits, bug flows, invoices, shipments, or automations..."
                 rows={2}
                 className="w-full bg-transparent border-0 resize-none text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none font-sans leading-relaxed px-1"
               />

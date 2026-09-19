@@ -183,6 +183,7 @@ export default function App() {
     };
 
     setMessages(prev => [...prev, userMsg]);
+    setAgentSteps([]);
     setIsProcessing(true);
 
     try {

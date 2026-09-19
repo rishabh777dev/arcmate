@@ -41,5 +41,14 @@ export const TOOL_REGISTRY = {
       merchantId: m.id,
       merchantName: m.name
     });
-  }
+  },
+  get_invoices: async (merchantId) => await dataStore.getInvoices(merchantId),
+  create_invoice: async (merchantId, invoiceData) => await dataStore.createInvoice(merchantId, invoiceData),
+  get_companies: async (merchantId) => await dataStore.getCompanies(merchantId),
+  get_shipments: async (merchantId) => await dataStore.getShipments(merchantId),
+  create_shipment: async (merchantId, data) => await dataStore.createShipment(merchantId, data),
+  diagnose_workflows: async (merchantId) => await dataStore.getWorkflowDiagnostics(merchantId),
+  get_store_audit: async (merchantId) => await dataStore.getStoreAudit(merchantId),
+  get_policies: async (merchantId) => await dataStore.getPolicies(merchantId),
+  add_policy: async (merchantId, policy) => await dataStore.addPolicy(merchantId, policy)
 };

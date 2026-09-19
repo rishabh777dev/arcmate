@@ -242,12 +242,55 @@ app.post('/api/invoices', async (req, res) => {
 });
 
 // ==========================================
-// 6. Transactions
+// 6. Transactions, Invoices & Logistics
 // ==========================================
 app.get('/api/transactions', async (req, res) => {
   const limit = parseInt(req.query.limit || '50', 10);
   const txs = await dataStore.getTransactions(req.merchantId, limit);
   res.json(txs);
+});
+
+app.get('/api/invoices', async (req, res) => {
+  const invoices = await dataStore.getInvoices(req.merchantId);
+  res.json(invoices);
+});
+
+app.post('/api/invoices', async (req, res) => {
+  try {
+    const invoice = await dataStore.createInvoice(req.merchantId, req.body);
+    res.json({ success: true, invoice });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/companies', async (req, res) => {
+  const companies = await dataStore.getCompanies(req.merchantId);
+  res.json(companies);
+});
+
+app.get('/api/shipments', async (req, res) => {
+  const shipments = await dataStore.getShipments(req.merchantId);
+  res.json(shipments);
+});
+
+app.post('/api/shipments', async (req, res) => {
+  try {
+    const shipment = await dataStore.createShipment(req.merchantId, req.body);
+    res.json({ success: true, shipment });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/diagnostics/workflows', async (req, res) => {
+  const diagnostics = await dataStore.getWorkflowDiagnostics(req.merchantId);
+  res.json(diagnostics);
+});
+
+app.get('/api/audit/store', async (req, res) => {
+  const audit = await dataStore.getStoreAudit(req.merchantId);
+  res.json(audit);
 });
 
 // ==========================================
