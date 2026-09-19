@@ -50,5 +50,8 @@ export const TOOL_REGISTRY = {
   diagnose_workflows: async (merchantId) => await dataStore.getWorkflowDiagnostics(merchantId),
   get_store_audit: async (merchantId) => await dataStore.getStoreAudit(merchantId),
   get_policies: async (merchantId) => await dataStore.getPolicies(merchantId),
-  add_policy: async (merchantId, policy) => await dataStore.addPolicy(merchantId, policy)
+  add_policy: async (merchantId, policy) => await dataStore.addPolicy(merchantId, policy),
+  get_documents: async (merchantId) => await dataStore.getDocuments(merchantId),
+  add_document: async (merchantId, docData) => await dataStore.addDocument(merchantId, docData),
+  delete_document: async (merchantId, docId) => await dataStore.deleteDocument(merchantId, docId)
 };

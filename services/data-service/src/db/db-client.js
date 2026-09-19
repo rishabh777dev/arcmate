@@ -841,6 +841,147 @@ class DataStore {
     return { id: `pol_${Date.now()}`, ...row };
   }
 
+  // 7b. Store Knowledge Documents (PDFs, Invoices, Voice Talks & SOPs)
+  async getDocuments(merchantId = null) {
+    const m = await this.getMerchant(merchantId);
+    if (this.documents && this.documents.length > 0) {
+      return this.documents.filter(d => !d.merchantId || d.merchantId === m.id);
+    }
+
+    // Default Seed Documents
+    this.documents = [
+      {
+        id: 'doc_001',
+        merchantId: m.id,
+        title: 'Blue Tokai Coffee Roastery Supply Contract (2026).pdf',
+        category: 'PDF_GUIDELINE',
+        fileType: 'PDF',
+        fileSize: '1.4 MB',
+        uploadedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+        summary: 'Annual commercial supply agreement for Arabica AA Attikan Estate beans. Sets wholesale pricing at ₹580/kg, Net 15 days payment credit, and a minimum monthly order quota of 25kg.',
+        extractedRules: [
+          'Coffee bean cost locked at ₹580/kg',
+          'Payment terms: Net 15 days credit',
+          'Minimum monthly roastery batch: 25kg'
+        ],
+        status: 'INDEXED',
+        source: 'PDF Upload',
+        downloadUrl: '#'
+      },
+      {
+        id: 'doc_002',
+        merchantId: m.id,
+        title: 'Country Delight Organic Dairy Monthly Invoice - Aug 2026.pdf',
+        category: 'INVOICE_BILL',
+        fileType: 'INVOICE',
+        fileSize: '420 KB',
+        uploadedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+        summary: 'Itemized dairy supplier bill for 60L daily pasteurized buffalo milk and 10L barista almond milk cartons. Verified against store delivery receipts.',
+        extractedRules: [
+          'Buffalo milk unit price: ₹64/L',
+          'Barista almond milk: ₹200/L',
+          'Daily pre-paid settlement requirement'
+        ],
+        status: 'INDEXED',
+        source: 'Invoice Scan',
+        downloadUrl: '#'
+      },
+      {
+        id: 'doc_003',
+        merchantId: m.id,
+        title: 'Morning Shift Handover & Barista Voice Memo.m4a',
+        category: 'VOICE_TALK',
+        fileType: 'AUDIO',
+        fileSize: '2.8 MB',
+        uploadedAt: new Date(Date.now() - 1 * 86400000).toISOString(),
+        summary: 'Audio briefing from morning shift barista: "Keep evening discount limited to bakery combos only. Do not apply discounts to single-origin pourovers because single-origin bean cost is high."',
+        extractedRules: [
+          'Zero discount on single-origin pourover brews',
+          'Promotional discounts restricted to bakery & snack pairings'
+        ],
+        status: 'INDEXED',
+        source: 'Voice Recording',
+        downloadUrl: '#'
+      },
+      {
+        id: 'doc_004',
+        merchantId: m.id,
+        title: 'Store Standard Operating Guidelines (SOP) v2.4.pdf',
+        category: 'PDF_GUIDELINE',
+        fileType: 'PDF',
+        fileSize: '890 KB',
+        uploadedAt: new Date(Date.now() - 5 * 86400000).toISOString(),
+        summary: 'Standard operating procedure for Athees Café: Store operating hours (8:30 AM to 11:00 PM), customer refund protocol, peak traffic handling, and complimentary beverage replacement policies.',
+        extractedRules: [
+          'Store hours: 8:30 AM - 11:00 PM daily',
+          'Refund authorization requires manager pin on POS',
+          'Complimentary replacement for drink remake requests'
+        ],
+        status: 'INDEXED',
+        source: 'PDF Upload',
+        downloadUrl: '#'
+      },
+      {
+        id: 'doc_005',
+        merchantId: m.id,
+        title: 'Promotional Discount Ceiling Guardrail Policy',
+        category: 'STORE_POLICY',
+        fileType: 'POLICY',
+        fileSize: '12 KB',
+        uploadedAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+        summary: 'Executive margin protection rule: Under no circumstances should any automated campaign, flash offer, or customer coupon offer greater than 15% discount.',
+        extractedRules: [
+          'Maximum discount cap: 15%',
+          'Campaigns violating limit are blocked automatically'
+        ],
+        status: 'INDEXED',
+        source: 'System Guardrail',
+        downloadUrl: '#'
+      }
+    ];
+
+    return this.documents;
+  }
+
+  async addDocument(merchantId, docData) {
+    const m = await this.getMerchant(merchantId);
+    const docs = await this.getDocuments(m.id);
+
+    const newDoc = {
+      id: `doc_${Date.now()}`,
+      merchantId: m.id,
+      title: docData.title || 'Untitled Store Document',
+      category: docData.category || 'PDF_GUIDELINE',
+      fileType: docData.fileType || (docData.category === 'VOICE_TALK' ? 'AUDIO' : docData.category === 'INVOICE_BILL' ? 'INVOICE' : docData.category === 'STORE_POLICY' ? 'POLICY' : 'PDF'),
+      fileSize: docData.fileSize || '350 KB',
+      uploadedAt: new Date().toISOString(),
+      summary: docData.summary || docData.content?.slice(0, 200) || 'Document ingested and parsed into store AI memory.',
+      extractedRules: docData.extractedRules || (docData.rule ? [docData.rule] : ['Indexed into Copilot memory']),
+      status: 'INDEXED',
+      source: docData.source || 'Manual Upload',
+      content: docData.content || null
+    };
+
+    docs.unshift(newDoc);
+    this.documents = docs;
+
+    await this.logAuditEvent(
+      m.id,
+      'MERCHANT',
+      'DOCUMENT_ATTACHED',
+      `Attached document "${newDoc.title}" (${newDoc.category}) to store AI knowledge.`
+    );
+
+    return newDoc;
+  }
+
+  async deleteDocument(merchantId, docId) {
+    const m = await this.getMerchant(merchantId);
+    const docs = await this.getDocuments(m.id);
+    this.documents = docs.filter(d => d.id !== docId);
+    return { success: true, deletedId: docId };
+  }
+
   // 8. Workflows (Automations)
   async getWorkflows(merchantId = null) {
     const m = await this.getMerchant(merchantId);

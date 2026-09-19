@@ -369,6 +369,56 @@ export class ActionMateOrchestrator {
     }
 
     // ==========================================
+    // 7b. STORE DOCUMENTS, CONTRACTS, VOICE TALKS & SOPS
+    // ==========================================
+    const isDocQuery = pLower.includes('document') || 
+      pLower.includes('contract') || 
+      pLower.includes('agreement') || 
+      pLower.includes('voice talk') || 
+      pLower.includes('voice memo') || 
+      pLower.includes('sop') || 
+      pLower.includes('guideline') || 
+      pLower.includes('attached file') ||
+      pLower.includes('knowledge base') ||
+      pLower.includes('what documents') ||
+      pLower.includes('morning talk');
+
+    if (isDocQuery) {
+      const docs = await TOOL_REGISTRY.get_documents(merchant.id);
+      
+      // Check if user asked about a specific document (e.g. "Blue Tokai", "Dairy", "Morning", "SOP")
+      const matched = docs.filter(d => 
+        pLower.includes(d.title.toLowerCase().split(' ')[0]) || 
+        pLower.includes(d.category.toLowerCase()) ||
+        (d.title.toLowerCase().includes('blue tokai') && pLower.includes('blue tokai')) ||
+        (d.title.toLowerCase().includes('morning') && (pLower.includes('morning') || pLower.includes('talk') || pLower.includes('memo'))) ||
+        (d.title.toLowerCase().includes('dairy') && (pLower.includes('dairy') || pLower.includes('milk'))) ||
+        (d.title.toLowerCase().includes('sop') && pLower.includes('sop'))
+      );
+
+      const targetDocs = matched.length > 0 ? matched : docs;
+
+      let reply = `### 📁 Attached Store Knowledge & Documents\n\n` +
+        `I have active indexing across **${docs.length} store documents and voice talks** for **${merchant.name}**:\n\n`;
+
+      targetDocs.forEach((d, idx) => {
+        const icon = d.fileType === 'AUDIO' ? '🎙️' : d.fileType === 'INVOICE' ? '🧾' : d.fileType === 'POLICY' ? '🛡️' : '📄';
+        reply += `${idx + 1}. ${icon} **${d.title}** (\`${d.fileSize}\` • ${d.source || 'Upload'})\n` +
+          `   • **Summary**: ${d.summary}\n` +
+          `   • **Enforced Rules**: ${(d.extractedRules || []).join(', ')}\n` +
+          `   • **AI Status**: 🟢 Indexed & Active in Copilot\n\n`;
+      });
+
+      reply += `> Every campaign, customer offer, and financial action I perform is strictly governed by these attached agreements and voice instructions.`;
+
+      return {
+        reply,
+        documents: targetDocs,
+        state: 'DOCUMENTS_RETRIEVED'
+      };
+    }
+
+    // ==========================================
     // 8. INSERT STORE POLICY / GUARDRAIL RULE
     // ==========================================
     const isPolicyInsert = /(?:add|create|insert|set)\s+(?:rule|policy|limit|guardrail)/i.test(pLower);

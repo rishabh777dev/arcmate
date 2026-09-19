@@ -370,6 +370,75 @@ app.post('/api/knowledge/inject', async (req, res) => {
   });
 });
 
+app.get('/api/knowledge/documents', async (req, res) => {
+  try {
+    const docs = await dataStore.getDocuments(req.merchantId);
+    res.json(docs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/knowledge/documents', async (req, res) => {
+  try {
+    const { title, category, fileType, fileSize, summary, extractedRules, content, source } = req.body;
+    
+    // 1. Add to DataStore
+    const doc = await dataStore.addDocument(req.merchantId, {
+      title,
+      category,
+      fileType,
+      fileSize,
+      summary,
+      extractedRules,
+      content,
+      source
+    });
+
+    // 2. Inject into Knowledge Engine
+    knowledgeEngine.injectKnowledge(category || 'DOCUMENT', title, summary || content || title, {
+      extractedRules,
+      fileType,
+      docId: doc.id
+    });
+
+    // 3. Ingest into Cognee Cloud if configured
+    if (cogneeCloudService.isConfigured()) {
+      cogneeCloudService.addDocument({
+        title,
+        content: `${summary || ''} Rules: ${(extractedRules || []).join('; ')}`,
+        category: category || 'store_knowledge'
+      }, 'merchant_docs').catch(() => {});
+    }
+
+    // 4. Auto-register policy if discount/spending cap is found
+    const rulesStr = (extractedRules || []).join(' ') + ' ' + (summary || '') + ' ' + (content || '');
+    const discMatch = rulesStr.match(/(\d+)\s*%\s*(?:discount|cap|ceiling|limit)/i);
+    if (discMatch) {
+      const val = parseInt(discMatch[1], 10);
+      await dataStore.addPolicy(req.merchantId, {
+        title: `${title} Guardrail (${val}%)`,
+        description: `Enforced constraint from ${title}: maximum ${val}% limit.`,
+        constraintType: 'percentage',
+        value: val
+      });
+    }
+
+    res.json({ success: true, document: doc });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/knowledge/documents/:id', async (req, res) => {
+  try {
+    const result = await dataStore.deleteDocument(req.merchantId, req.params.id);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ==========================================
 // 10. Automation Studio (Workflows)
 // ==========================================

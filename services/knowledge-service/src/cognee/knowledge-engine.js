@@ -276,17 +276,34 @@ export class CogneeKnowledgeEngine {
   }
 
   /**
-   * Semantic and keyword search across injected memory
+   * Semantic and keyword search across injected memory and attached store documents
    */
-  queryKnowledge(query) {
-    if (!query) return this.injectedKnowledge;
+  async queryKnowledge(query, merchantId = null) {
+    let docs = [];
+    try {
+      docs = await dataStore.getDocuments(merchantId);
+    } catch (e) {
+      docs = [];
+    }
+
+    const docEntries = docs.map(d => ({
+      id: d.id,
+      category: d.category,
+      title: d.title,
+      content: `${d.summary || ''} Rules: ${(d.extractedRules || []).join('; ')} Source: ${d.source || ''}`,
+      rules: d.extractedRules,
+      fileType: d.fileType
+    }));
+
+    const all = [...docEntries, ...this.injectedKnowledge];
+    if (!query) return all;
     const qLower = query.toLowerCase();
-    const matches = this.injectedKnowledge.filter(k => 
+    const matches = all.filter(k => 
       k.title.toLowerCase().includes(qLower) || 
       k.content.toLowerCase().includes(qLower) ||
       k.category.toLowerCase().includes(qLower)
     );
-    return matches.length > 0 ? matches : this.injectedKnowledge;
+    return matches.length > 0 ? matches : all;
   }
 
   /**
