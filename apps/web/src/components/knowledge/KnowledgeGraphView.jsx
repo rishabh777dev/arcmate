@@ -128,6 +128,12 @@ export default function KnowledgeGraphView() {
       recognitionRef.current.onerror = () => setIsRecording(false);
       recognitionRef.current.onend = () => setIsRecording(false);
     }
+
+    return () => {
+      try {
+        recognitionRef.current?.abort();
+      } catch (e) {}
+    };
   }, []);
 
   const handleToggleVoice = () => {
@@ -322,18 +328,19 @@ export default function KnowledgeGraphView() {
 
   // Radial Node positions for Graph View
   const getNodePositions = (nodes) => {
-    if (!nodes) return {};
+    if (!nodes || nodes.length === 0) return {};
     const center = { x: 340, y: 220 };
     const radius = 170;
     const positions = {};
+    const otherNodes = nodes.filter(n => n.category !== 'MERCHANT');
+    const totalOthers = otherNodes.length || 1;
 
     nodes.forEach((node) => {
       if (node.category === 'MERCHANT') {
         positions[node.id] = { x: center.x, y: center.y };
       } else {
-        const otherNodes = nodes.filter(n => n.category !== 'MERCHANT');
-        const otherIdx = otherNodes.findIndex(n => n.id === node.id);
-        const angle = (otherIdx / otherNodes.length) * 2 * Math.PI - Math.PI / 2;
+        const otherIdx = Math.max(0, otherNodes.findIndex(n => n.id === node.id));
+        const angle = (otherIdx / totalOthers) * 2 * Math.PI - Math.PI / 2;
         positions[node.id] = {
           x: center.x + radius * Math.cos(angle),
           y: center.y + radius * Math.sin(angle)

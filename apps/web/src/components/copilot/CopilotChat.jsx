@@ -481,13 +481,48 @@ export default function CopilotChat({
             })}
 
             {isProcessing && (
-              <div className="flex gap-3 justify-start items-center">
-                <div className="w-7 h-7 rounded-full bg-[#ed6f5c]/20 border border-[#ed6f5c]/30 flex items-center justify-center text-[#ed6f5c] shrink-0">
-                  <RefreshCw size={13} className="animate-spin text-[#ed6f5c]" />
-                </div>
-                <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-zinc-400 flex items-center gap-2 font-mono">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#ed6f5c] animate-pulse" />
-                  <span>Reasoning with {currentModelObj.name}...</span>
+              <div className="space-y-2">
+                {agentSteps && agentSteps.length > 0 && (
+                  <div className="rounded-xl bg-white/[0.03] border border-white/10 overflow-hidden text-xs max-w-[85%]">
+                    <button
+                      type="button"
+                      onClick={() => setIsThinkingOpen(!isThinkingOpen)}
+                      className="w-full flex items-center justify-between px-3 py-1.5 text-[11px] font-mono text-zinc-400 hover:text-zinc-200 transition cursor-pointer"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <Sparkles size={11} className="text-[#ed6f5c]" />
+                        <span>Live Reasoning Process ({agentSteps.length} steps)</span>
+                      </span>
+                      {isThinkingOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                    </button>
+
+                    {isThinkingOpen && (
+                      <div className="p-2.5 pt-0 space-y-1.5 border-t border-white/[0.04]">
+                        {agentSteps.map((step, sIdx) => (
+                          <div key={step.id || sIdx} className="p-2 rounded-lg bg-black/30 border border-white/[0.04] text-[11px] space-y-0.5">
+                            <div className="flex items-center justify-between">
+                              <span className="font-mono text-[10px] font-semibold text-[#ed6f5c] uppercase">
+                                {step.step || 'STEP'}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-400">
+                                {step.status}
+                              </span>
+                            </div>
+                            <p className="text-zinc-300 text-[11px]">{step.details}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                <div className="flex gap-3 justify-start items-center">
+                  <div className="w-7 h-7 rounded-full bg-[#ed6f5c]/20 border border-[#ed6f5c]/30 flex items-center justify-center text-[#ed6f5c] shrink-0">
+                    <RefreshCw size={13} className="animate-spin text-[#ed6f5c]" />
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-zinc-400 flex items-center gap-2 font-mono">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#ed6f5c] animate-pulse" />
+                    <span>Reasoning with {currentModelObj.name}...</span>
+                  </div>
                 </div>
               </div>
             )}

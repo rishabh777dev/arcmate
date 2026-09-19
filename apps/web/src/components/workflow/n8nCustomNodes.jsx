@@ -183,22 +183,19 @@ export function N8nRouterNode({ data, selected }) {
 
       {/* Multi-Handle Output Ports */}
       <div className="pt-2 space-y-1.5">
-        {ports.map((port, idx) => {
-          const topPercent = 45 + ((idx + 1) * 50) / (ports.length + 1);
-          return (
-            <div key={port.id} className="relative flex items-center justify-between text-[10px] font-mono text-zinc-400 pr-1">
-              <span className="text-[9px] text-zinc-500">#{idx + 1}</span>
-              <span className="truncate max-w-[130px] font-medium text-zinc-300">{port.label}</span>
-              <Handle
-                type="source"
-                position={Position.Right}
-                id={port.id}
-                style={{ top: `${topPercent}%` }}
-                className="!w-2.5 !h-2.5 !bg-[#18181b] !border-2 !border-[#38bdf8] hover:!bg-[#38bdf8] !-right-1.5 transition"
-              />
-            </div>
-          );
-        })}
+        {ports.map((port, idx) => (
+          <div key={port.id} className="relative flex items-center justify-between text-[10px] font-mono text-zinc-400 pr-1 py-0.5">
+            <span className="text-[9px] text-zinc-500">#{idx + 1}</span>
+            <span className="truncate max-w-[130px] font-medium text-zinc-300">{port.label}</span>
+            <Handle
+              type="source"
+              position={Position.Right}
+              id={port.id}
+              style={{ top: '50%', transform: 'translateY(-50%)' }}
+              className="!w-2.5 !h-2.5 !bg-[#18181b] !border-2 !border-[#38bdf8] hover:!bg-[#38bdf8] !-right-1.5 transition"
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

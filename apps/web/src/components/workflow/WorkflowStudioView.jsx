@@ -440,9 +440,9 @@ export default function WorkflowStudioView() {
       r.id, 
       `"${r.time}"`, 
       `"${r.customer}"`, 
-      r.amount.toFixed(2), 
+      (Number(r.amount) || 0).toFixed(2), 
       `"${r.mode}"`, 
-      r.gst.toFixed(2), 
+      (Number(r.gst) || 0).toFixed(2), 
       r.status,
       `"${r.items || 'Specialty Coffee & Bakes'}"`
     ]);
@@ -452,9 +452,9 @@ export default function WorkflowStudioView() {
       'TOTAL_COLLECTIONS',
       '"Today 6:00 PM"',
       `"${totalInvoices} Invoices Total"`,
-      totalRevenue.toFixed(2),
+      (Number(totalRevenue) || 0).toFixed(2),
       `"UPI: ₹${upiTotal.toLocaleString('en-IN')} | Card: ₹${cardTotal.toLocaleString('en-IN')} | Cash: ₹${cashTotal.toLocaleString('en-IN')}"`,
-      (totalRevenue * 0.05).toFixed(2),
+      ((Number(totalRevenue) || 0) * 0.05).toFixed(2),
       'AUDITED_OK',
       '"Athees Café Indiranagar"'
     ];

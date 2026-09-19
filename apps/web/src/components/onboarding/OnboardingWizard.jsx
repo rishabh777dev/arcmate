@@ -39,8 +39,10 @@ export default function OnboardingWizard({ merchant, onComplete }) {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
-          operatingHours: JSON.stringify({ open: openTime, close: closeTime }),
+          operatingHours: `${openTime} - ${closeTime}`,
           avgTicketSize: Number(avgTicket),
+          discountCeiling: Number(discountCeiling),
+          minOrderValue: Number(minOrder),
           onboardingCompleted: true
         })
       });

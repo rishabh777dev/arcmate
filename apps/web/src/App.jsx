@@ -19,18 +19,29 @@ import { MOCK_SUMMARY, MOCK_PENDING_ACTION } from './data/mockStoreData';
 
 export default function App() {
   // Navigation Router: 'landing' | 'login' | 'app'
-  const getInitialView = () => {
+  const getInitialState = () => {
     const hash = window.location.hash.toLowerCase();
     const token = localStorage.getItem('actionmate_token');
-    if (hash === '#/login') return 'login';
-    if (hash === '#/app') {
-      return token ? 'app' : 'login';
+    if (hash === '#/login') return { view: 'login', tab: 'overview' };
+
+    let tab = 'overview';
+    if (hash.includes('review') || hash.includes('support')) tab = 'reviews';
+    else if (hash.includes('customer') || hash.includes('patron')) tab = 'customers';
+    else if (hash.includes('workflow') || hash.includes('automation')) tab = 'workflow';
+    else if (hash.includes('knowledge') || hash.includes('rule')) tab = 'knowledge';
+    else if (hash.includes('approval')) tab = 'approvals';
+    else if (hash.includes('audit')) tab = 'audit';
+    else if (hash.includes('copilot') || hash.includes('assistant')) tab = 'copilot';
+
+    if (hash.startsWith('#/app') || tab !== 'overview') {
+      return { view: token ? 'app' : 'login', tab };
     }
-    return 'landing';
+    return { view: 'landing', tab: 'overview' };
   };
 
-  const [currentView, setCurrentView] = useState(getInitialView);
-  const [activeTab, setActiveTab] = useState('overview');
+  const initial = getInitialState();
+  const [currentView, setCurrentView] = useState(initial.view);
+  const [activeTab, setActiveTab] = useState(initial.tab);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
@@ -104,15 +115,23 @@ export default function App() {
     const onHashChange = () => {
       const hash = window.location.hash.toLowerCase();
       const token = localStorage.getItem('actionmate_token');
-      if (hash === '#/login') setCurrentView('login');
-      else if (hash === '#/app') {
+      if (hash === '#/login') {
+        setCurrentView('login');
+      } else if (hash.startsWith('#/app') || hash.includes('review') || hash.includes('support') || hash.includes('customer') || hash.includes('patron') || hash.includes('workflow') || hash.includes('knowledge') || hash.includes('approval') || hash.includes('audit') || hash.includes('copilot')) {
         if (!token) {
           window.location.hash = '#/login';
           setCurrentView('login');
         } else {
           setCurrentView('app');
+          if (hash.includes('review') || hash.includes('support')) setActiveTab('reviews');
+          else if (hash.includes('customer') || hash.includes('patron')) setActiveTab('customers');
+          else if (hash.includes('workflow') || hash.includes('automation')) setActiveTab('workflow');
+          else if (hash.includes('knowledge') || hash.includes('rule')) setActiveTab('knowledge');
+          else if (hash.includes('approval')) setActiveTab('approvals');
+          else if (hash.includes('audit')) setActiveTab('audit');
+          else if (hash.includes('copilot') || hash.includes('assistant')) setActiveTab('copilot');
         }
-      } else {
+      } else if (hash === '' || hash === '#/' || hash === '#') {
         setCurrentView('landing');
       }
     };
@@ -120,11 +139,12 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
-  const navigateTo = (view) => {
+  const navigateTo = (view, tab) => {
     setCurrentView(view);
+    if (tab) setActiveTab(tab);
     if (view === 'landing') window.location.hash = '#/';
     else if (view === 'login') window.location.hash = '#/login';
-    else if (view === 'app') window.location.hash = '#/app';
+    else if (view === 'app') window.location.hash = tab ? `#/app/${tab}` : '#/app';
   };
 
   // Fetch store data whenever entering app
@@ -353,6 +373,7 @@ export default function App() {
           const token = localStorage.getItem('actionmate_token');
           navigateTo(token ? 'app' : 'login');
         }} 
+        onGoLogin={() => navigateTo('login')}
       />
     );
   }
@@ -447,11 +468,11 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'customers' && (
+          {(activeTab === 'customers' || activeTab === 'patrons') && (
             <CustomersView />
           )}
 
-          {activeTab === 'reviews' && (
+          {(activeTab === 'reviews' || activeTab === 'support') && (
             <CustomerSupportView 
               activeMerchant={activeMerchant}
               onNavigateTab={(tab) => setActiveTab(tab)}

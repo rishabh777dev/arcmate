@@ -279,20 +279,6 @@ app.post('/api/transactions', async (req, res) => {
   }
 });
 
-app.get('/api/invoices', async (req, res) => {
-  const invoices = await dataStore.getInvoices(req.merchantId);
-  res.json(invoices);
-});
-
-app.post('/api/invoices', async (req, res) => {
-  try {
-    const invoice = await dataStore.createInvoice(req.merchantId, req.body);
-    res.json({ success: true, invoice });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 app.get('/api/companies', async (req, res) => {
   const companies = await dataStore.getCompanies(req.merchantId);
   res.json(companies);
@@ -317,7 +303,7 @@ app.get('/api/diagnostics/workflows', async (req, res) => {
   res.json(diagnostics);
 });
 
-app.get('/api/audit/store', async (req, res) => {
+app.get(['/api/audit', '/api/audit/store'], async (req, res) => {
   const audit = await dataStore.getStoreAudit(req.merchantId);
   res.json(audit);
 });

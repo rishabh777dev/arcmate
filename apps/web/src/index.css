@@ -542,18 +542,37 @@
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02) !important;
 }
 
-/* Inset / Pills / Inner Rows */
+/* Inset / Pills / Inner Rows / Inputs */
 .light [class*="bg-[#1e1c18]"],
+.light [class*="bg-[#1a1814]"],
+.light [class*="bg-[#12100d]"],
 .light .lunor-inset {
   background-color: #f5f4ef !important;
-  border-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
 }
 
 .light [class*="bg-[#1e1c18]/80"],
 .light [class*="bg-[#1e1c18]/70"],
-.light [class*="bg-[#1e1c18]/90"] {
+.light [class*="bg-[#1e1c18]/90"],
+.light [class*="bg-[#1a1814]/80"],
+.light [class*="bg-[#1a1814]/90"] {
   background-color: #f5f4ef !important;
-  border-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
+}
+
+.light input:not([type="checkbox"]):not([type="radio"]),
+.light textarea,
+.light select {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #a1a1aa !important;
 }
 
 /* Text: Crisp High-Contrast Black & Slate Grays */
