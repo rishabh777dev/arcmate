@@ -237,11 +237,11 @@ class DataStore {
     }
 
     if (todayCollections === 0) {
-      todayCollections = 24850;
-      settledAmount = 19600;
-      pendingSettlement = 5250;
-      upiCount = 38;
-      cardCount = 8;
+      todayCollections = 58450;
+      settledAmount = 44250;
+      pendingSettlement = 14200;
+      upiCount = 44;
+      cardCount = 6;
       cashCount = 4;
     }
 
@@ -723,9 +723,9 @@ class DataStore {
     const invoices = await this.getInvoices(m.id);
     const customers = await this.getCustomers(m.id);
 
-    const todayRev = balance.todayCollections || 24850;
-    const weeklyRevEst = Math.round(todayRev * 6.8); // ~₹1,68,980
-    const monthlyRevEst = Math.round(todayRev * 29.5); // ~₹7,33,000
+    const todayRev = balance.todayCollections || 58450;
+    const weeklyRevEst = 384650;
+    const monthlyRevEst = 1680000;
 
     // Supplier Costs
     const totalInvoicesPaid = invoices.filter(i => i.status === 'paid').reduce((s, i) => s + (i.total || 0), 0);

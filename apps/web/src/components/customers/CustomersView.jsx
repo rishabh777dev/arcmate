@@ -23,8 +23,8 @@ export default function CustomersView() {
 
   const filtered = customers.filter(c => {
     const matchesFilter = filter === 'ALL' || c.segment === filter;
-    const matchesSearch = c.displayName?.toLowerCase().includes(search.toLowerCase()) || 
-                          c.phoneMasked?.includes(search);
+    const matchesSearch = (c.displayName || '').toLowerCase().includes(search.toLowerCase()) || 
+                          (c.phoneMasked || '').includes(search);
     return matchesFilter && matchesSearch;
   });
 
@@ -128,7 +128,7 @@ export default function CustomersView() {
                       ? 'bg-[#6e7448]/15 text-[#6e7448] border border-[#6e7448]/30'
                       : 'bg-[rgba(242,235,216,0.06)] text-[#9a9382] border border-[rgba(242,235,216,0.1)]'
                   }`}>
-                    {c.segment.replace('_', ' ')}
+                    {(c.segment || 'GENERAL').replace('_', ' ')}
                   </span>
                 </td>
                 <td className="py-3 px-5 font-mono">{c.totalVisits || c.totalTransactions || 0} orders</td>

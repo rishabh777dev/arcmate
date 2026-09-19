@@ -1151,80 +1151,81 @@ export const MOCK_TRANSACTIONS = [
 
 export const MOCK_INVOICES = [
   {
-    id: 'inv_108',
-    invoiceNumber: 'INV-2026-108',
+    id: 'inv_054',
+    invoiceNumber: 'INV-2026-054',
     vendor: 'Table 4 • Dine-In',
     items: [
-      { name: 'Pour Over (Attikan Estate)', qty: 2, unitPrice: 240, total: 480 },
-      { name: 'Avocado Sourdough Toast', qty: 1, unitPrice: 200, total: 200 }
+      { name: 'Pour Over (Attikan Estate)', qty: 2, unitPrice: 280, total: 560 },
+      { name: 'Basque Burnt Cheesecake', qty: 1, unitPrice: 380, total: 380 },
+      { name: 'Fresh Sourdough Boule', qty: 1, unitPrice: 820, total: 820 }
     ],
-    subtotal: 680,
-    tax: 34,
-    total: 714,
+    subtotal: 1760,
+    tax: 90,
+    total: 1850,
     status: 'paid',
-    createdAt: new Date(Date.now() - 15 * 60000).toISOString(),
-    paidAt: new Date(Date.now() - 14 * 60000).toISOString()
+    createdAt: new Date(Date.now() - 8 * 60000).toISOString(),
+    paidAt: new Date(Date.now() - 7 * 60000).toISOString()
   },
   {
-    id: 'inv_107',
-    invoiceNumber: 'INV-2026-107',
+    id: 'inv_053',
+    invoiceNumber: 'INV-2026-053',
     vendor: 'Counter Takeaway',
     items: [
-      { name: 'Hazelnut Barista Latte', qty: 1, unitPrice: 260, total: 260 },
-      { name: 'Butter Almond Croissant', qty: 1, unitPrice: 190, total: 190 }
+      { name: 'Hazelnut Barista Latte', qty: 1, unitPrice: 280, total: 280 },
+      { name: 'Cinnamon Swirl Roll', qty: 1, unitPrice: 234, total: 234 }
     ],
-    subtotal: 450,
-    tax: 22,
-    total: 472,
+    subtotal: 514,
+    tax: 26,
+    total: 540,
     status: 'paid',
-    createdAt: new Date(Date.now() - 45 * 60000).toISOString(),
-    paidAt: new Date(Date.now() - 44 * 60000).toISOString()
+    createdAt: new Date(Date.now() - 16 * 60000).toISOString(),
+    paidAt: new Date(Date.now() - 15 * 60000).toISOString()
   },
   {
-    id: 'inv_106',
-    invoiceNumber: 'INV-2026-106',
-    vendor: 'Table 2 • Dine-In',
+    id: 'inv_052',
+    invoiceNumber: 'INV-2026-052',
+    vendor: 'Table 3 • Dine-In',
     items: [
-      { name: 'Classic Cold Brew (12hr Steep)', qty: 2, unitPrice: 210, total: 420 },
-      { name: 'Belgian Dark Chocolate Brownie', qty: 1, unitPrice: 160, total: 160 }
+      { name: 'Iced Americano Single Origin', qty: 2, unitPrice: 260, total: 520 },
+      { name: 'Truffle Cheese Sourdough Toastie', qty: 1, unitPrice: 660, total: 660 }
     ],
-    subtotal: 580,
-    tax: 29,
-    total: 609,
+    subtotal: 1180,
+    tax: 60,
+    total: 1240,
     status: 'paid',
-    createdAt: new Date(Date.now() - 90 * 60000).toISOString(),
-    paidAt: new Date(Date.now() - 88 * 60000).toISOString()
+    createdAt: new Date(Date.now() - 22 * 60000).toISOString(),
+    paidAt: new Date(Date.now() - 21 * 60000).toISOString()
   },
   {
-    id: 'inv_105',
-    invoiceNumber: 'INV-2026-105',
-    vendor: 'Table 8 • Dine-In',
+    id: 'inv_051',
+    invoiceNumber: 'INV-2026-051',
+    vendor: 'Table 1 • Dine-In',
     items: [
-      { name: 'Spanish Iced Latte', qty: 1, unitPrice: 270, total: 270 },
-      { name: 'Cinnamon Swirl Roll', qty: 1, unitPrice: 180, total: 180 },
-      { name: 'Traditional Filter Kaapi', qty: 1, unitPrice: 140, total: 140 }
+      { name: 'Pour Over Tasting Flight', qty: 1, unitPrice: 550, total: 550 },
+      { name: 'Avocado Sourdough Toast', qty: 2, unitPrice: 350, total: 700 },
+      { name: 'Dark Chocolate Brownie', qty: 1, unitPrice: 130, total: 130 }
     ],
-    subtotal: 590,
-    tax: 30,
-    total: 620,
+    subtotal: 1380,
+    tax: 70,
+    total: 1450,
     status: 'paid',
-    createdAt: new Date(Date.now() - 150 * 60000).toISOString(),
-    paidAt: new Date(Date.now() - 148 * 60000).toISOString()
+    createdAt: new Date(Date.now() - 29 * 60000).toISOString(),
+    paidAt: new Date(Date.now() - 28 * 60000).toISOString()
   },
   {
-    id: 'inv_104',
-    invoiceNumber: 'INV-2026-104',
-    vendor: 'Pre-Order / Catering',
+    id: 'inv_050',
+    invoiceNumber: 'INV-2026-050',
+    vendor: 'Counter Takeaway',
     items: [
-      { name: 'Specialty Cold Brew Growler (1L)', qty: 1, unitPrice: 950, total: 950 },
-      { name: 'Assorted Gourmet Bakes Box (6 pcs)', qty: 1, unitPrice: 900, total: 900 }
+      { name: 'Spanish Iced Latte', qty: 2, unitPrice: 320, total: 640 },
+      { name: 'Almond Biscotti Box', qty: 1, unitPrice: 312, total: 312 }
     ],
-    subtotal: 1850,
-    tax: 92,
-    total: 1942,
+    subtotal: 952,
+    tax: 48,
+    total: 1000,
     status: 'paid',
-    createdAt: new Date(Date.now() - 240 * 60000).toISOString(),
-    paidAt: new Date(Date.now() - 238 * 60000).toISOString()
+    createdAt: new Date(Date.now() - 35 * 60000).toISOString(),
+    paidAt: new Date(Date.now() - 34 * 60000).toISOString()
   }
 ];
 
@@ -1245,19 +1246,21 @@ export const MOCK_PENDING_ACTION = {
 };
 
 export const MOCK_SUMMARY = {
-  todayCollection: 24850,
-  todayOrdersCount: 50,
-  todayInvoicesCount: 10,
-  totalInvoicesCount: 10,
-  totalInvoicesValue: 24850,
-  thisWeekVolume: 168980,
-  lastWeekVolume: 154200,
-  volumeDeltaPercent: 9.6,
+  todayCollection: 58450,
+  todayOrdersCount: 54,
+  todayInvoicesCount: 54,
+  totalInvoicesCount: 54,
+  totalInvoicesValue: 58450,
+  pendingSettlement: 14200,
+  settledAmount: 44250,
+  thisWeekVolume: 384650,
+  lastWeekVolume: 348200,
+  volumeDeltaPercent: 10.5,
   paymentModeSplit: {
-    paytmQR: 68,
-    upi: 22,
-    card: 8,
-    wallet: 2
+    paytmQR: 65,
+    upi: 18,
+    card: 12,
+    cash: 5
   },
   repeatCustomerRate: 42,
   repeatCustomerRateLastWeek: 46,

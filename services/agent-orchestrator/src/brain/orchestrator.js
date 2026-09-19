@@ -718,7 +718,7 @@ export class ActionMateOrchestrator {
       try {
         const dynamicSystemPrompt = buildSystemPrompt(merchant, audit, documents, companies, balanceSheet);
         const userPrompt = `Store: ${merchant.name} (${merchant.ownerName}, ${merchant.location})\n` +
-          `Today's Sales: ₹${audit.revenueAudit?.todayTotal || 24850} | Net Margin: ${audit.costingAudit?.netMarginPercent || '31.6%'}\n` +
+          `Today's Sales: ₹${audit.revenueAudit?.todayTotal || 58450} | Net Margin: ${audit.costingAudit?.netMarginPercent || '31.6%'}\n` +
           `User Prompt: "${merchantText}"\n\n` +
           `Answer as Arc Mate with executive financial and operational mastery. Ground all recommendations in the store's numbers, Cognee agreements, and barista policies.`;
 
@@ -759,8 +759,8 @@ export class ActionMateOrchestrator {
       reply: `### 💼 Executive Briefing & Store Advisory for ${merchant.name}\n\n` +
         `Regarding: *"${merchantText}"*\n\n` +
         `Here is your store's current operational and financial reality:\n\n` +
-        `- **Today's Collections**: **₹${(audit.revenueAudit?.todayTotal || 24850).toLocaleString('en-IN')}** across ${audit.revenueAudit?.totalTransactions || 82} transactions (AOV: ₹${audit.revenueAudit?.avgTicketSize || 303}).\n` +
-        `- **Net Profit Margin**: **${audit.costingAudit?.netMarginPercent || '31.6%'}** with daily net profit of **₹${(audit.costingAudit?.netProfitDaily || 7853).toLocaleString('en-IN')}**.\n` +
+        `- **Today's Collections**: **₹${(audit.revenueAudit?.todayTotal || 58450).toLocaleString('en-IN')}** across ${audit.revenueAudit?.totalTransactions || 54} transactions (AOV: ₹${audit.revenueAudit?.avgTicketSize || 1082}).\n` +
+        `- **Net Profit Margin**: **${audit.costingAudit?.netMarginPercent || '31.6%'}** with daily net profit of **₹${(audit.costingAudit?.netProfitDaily || 18470).toLocaleString('en-IN')}**.\n` +
         `- **Cost Breakdown**: COGS: ${audit.costingAudit?.cogsPercent || '38.4%'} | Labor: 18.0% | Rent & Overhead: 12.0%.\n` +
         `- **Cognee Policies**: 15% maximum promotional discount cap, 0% discount on single-origin pour-overs, and negative working capital buffer.\n\n` +
         `#### Recommended Next Actions:\n` +

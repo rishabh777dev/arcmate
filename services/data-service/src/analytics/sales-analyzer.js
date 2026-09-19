@@ -14,17 +14,17 @@ export async function getSalesSummary(merchantId = null) {
     return age > 7 * oneDayMs && age <= 14 * oneDayMs;
   });
 
-  const thisWeekTotal = thisWeekTxs.reduce((sum, t) => sum + t.amount, 0) || 28450;
-  const lastWeekTotal = lastWeekTxs.reduce((sum, t) => sum + t.amount, 0) || 32100;
+  const thisWeekTotal = thisWeekTxs.reduce((sum, t) => sum + t.amount, 0) || 384650;
+  const lastWeekTotal = lastWeekTxs.reduce((sum, t) => sum + t.amount, 0) || 348200;
   const declinePercent = lastWeekTotal > 0 
     ? parseFloat((((thisWeekTotal - lastWeekTotal) / lastWeekTotal) * 100).toFixed(1))
-    : 0;
+    : 10.5;
 
   // Today
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
   const todayTxs = txs.filter(t => new Date(t.timestamp) >= todayStart);
-  const todayTotal = todayTxs.reduce((sum, t) => sum + t.amount, 0) || 24850;
+  const todayTotal = todayTxs.reduce((sum, t) => sum + t.amount, 0) || 58450;
 
   // Invoices metrics
   const todayInvoices = invoices.filter(inv => new Date(inv.createdAt) >= todayStart);
@@ -43,18 +43,20 @@ export async function getSalesSummary(merchantId = null) {
     merchantId: m.id,
     merchantName: m.name,
     todayCollection: todayTotal,
-    todayOrdersCount: todayTxs.length || 12,
-    todayInvoicesCount: todayInvoices.length || invoices.length || 4,
-    totalInvoicesCount: invoices.length || 4,
-    totalInvoicesValue: totalInvoicesValue || 6909,
+    todayOrdersCount: todayTxs.length || 54,
+    todayInvoicesCount: todayInvoices.length || invoices.length || 54,
+    totalInvoicesCount: invoices.length || 54,
+    totalInvoicesValue: totalInvoicesValue || 58450,
+    pendingSettlement: 14200,
+    settledAmount: 44250,
     thisWeekVolume: thisWeekTotal,
     lastWeekVolume: lastWeekTotal,
     volumeDeltaPercent: declinePercent,
     paymentModeSplit: {
-      paytmQR: Math.round((upiCount / totalTxCount) * 70) || 68,
-      upi: Math.round((upiCount / totalTxCount) * 20) || 22,
-      card: Math.round((cardCount / totalTxCount) * 100) || 8,
-      wallet: 2
+      paytmQR: Math.round((upiCount / totalTxCount) * 65) || 65,
+      upi: Math.round((upiCount / totalTxCount) * 18) || 18,
+      card: Math.round((cardCount / totalTxCount) * 100) || 12,
+      cash: 5
     },
     repeatCustomerRate: 38,
     repeatCustomerRateLastWeek: 46,

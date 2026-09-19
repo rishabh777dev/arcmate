@@ -8,11 +8,11 @@ export class BusinessFinancialAdvisor {
    * Comprehensive Profit Margin & Financial Health Advisory
    */
   generateProfitMarginAdvice(audit, documents = []) {
-    const todayRev = audit.revenueAudit?.todayTotal || 24850;
-    const monthlyRev = audit.revenueAudit?.monthlyProjected || 733075;
+    const todayRev = audit.revenueAudit?.todayTotal || 58450;
+    const monthlyRev = audit.revenueAudit?.monthlyProjected || 1680000;
     const cogsPercent = audit.costingAudit?.cogsPercent || '38.4%';
-    const cogsAmount = audit.costingAudit?.cogsDailyAmount || 9542;
-    const netProfit = audit.costingAudit?.netProfitDaily || 7853;
+    const cogsAmount = audit.costingAudit?.cogsDailyAmount || 22445;
+    const netProfit = audit.costingAudit?.netProfitDaily || 18470;
     const netMargin = audit.costingAudit?.netMarginPercent || '31.6%';
 
     return `### 📈 Business Financial Advisory: Profit Margin & Unit Economics
@@ -82,9 +82,9 @@ Here is a line-by-line breakdown of your top supplier costs and actionable cost-
    * Working Capital, Cash Flow & Financing Advisory
    */
   generateWorkingCapitalAdvice(balanceSheet, invoices = []) {
-    const todayCollections = balanceSheet.todayCollections || 24850;
-    const settledAmount = balanceSheet.settledAmount || 19600;
-    const pendingSettlement = balanceSheet.pendingSettlement || 5250;
+    const todayCollections = balanceSheet.todayCollections || 58450;
+    const settledAmount = balanceSheet.settledAmount || 44250;
+    const pendingSettlement = balanceSheet.pendingSettlement || 14200;
     const pendingInvoices = invoices.filter(i => i.status === 'pending');
     const pendingInvoicesTotal = pendingInvoices.reduce((sum, i) => sum + (Number(i.total) || 0), 0);
 
@@ -152,7 +152,7 @@ Here is a line-by-line breakdown of your top supplier costs and actionable cost-
    * Tax & GST Compliance Summary
    */
   generateTaxSummary(audit, invoices = []) {
-    const todayRev = audit.revenueAudit?.todayTotal || 24850;
+    const todayRev = audit.revenueAudit?.todayTotal || 58450;
     const gstRate = 5; // 5% composite restaurant rate in India without ITC
     const todayGSTCollected = Math.round((todayRev * gstRate) / 105);
     const monthlyProjectedGST = Math.round(todayGSTCollected * 29.5);

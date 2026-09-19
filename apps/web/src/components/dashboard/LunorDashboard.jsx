@@ -16,7 +16,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { 
-  AreaChart, 
+  ComposedChart, 
   Area, 
   Line, 
   XAxis, 
@@ -72,19 +72,20 @@ export default function LunorDashboard({
 
   // Chart data representing actual collections trend
   const chartData = [
-    { label: 'Mon', value: 18450, lastWeek: 16200 },
-    { label: 'Tue', value: 19800, lastWeek: 18100 },
-    { label: 'Wed', value: 21400, lastWeek: 19500 },
-    { label: 'Thu', value: 22100, lastWeek: 21800 },
-    { label: 'Fri', value: 26800, lastWeek: 24200 },
-    { label: 'Sat', value: 31200, lastWeek: 29800 },
-    { label: 'Today', value: summary?.todayCollection || 24850, lastWeek: 23100 }
+    { label: 'Mon', value: 42100, lastWeek: 38200 },
+    { label: 'Tue', value: 44800, lastWeek: 41500 },
+    { label: 'Wed', value: 48500, lastWeek: 43200 },
+    { label: 'Thu', value: 49200, lastWeek: 46800 },
+    { label: 'Fri', value: 58900, lastWeek: 52400 },
+    { label: 'Sat', value: 68400, lastWeek: 61800 },
+    { label: 'Today', value: Number(summary?.todayCollection || 58450), lastWeek: 52100 }
   ];
 
-  const todayCollections = Number(summary?.todayCollection || 24850);
-  const todayOrders = Number(summary?.todayOrdersCount || transactions.length || 50);
-  const totalInvoicesCount = invoices.length || summary?.totalInvoicesCount || 10;
-  const totalInvoicesValue = invoices.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0) || 24850;
+  const todayCollections = Number(summary?.todayCollection || 58450);
+  const todayOrders = Number(summary?.todayOrdersCount || transactions.length || 54);
+  const totalInvoicesCount = Number(summary?.totalInvoicesCount || invoices.length || 54);
+  const totalInvoicesValue = Number(summary?.totalInvoicesValue || 58450);
+  const pendingSettlement = Number(summary?.pendingSettlement || 14200);
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
@@ -105,7 +106,11 @@ export default function LunorDashboard({
           </div>
 
           {/* Soundbox Sync Badge */}
-          <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.12)] text-xs">
+          <div 
+            onClick={onPlayChime}
+            className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#1e1c18]/80 hover:bg-[#25221d] border border-[rgba(242,235,216,0.12)] hover:border-[#ed6f5c]/40 text-xs transition cursor-pointer shadow-sm"
+            title="Click to trigger Countertop Soundbox live announcement"
+          >
             <span className="pulse-dot"></span>
             <span className="text-[#9a9382] text-[10px] font-mono uppercase tracking-wider">Soundbox 3.0:</span>
             <span className="font-semibold text-[#f2ebd8] font-sans">Online (4G)</span>
@@ -172,7 +177,7 @@ export default function LunorDashboard({
           <div>
             <span className="text-[10px] font-mono tracking-widest text-[#9a9382] uppercase">Pending Settlement</span>
             <div className="text-2xl lg:text-3xl font-bold text-[#f2ebd8] mt-1.5 tracking-tight font-sans">
-              ₹5,250
+              ₹{pendingSettlement.toLocaleString('en-IN')}
             </div>
             <p className="text-[11px] text-[#6e7448] mt-1 flex items-center gap-1 font-mono">
               <CheckCircle2 className="w-3 h-3" /> Tonight 11:30 PM
@@ -211,7 +216,7 @@ export default function LunorDashboard({
 
         <div className="h-64 w-full pt-2">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+            <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
               <defs>
                 <linearGradient id="atelierFill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#ed6f5c" stopOpacity={0.25}/>
@@ -260,7 +265,7 @@ export default function LunorDashboard({
                 strokeDasharray="4 4" 
                 dot={false} 
               />
-            </AreaChart>
+            </ComposedChart>
           </ResponsiveContainer>
         </div>
       </div>

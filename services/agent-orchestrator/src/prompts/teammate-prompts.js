@@ -51,11 +51,11 @@ export function buildSystemPrompt(merchant = {}, storeAudit = {}, documents = []
   const category = merchant.category || 'Specialty Artisan Coffee & Gourmet Bakes';
   const upiId = merchant.upiId || 'atheescafe@paytm';
 
-  const todayRev = storeAudit.revenueAudit?.todayTotal || balanceSheet.todayCollections || 24850;
-  const monthlyRev = storeAudit.revenueAudit?.monthlyProjected || 733075;
+  const todayRev = storeAudit.revenueAudit?.todayTotal || balanceSheet.todayCollections || 58450;
+  const monthlyRev = storeAudit.revenueAudit?.monthlyProjected || 1680000;
   const cogsPct = storeAudit.costingAudit?.cogsPercent || '38.4%';
-  const cogsAmt = storeAudit.costingAudit?.cogsDailyAmount || 9542;
-  const netProfit = storeAudit.costingAudit?.netProfitDaily || 7853;
+  const cogsAmt = storeAudit.costingAudit?.cogsDailyAmount || 22445;
+  const netProfit = storeAudit.costingAudit?.netProfitDaily || 18470;
   const netMargin = storeAudit.costingAudit?.netMarginPercent || '31.6%';
 
   const docRulesSummary = (documents || []).map((d, i) => 

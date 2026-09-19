@@ -42,10 +42,9 @@ export class CogneeKnowledgeEngine {
         category: 'FINANCIAL',
         type: 'Entity',
         properties: {
-          todayCollections: 14280,
-          settledAmount: 14280,
-          pendingSettlement: 0,
-          workingCapitalAdvance: 35000,
+          todayCollections: 58450,
+          settledAmount: 44250,
+          pendingSettlement: 14200,
           cashFlowStatus: 'HEALTHY'
         }
       },
@@ -136,8 +135,8 @@ export class CogneeKnowledgeEngine {
         id: 'kn_2',
         category: 'BALANCE_SHEET',
         title: 'Working Capital Health & Settlements',
-        content: 'Working capital loan balance is ₹35,000. Daily settlement is active with ₹14,280 cleared today. Clean cash flow maintained.',
-        metrics: { loanBalance: 35000, settledToday: 14280 }
+        content: 'Daily settlement is active with ₹44,250 cleared and ₹14,200 pending for tonight 11:30 PM. Total today collections: ₹58,450. Clean cash flow maintained.',
+        metrics: { todayCollections: 58450, settledToday: 44250, pendingSettlement: 14200 }
       },
       {
         id: 'kn_3',
@@ -329,8 +328,7 @@ export class CogneeKnowledgeEngine {
     }
 
     // Rule 2: Working capital liquidity buffer check
-    const loanBalance = 35000;
-    const todayCollections = 14280;
+    const todayCollections = 58450;
     if (actionParams.requiresUpfrontExpense && actionParams.upfrontCost > todayCollections * 0.5) {
       violations.push({
         rule: 'WORKING_CAPITAL_PRESERVATION',

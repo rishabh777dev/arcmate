@@ -50,6 +50,7 @@ import { normalizeWhatsAppNumber, buildWhatsAppUrl, openWhatsAppChat } from '../
 import { playPaytmChime } from '../../services/soundboxAudio';
 import { customNodeTypes } from './n8nCustomNodes';
 import { PRESET_WORKFLOWS_DATA } from './presetWorkflowsData';
+import { MOCK_LEDGER_ROWS, LEDGER_TOTALS } from '../../data/mockLedgerData';
 
 function WorkflowCanvasInner({
   selectedWorkflow,
@@ -213,50 +214,18 @@ export default function WorkflowStudioView() {
   const [executionResult, setExecutionResult] = useState(null);
   const [toastMsg, setToastMsg] = useState('');
 
-  // Live Simulated Invoices Table (Showing real-time rows added when payments happen!)
-  const [liveRows, setLiveRows] = useState([
-    { id: 'INV-2026-041', time: 'Today, 09:30 AM', customer: 'Rishi Sharma', amount: 450, mode: 'Paytm UPI', gst: 22.50, status: 'SUCCESS' },
-    { id: 'INV-2026-042', time: 'Today, 11:15 AM', customer: 'Aman Verma', amount: 120, mode: 'UPI Soundbox', gst: 6.00, status: 'SUCCESS' },
-    { id: 'INV-2026-043', time: 'Today, 01:45 PM', customer: 'Pooja Gupta', amount: 890, mode: 'Card POS', gst: 44.50, status: 'SUCCESS' },
-    { id: 'INV-2026-044', time: 'Today, 03:20 PM', customer: 'Rajesh Kumar', amount: 340, mode: 'Cash Counter', gst: 17.00, status: 'SUCCESS' },
-    { id: 'INV-2026-045', time: 'Today, 05:10 PM', customer: 'Vikram Singh', amount: 650, mode: 'Paytm QR', gst: 32.50, status: 'SUCCESS' }
-  ]);
+  // Live Synchronized Invoices Table (Single source of truth: all 54 verified invoices totaling ₹58,450)
+  const [liveRows, setLiveRows] = useState(() => MOCK_LEDGER_ROWS);
 
-  // Calculate live total revenue from rows
-  const totalRevenue = liveRows.reduce((acc, row) => acc + (Number(row.amount) || 0), 0) + 15450;
-  const totalInvoices = liveRows.length + 29;
+  // Exact dynamic calculations directly from the live rows (Zero arbitrary offsets!)
+  const totalRevenue = liveRows.reduce((acc, row) => acc + (Number(row.amount) || 0), 0);
+  const totalInvoices = liveRows.length;
+  const upiTotal = liveRows.filter(r => (r.mode || '').includes('UPI') || (r.mode || '').includes('Paytm')).reduce((acc, row) => acc + (Number(row.amount) || 0), 0);
+  const cardTotal = liveRows.filter(r => (r.mode || '').includes('Card')).reduce((acc, row) => acc + (Number(row.amount) || 0), 0);
+  const cashTotal = liveRows.filter(r => (r.mode || '').includes('Cash')).reduce((acc, row) => acc + (Number(row.amount) || 0), 0);
 
-  // 1. Fetch live transactions from backend on mount & listen to real-time events
+  // Listen for real-time transactions broadcast via WebSocket or Copilot
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const token = localStorage.getItem('actionmate_token');
-        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const res = await fetch('/api/transactions?limit=25', { headers });
-        if (res.ok) {
-          const txs = await res.json();
-          if (Array.isArray(txs) && txs.length > 0) {
-            const mapped = txs.map((tx, idx) => ({
-              id: tx.id ? `INV-2026-${String(tx.id).replace(/\D/g, '').slice(-3) || String(idx + 41).padStart(3, '0')}` : `INV-2026-0${idx + 41}`,
-              time: tx.timestamp ? new Date(tx.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Today',
-              customer: tx.customerName || 'Store Patron',
-              amount: Number(tx.amount) || 450,
-              mode: tx.paymentMode || 'Paytm UPI QR',
-              gst: Number(((Number(tx.amount) || 450) * 0.05).toFixed(2)),
-              status: 'SUCCESS',
-              isNew: false
-            }));
-            setLiveRows(mapped);
-          }
-        }
-      } catch (e) {
-        console.warn('Could not fetch backend transactions for live table:', e);
-      }
-    };
-
-    fetchTransactions();
-
-    // Listen for real-time transactions broadcast via WebSocket or Copilot
     const handleIncomingTxn = (event) => {
       const detail = event.detail || {};
       const tx = detail.transaction;
@@ -264,13 +233,14 @@ export default function WorkflowStudioView() {
       if (!tx) return;
 
       const newRow = {
-        id: inv?.invoiceNumber || (tx.id ? `INV-2026-${String(tx.id).replace(/\D/g, '').slice(-3) || '999'}` : `INV-2026-0${Date.now().toString().slice(-3)}`),
+        id: inv?.invoiceNumber || (tx.id ? `INV-2026-${String(tx.id).replace(/\D/g, '').slice(-3) || '099'}` : `INV-2026-0${Date.now().toString().slice(-3)}`),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         customer: tx.customerName || 'Store Patron',
         amount: Number(tx.amount) || 450,
         mode: tx.paymentMode || 'Paytm UPI QR',
         gst: Number(((Number(tx.amount) || 450) * 0.05).toFixed(2)),
         status: 'SUCCESS',
+        items: tx.description || 'Counter Checkout',
         isNew: true
       };
 
@@ -361,9 +331,25 @@ export default function WorkflowStudioView() {
     // Play Soundbox chime audio immediately
     playPaytmChime(`Paytm Soundbox 3.0: ₹${paymentAmount} received via UPI.`);
 
+    const nextInvoiceId = `INV-2026-${String(liveRows.length + 1).padStart(3, '0')}`;
+    const newRow = {
+      id: nextInvoiceId,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      customer: randomCustomer,
+      amount: paymentAmount,
+      mode: 'Paytm UPI QR',
+      gst: Number((paymentAmount * 0.05).toFixed(2)),
+      status: 'SUCCESS',
+      items: itemLabel,
+      isNew: true
+    };
+
+    setLiveRows(prev => [newRow, ...prev]);
+    setToastMsg(`⚡ Payment of ₹${paymentAmount} received! Appended row #${liveRows.length + 1} (${nextInvoiceId}) to connected Google Sheet.`);
+
     try {
       const token = localStorage.getItem('actionmate_token');
-      const res = await fetch('/api/transactions', {
+      await fetch('/api/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -376,41 +362,8 @@ export default function WorkflowStudioView() {
           description: `${itemLabel} • Counter Checkout`
         })
       });
-
-      if (res.ok) {
-        const data = await res.json();
-        const tx = data.transaction;
-        const inv = data.invoice;
-        const newRow = {
-          id: inv?.invoiceNumber || `INV-2026-0${liveRows.length + 46}`,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          customer: randomCustomer,
-          amount: paymentAmount,
-          mode: 'Paytm UPI QR',
-          gst: Number((paymentAmount * 0.05).toFixed(2)),
-          status: 'SUCCESS',
-          isNew: true
-        };
-        setLiveRows(prev => {
-          if (prev.some(r => r.id === newRow.id)) return prev;
-          return [newRow, ...prev];
-        });
-        setToastMsg(`⚡ Payment of ₹${paymentAmount} received! Appended row #${liveRows.length + 1} to connected Google Sheet.`);
-      }
     } catch (err) {
-      const newInvoiceId = `INV-2026-0${liveRows.length + 46}`;
-      const newRow = {
-        id: newInvoiceId,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        customer: randomCustomer,
-        amount: paymentAmount,
-        mode: 'Paytm UPI QR',
-        gst: Number((paymentAmount * 0.05).toFixed(2)),
-        status: 'SUCCESS',
-        isNew: true
-      };
-      setLiveRows(prev => [newRow, ...prev]);
-      setToastMsg(`⚡ Payment of ₹${paymentAmount} received! Appended row #${liveRows.length + 1} to connected Google Sheet.`);
+      // Offline / local fallback handled gracefully
     }
 
     setTimeout(() => setToastMsg(''), 4000);
@@ -432,7 +385,7 @@ export default function WorkflowStudioView() {
   // Dispatch Daily 6:00 PM Summary to WhatsApp (Opens WhatsApp with exact message & sheet link!)
   const handleSendWhatsApp6pmSummary = () => {
     const cleanPhone = normalizeWhatsAppNumber(whatsappNumber);
-    const message = `✨ Athees Café — Daily 6:00 PM Store Summary\n\n📊 Total Revenue: ₹${totalRevenue.toLocaleString('en-IN')} across ${totalInvoices} invoices\n💳 UPI: ₹${(totalRevenue - 3450).toLocaleString('en-IN')} | Cash: ₹3,450\n🔥 Peak Rush: 4:30 PM - 6:00 PM (Evening Chai & Snacks)\n🏆 Top Customer of the Day: Rishi Sharma\n\n🔗 Live Google Sheet Ledger:\n${googleSheetLink}\n\n⚡ Powered by Arc Mate Autonomous Store Engine`;
+    const message = `✨ Athees Café — Daily 6:00 PM Store Summary\n\n📊 Total Revenue: ₹${totalRevenue.toLocaleString('en-IN')} across ${totalInvoices} invoices\n💳 UPI: ₹${upiTotal.toLocaleString('en-IN')} | Card: ₹${cardTotal.toLocaleString('en-IN')} | Cash: ₹${cashTotal.toLocaleString('en-IN')}\n🔥 Peak Rush: 4:30 PM - 6:00 PM (Evening Chai & Specialty Bakes)\n🏆 Top Customer: Harish Ranganathan (₹2,300)\n⚡ Pending Settlement: ₹14,200 (Tonight 11:30 PM Batch)\n\n🔗 Live Google Sheet Ledger:\n${googleSheetLink}\n\n⚡ Powered by Arc Mate Autonomous Store Engine`;
 
     // Trigger Soundbox chime confirmation
     playPaytmChime('Ding! 6:00 PM daily store summary and Google Sheet link sent to your WhatsApp.');
@@ -482,9 +435,31 @@ export default function WorkflowStudioView() {
 
   // Download Live Invoices as CSV File
   const handleExportCSV = () => {
-    const headers = ['Invoice Number', 'Time', 'Customer Name', 'Amount (INR)', 'Payment Method', 'GST (5%)', 'Status'];
-    const rows = liveRows.map(r => [r.id, r.time, `"${r.customer}"`, r.amount, r.mode, r.gst, r.status]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const headers = ['Invoice Number', 'Time', 'Customer Name', 'Amount (INR)', 'Payment Method', 'GST (5%)', 'Status', 'Ordered Items'];
+    const rows = liveRows.map(r => [
+      r.id, 
+      `"${r.time}"`, 
+      `"${r.customer}"`, 
+      r.amount.toFixed(2), 
+      `"${r.mode}"`, 
+      r.gst.toFixed(2), 
+      r.status,
+      `"${r.items || 'Specialty Coffee & Bakes'}"`
+    ]);
+
+    // Summary footer row ensuring consistent verifiable totals
+    const summaryRow = [
+      'TOTAL_COLLECTIONS',
+      '"Today 6:00 PM"',
+      `"${totalInvoices} Invoices Total"`,
+      totalRevenue.toFixed(2),
+      `"UPI: ₹${upiTotal.toLocaleString('en-IN')} | Card: ₹${cardTotal.toLocaleString('en-IN')} | Cash: ₹${cashTotal.toLocaleString('en-IN')}"`,
+      (totalRevenue * 0.05).toFixed(2),
+      'AUDITED_OK',
+      '"Athees Café Indiranagar"'
+    ];
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(',')), summaryRow.join(',')].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
@@ -492,7 +467,7 @@ export default function WorkflowStudioView() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    setToastMsg('✓ Downloaded live invoice ledger CSV file!');
+    setToastMsg(`✓ Downloaded live invoice ledger CSV (${liveRows.length} rows totaling ₹${totalRevenue.toLocaleString('en-IN')})!`);
     setTimeout(() => setToastMsg(''), 4000);
   };
 
@@ -723,7 +698,7 @@ export default function WorkflowStudioView() {
           </div>
 
           <span className="text-[11px] font-mono text-zinc-400">
-            Total Today: <strong className="text-white">₹{totalRevenue.toLocaleString('en-IN')}</strong> ({totalInvoices} Invoices)
+            Total Today: <strong className="text-white">₹{totalRevenue.toLocaleString('en-IN')}</strong> ({totalInvoices} Invoices • UPI: ₹{upiTotal.toLocaleString('en-IN')} | Card: ₹{cardTotal.toLocaleString('en-IN')} | Cash: ₹{cashTotal.toLocaleString('en-IN')})
           </span>
         </div>
 
@@ -1036,9 +1011,9 @@ export default function WorkflowStudioView() {
                   </td>
                   <td className="p-2.5 text-zinc-400">{row.time}</td>
                   <td className="p-2.5 font-sans font-medium text-zinc-100">{row.customer}</td>
-                  <td className="p-2.5 font-bold text-emerald-400">₹{row.amount.toFixed(2)}</td>
+                  <td className="p-2.5 font-bold text-emerald-400">₹{(row.amount || 0).toFixed(2)}</td>
                   <td className="p-2.5 text-zinc-300">{row.mode}</td>
-                  <td className="p-2.5 text-zinc-400">₹{row.gst.toFixed(2)}</td>
+                  <td className="p-2.5 text-zinc-400">₹{(row.gst || 0).toFixed(2)}</td>
                   <td className="p-2.5 text-right">
                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold border border-emerald-500/30">
                       {row.status}
@@ -1047,6 +1022,21 @@ export default function WorkflowStudioView() {
                 </tr>
               ))}
             </tbody>
+            <tfoot className="sticky bottom-0 bg-[#181612] border-t-2 border-emerald-500/40 font-bold text-white z-10 shadow-lg">
+              <tr>
+                <td className="p-2.5 text-emerald-400">TOTAL</td>
+                <td className="p-2.5 text-zinc-400">Today 6:00 PM</td>
+                <td className="p-2.5 font-sans text-zinc-200">{totalInvoices} Invoices Total</td>
+                <td className="p-2.5 text-emerald-400 text-sm">₹{totalRevenue.toFixed(2)}</td>
+                <td className="p-2.5 text-zinc-300 text-[10px] font-normal">UPI ₹{upiTotal.toLocaleString('en-IN')} | Card ₹{cardTotal.toLocaleString('en-IN')} | Cash ₹{cashTotal.toLocaleString('en-IN')}</td>
+                <td className="p-2.5 text-zinc-400">₹{(totalRevenue * 0.05).toFixed(2)}</td>
+                <td className="p-2.5 text-right">
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/40">
+                    AUDITED
+                  </span>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
 

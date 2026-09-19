@@ -144,7 +144,7 @@ export const PRESET_WORKFLOWS_DATA = [
           parameters: {
             recipientPhone: '+91 98765 43210',
             googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit',
-            messageFormat: '✨ Store 6:00 PM Daily Summary:\n\n📊 Total Revenue: ₹{totalRevenue} across {totalInvoices} invoices\n💳 UPI: ₹15,450 | Cash: ₹3,450\n🔥 Peak Rush: 4:30 PM - 6:00 PM\n\n🔗 Live Google Sheet Ledger:\n{googleSheetUrl}',
+            messageFormat: '✨ Store 6:00 PM Daily Summary:\n\n📊 Total Revenue: ₹{totalRevenue} across {totalInvoices} invoices\n💳 UPI: ₹48,200 | Card: ₹6,800 | Cash: ₹3,450\n🔥 Peak Rush: 4:30 PM - 6:00 PM\n⚡ Pending Settlement: ₹14,200 (Tonight 11:30 PM)\n\n🔗 Live Google Sheet Ledger:\n{googleSheetUrl}',
             attachPdfSummary: true
           }
         }

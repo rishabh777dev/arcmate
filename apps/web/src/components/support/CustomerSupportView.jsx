@@ -29,7 +29,8 @@ import {
 import { 
   MOCK_REVIEWS_SUMMARY, 
   MOCK_REVIEWS, 
-  MOCK_SUPPORT_TICKETS 
+  MOCK_SUPPORT_TICKETS,
+  MOCK_CUSTOMER_SUGGESTIONS 
 } from '../../data/mockSupportReviewsData';
 import { playPaytmChime } from '../../services/soundboxAudio';
 import { normalizeWhatsAppNumber, buildWhatsAppUrl, openWhatsAppChat } from '../../utils/whatsappHelper';

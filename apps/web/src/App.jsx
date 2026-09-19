@@ -170,8 +170,8 @@ export default function App() {
             }
             setSummary(prev => ({
               ...prev,
-              todayCollection: (Number(prev?.todayCollection) || 24850) + (Number(data.transaction?.amount) || 0),
-              todayOrdersCount: (Number(prev?.todayOrdersCount) || 50) + 1
+              todayCollection: (Number(prev?.todayCollection) || 58450) + (Number(data.transaction?.amount) || 0),
+              todayOrdersCount: (Number(prev?.todayOrdersCount) || 54) + 1
             }));
           }
         } catch (e) {}
@@ -397,18 +397,18 @@ export default function App() {
       <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-transparent relative z-10">
         
         {/* Top Header Bar with Editorial Metadata */}
-        <header className="h-14 border-b border-[rgba(242,235,216,0.08)] bg-[#12100d]/85 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
+        <header className="h-14 border-b border-[var(--line)] lunor-header backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
           <div className="flex items-center gap-2.5">
             <ArcMateLogo size={22} className="w-5 h-5 rounded-md shadow-sm shrink-0" />
-            <span className="text-xs font-bold text-[#f2ebd8] tracking-tight">{activeMerchant?.name || 'Athees Café'}</span>
-            <span className="text-[#6e6860]">•</span>
-            <span className="text-[11px] font-serif italic text-[#c8c0a8] capitalize tracking-wide">{activeTab.replace('-', ' ')}</span>
+            <span className="text-xs font-bold text-[var(--ink)] tracking-tight">{activeMerchant?.name || 'Athees Café'}</span>
+            <span className="text-[var(--ink-faint)]">•</span>
+            <span className="text-[11px] font-serif italic text-[var(--ink-soft)] capitalize tracking-wide">{activeTab.replace('-', ' ')}</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] text-[11px] text-[#c8c0a8]">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--inset-bg)] border border-[var(--line)] text-[11px] text-[var(--ink-soft)]">
               <span className="pulse-dot" />
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#9a9382]">Store Intelligence</span>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--ink-mute)]">Store Intelligence</span>
               <span className="text-[10px] font-bold text-[#ed6f5c] font-mono">LIVE</span>
             </div>
 
@@ -427,7 +427,7 @@ export default function App() {
                 setActiveTab('copilot');
                 if (prompt) handleSendMessage(prompt);
               }}
-              onPlayChime={() => playPaytmChime(`Countertop Soundbox: ₹${summary?.todayCollection || 24850} received today on store QR.`)}
+              onPlayChime={() => playPaytmChime(`Countertop Soundbox: ₹${summary?.todayCollection || 58450} received today on store QR.`)}
               onApproveAction={() => setActiveTab('approvals')}
               onNavigateTab={(tab) => setActiveTab(tab)}
             />
@@ -479,27 +479,27 @@ export default function App() {
             <div className="space-y-4 max-w-4xl mx-auto">
               <div className="space-y-1">
                 <span className="label-editorial text-[10px]"><span className="ix">PLATE VI</span> TIMELINE</span>
-                <h1 className="display-title text-2xl font-bold tracking-tight text-[#f2ebd8]">
+                <h1 className="display-title text-2xl font-bold tracking-tight text-[var(--ink)]">
                   Audit & Activity <em>Timeline</em><span className="dot">.</span>
                 </h1>
-                <p className="lead-editorial text-xs text-[#9a9382]">
+                <p className="lead-editorial text-xs text-[var(--ink-mute)]">
                   Immutable ledger of autonomous actions, merchant approvals, and Soundbox hardware events.
                 </p>
               </div>
 
               <div className="lunor-card rounded-2xl p-5 shadow-sm space-y-3">
                 {auditLogs.map((log) => (
-                  <div key={log.id} className="p-3.5 rounded-xl bg-[#1e1c18]/70 border border-[rgba(242,235,216,0.06)] flex items-center justify-between text-xs hover:border-[rgba(242,235,216,0.14)] transition">
+                  <div key={log.id} className="p-3.5 rounded-xl lunor-inset flex items-center justify-between text-xs hover:border-[var(--line-hover)] transition">
                     <div>
-                      <div className="font-semibold text-[#f2ebd8] flex items-center gap-2">
+                      <div className="font-semibold text-[var(--ink)] flex items-center gap-2">
                         <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#ed6f5c]/10 text-[#ed6f5c] border border-[#ed6f5c]/25">
                           {log.actor}
                         </span>
                         <span className="font-sans">{log.actionType}</span>
                       </div>
-                      <p className="text-[#9a9382] text-[11px] mt-1 font-body">{log.details}</p>
+                      <p className="text-[var(--ink-mute)] text-[11px] mt-1 font-body">{log.details}</p>
                     </div>
-                    <span className="text-[10px] text-[#6e6860] font-mono shrink-0 ml-4">
+                    <span className="text-[10px] text-[var(--ink-faint)] font-mono shrink-0 ml-4">
                       {log.timestamp ? new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent'}
                     </span>
                   </div>
