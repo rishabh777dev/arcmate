@@ -21,25 +21,16 @@ import { useTheme } from '../../context/ThemeContext';
 export default function ShaderBackground({ className = "", opacity, style = {} }) {
   const [hasShaderError, setHasShaderError] = useState(false);
   const { isDark } = useTheme();
-
-  // In light mode, return clean, luminous off-white backdrop with no murky dark shaders
-  if (!isDark) {
-    return (
-      <div 
-        className={`fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#fbfaf8] ${className}`}
-        style={{ ...style }}
-      />
-    );
-  }
+  const effectiveOpacity = opacity !== undefined ? (isDark ? opacity : Math.min(1, opacity + 0.15)) : (isDark ? 0.35 : 0.5);
 
   if (hasShaderError) {
-    return <FlutedCanvas className={className} style={style} opacity={opacity} isDark={true} />;
+    return <FlutedCanvas className={className} style={style} opacity={effectiveOpacity} isDark={isDark} />;
   }
 
   return (
     <div 
-      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#0e0d0a] ${className}`}
-      style={{ ...style, ...(opacity !== undefined ? { opacity } : {}) }}
+      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden ${isDark ? 'bg-[#0e0d0a]' : 'bg-[#fbfaf8]'} ${className}`}
+      style={{ ...style, opacity: effectiveOpacity }}
     >
       <Shader 
         className="w-full h-full block absolute inset-0"
@@ -50,8 +41,8 @@ export default function ShaderBackground({ className = "", opacity, style = {} }
       >
         {/* 1. Base Ambient Paper Backdrop Shader */}
         <LinearGradient
-          colorA="#0e0d0a"
-          colorB="#161410"
+          colorA={isDark ? "#0e0d0a" : "#fbfaf8"}
+          colorB={isDark ? "#161410" : "#f5f3ec"}
           colorSpace="hsl"
           end={{ x: 0, y: 1 }}
           start={{ x: 0, y: 0 }}
@@ -61,11 +52,11 @@ export default function ShaderBackground({ className = "", opacity, style = {} }
         <ChromaFlow
           id="trailFlow"
           baseColor="#00000000"
-          upColor="#ed6f5c"
-          downColor="#e9b94a"
-          leftColor="#d95a47"
-          rightColor="#f08e7c"
-          intensity={1.2}
+          upColor={isDark ? "#ed6f5c" : "#e0533c"}
+          downColor={isDark ? "#e9b94a" : "#f59e0b"}
+          leftColor={isDark ? "#d95a47" : "#f43f5e"}
+          rightColor={isDark ? "#f08e7c" : "#fb923c"}
+          intensity={isDark ? 1.2 : 1.3}
           radius={2.8}
           momentum={24}
           visible={false}
