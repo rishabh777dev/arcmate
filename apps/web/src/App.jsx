@@ -163,6 +163,17 @@ export default function App() {
           if (data.actionDraft) {
             setPendingAction(data.actionDraft);
           }
+          if (data.type === 'TRANSACTION_CREATED') {
+            window.dispatchEvent(new CustomEvent('actionmate:transaction', { detail: data }));
+            if (data.soundboxText) {
+              playPaytmChime(data.soundboxText);
+            }
+            setSummary(prev => ({
+              ...prev,
+              todayCollection: (Number(prev?.todayCollection) || 24850) + (Number(data.transaction?.amount) || 0),
+              todayOrdersCount: (Number(prev?.todayOrdersCount) || 50) + 1
+            }));
+          }
         } catch (e) {}
       };
 

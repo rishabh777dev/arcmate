@@ -33,7 +33,7 @@ export default function ApprovalsView({ pendingAction, onApprove, onReject, onGo
               </div>
             </div>
             <span className="text-[10px] font-mono font-semibold px-2.5 py-1 bg-[#ed6f5c]/15 text-[#ed6f5c] border border-[#ed6f5c]/30 rounded-full">
-              {pendingAction.audienceSize || 38} Patrons
+              {pendingAction.audienceSize || 47} Patrons
             </span>
           </div>
 

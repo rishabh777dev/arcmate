@@ -221,6 +221,48 @@ export class ActionMateOrchestrator {
     }
 
     // ==========================================
+    // 4b. RECORD / SIMULATE PAYMENT OR TRANSACTION
+    // ==========================================
+    const isRecordTxn = (pLower.includes('record') || pLower.includes('insert') || pLower.includes('add') || pLower.includes('simulate')) &&
+      (pLower.includes('payment') || pLower.includes('transaction') || pLower.includes('checkout') || pLower.includes('₹') || pLower.includes('rs'));
+    if (isRecordTxn) {
+      const amtMatch = pLower.match(/(?:₹|rs\.?|inr)?\s*(\d+)/i);
+      const amount = amtMatch ? parseInt(amtMatch[1], 10) : 450;
+      
+      const nameMatch = pLower.match(/(?:for|from|by)\s+([a-zA-Z\s]+)/i);
+      const customerName = nameMatch ? nameMatch[1].trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Retail Patron';
+
+      const result = await dataStore.createTransaction(merchant.id, {
+        amount,
+        customerName,
+        paymentMode: 'Paytm UPI QR',
+        description: `Counter Checkout • ${amount >= 400 ? 'Specialty Brew & Pastry' : 'Specialty Brew'}`
+      });
+
+      this.broadcast({
+        type: 'TRANSACTION_CREATED',
+        transaction: result.transaction,
+        invoice: result.invoice,
+        soundboxText: `Paytm Soundbox 3.0: ₹${amount} received via UPI.`
+      }, merchant.id);
+
+      return {
+        reply: `### ⚡ Payment Recorded & Ledger Synchronized\n\n` +
+          `Successfully processed live counter transaction for **${merchant.name}**:\n\n` +
+          `- **Amount**: **₹${amount}** (Paytm UPI QR)\n` +
+          `- **Customer**: **${result.transaction.customerName}**\n` +
+          `- **Invoice Generated**: \`${result.invoice.invoiceNumber}\`\n` +
+          `- **GST (5%)**: ₹${result.invoice.tax.toFixed(2)}\n` +
+          `- **Google Sheet Ledger**: ✅ Appended row in real time\n` +
+          `- **Countertop Soundbox**: 🔔 Broadcasted audio chime\n\n` +
+          `Your store balance sheet and live Excel ledger have been refreshed in real time.`,
+        transaction: result.transaction,
+        invoice: result.invoice,
+        state: 'TRANSACTION_RECORDED'
+      };
+    }
+
+    // ==========================================
     // 5. SHIPMENTS & SUPPLIER LOGISTICS
     // ==========================================
     const isAddShipment = /(?:add|create|insert|track new)\s+shipment/i.test(pLower);

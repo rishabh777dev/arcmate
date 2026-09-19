@@ -29,10 +29,10 @@ import {
 import { 
   MOCK_REVIEWS_SUMMARY, 
   MOCK_REVIEWS, 
-  MOCK_SUPPORT_TICKETS, 
-  MOCK_CUSTOMER_SUGGESTIONS 
+  MOCK_SUPPORT_TICKETS 
 } from '../../data/mockSupportReviewsData';
 import { playPaytmChime } from '../../services/soundboxAudio';
+import { normalizeWhatsAppNumber, buildWhatsAppUrl, openWhatsAppChat } from '../../utils/whatsappHelper';
 
 export default function CustomerSupportView({ activeMerchant, onNavigateTab }) {
   const [activeSubTab, setActiveSubTab] = useState('reviews'); // 'reviews' | 'tickets' | 'suggestions'
@@ -92,9 +92,9 @@ export default function CustomerSupportView({ activeMerchant, onNavigateTab }) {
   };
 
   const handleSendWhatsAppUpdate = (ticket) => {
-    const text = encodeURIComponent(ticket.aiDraftResponse || `Hello ${ticket.customerName}, this is ${activeMerchant?.name || 'Athees Café'} regarding your inquiry: ${ticket.subject}. We're happy to help!`);
-    const cleanPhone = ticket.customerPhone.replace(/[^0-9]/g, '');
-    window.open(`https://wa.me/${cleanPhone}?text=${text}`, '_blank');
+    const rawMsg = ticket.aiDraftResponse || `Hello ${ticket.customerName}, this is ${activeMerchant?.name || 'Athees Café'} regarding your inquiry: ${ticket.subject}. We're happy to help!`;
+    const cleanPhone = normalizeWhatsAppNumber(ticket.customerPhone);
+    openWhatsAppChat(cleanPhone, rawMsg);
     playPaytmChime(`Opening WhatsApp chat to send customer resolution.`);
   };
 

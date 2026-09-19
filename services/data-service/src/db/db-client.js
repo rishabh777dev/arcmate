@@ -24,6 +24,8 @@ class DataStore {
     this.initSupabase();
 
     this.activeMerchantId = 'a0000000-0000-0000-0000-000000000001';
+    this.dynamicTransactions = [];
+    this.dynamicInvoices = [];
   }
 
   initSupabase() {
@@ -243,6 +245,15 @@ class DataStore {
       cashCount = 4;
     }
 
+    // Incorporate any live simulated or injected transactions
+    const dynamicTxs = this.dynamicTransactions.filter(t => t.merchantId === mId);
+    if (dynamicTxs.length > 0) {
+      const dynamicTotal = dynamicTxs.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+      todayCollections += dynamicTotal;
+      settledAmount += dynamicTotal;
+      upiCount += dynamicTxs.length;
+    }
+
     return {
       merchantId: mId,
       date: new Date().toISOString().split('T')[0],
@@ -325,6 +336,8 @@ class DataStore {
   async getTransactions(merchantId = null, limit = 50) {
     const m = await this.getMerchant(merchantId);
     const sb = this.getSupabase();
+    const dynamic = this.dynamicTransactions.filter(t => t.merchantId === m.id);
+
     if (sb) {
       try {
         const { data, error } = await sb
@@ -335,7 +348,7 @@ class DataStore {
           .limit(limit);
 
         if (!error && data && data.length > 0) {
-          return data.map(t => ({
+          const fetched = data.map(t => ({
             id: t.id,
             merchantId: t.merchant_id,
             amount: Number(t.amount),
@@ -347,16 +360,87 @@ class DataStore {
             soundboxChime: true,
             timestamp: t.created_at
           }));
+          return [...dynamic, ...fetched].slice(0, limit);
         }
       } catch (err) {
         console.warn('[DataStore] getTransactions error:', err.message);
       }
     }
 
-    return SEED_TRANSACTIONS.slice(0, limit).map(t => ({
-      ...t,
-      merchantId: m.id
-    }));
+    return [...dynamic, ...SEED_TRANSACTIONS.map(t => ({ ...t, merchantId: m.id }))].slice(0, limit);
+  }
+
+  async createTransaction(merchantId, txnData = {}) {
+    const m = await this.getMerchant(merchantId);
+    const amount = Number(txnData.amount) || 450;
+    const paymentMode = txnData.paymentMode || txnData.mode || 'Paytm UPI QR';
+    const customerName = txnData.customerName || txnData.customer || 'Rahul Bhatt';
+    const description = txnData.description || `${txnData.item || 'Specialty Cold Brew & Toast'} • Counter Checkout`;
+    const gstAmount = Number((amount * 0.05).toFixed(2));
+    const subtotal = Number((amount - gstAmount).toFixed(2));
+
+    const txnId = `txn_${Date.now()}`;
+    const timestamp = new Date().toISOString();
+
+    const newTxn = {
+      id: txnId,
+      merchantId: m.id,
+      amount,
+      status: 'SUCCESS',
+      paymentMode,
+      description,
+      customerName,
+      settled: true,
+      soundboxChime: true,
+      timestamp
+    };
+
+    // Auto-create matching invoice
+    const allInvoices = await this.getInvoices(m.id);
+    const nextInvoiceNum = `INV-${new Date().getFullYear()}-${String(allInvoices.length + 1).padStart(3, '0')}`;
+    const newInvoice = {
+      id: `inv_${Date.now()}`,
+      merchantId: m.id,
+      invoiceNumber: nextInvoiceNum,
+      vendor: `${customerName} • Retail Checkout`,
+      items: [
+        { name: description, qty: 1, unitPrice: subtotal, total: subtotal }
+      ],
+      subtotal,
+      tax: gstAmount,
+      total: amount,
+      status: 'paid',
+      createdAt: timestamp,
+      paidAt: timestamp
+    };
+
+    this.dynamicTransactions.unshift(newTxn);
+    this.dynamicInvoices.unshift(newInvoice);
+
+    // Persist to Supabase if available
+    const sb = this.getSupabase();
+    if (sb) {
+      try {
+        await sb.from('transactions').insert({
+          id: txnId,
+          merchant_id: m.id,
+          amount,
+          status: 'SUCCESS',
+          payment_mode: paymentMode,
+          description,
+          customer_name: customerName,
+          settled: true,
+          created_at: timestamp
+        });
+      } catch (err) {
+        console.warn('[DataStore] Supabase transaction insert error:', err.message);
+      }
+    }
+
+    return {
+      transaction: newTxn,
+      invoice: newInvoice
+    };
   }
 
   // 6. Invoices
@@ -391,8 +475,11 @@ class DataStore {
       }
     }
 
-    // Default Seed Invoices (Retail Customer Checkout Bills + Supplier Restock Invoices)
+    const dynamic = this.dynamicInvoices.filter(i => i.merchantId === m.id);
+
+    // Seed Invoices (Retail Customer Checkout Bills + Supplier Restock Invoices)
     return [
+      ...dynamic,
       ...SEED_RETAIL_INVOICES.map(i => ({ ...i, merchantId: m.id })),
       ...SEED_SUPPLIER_INVOICES.map(i => ({ ...i, merchantId: m.id }))
     ];

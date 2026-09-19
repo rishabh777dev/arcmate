@@ -42,8 +42,10 @@ import {
   Edit3,
   Link,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Copy
 } from 'lucide-react';
+import { normalizeWhatsAppNumber, buildWhatsAppUrl, openWhatsAppChat } from '../../utils/whatsappHelper';
 
 import { playPaytmChime } from '../../services/soundboxAudio';
 import { customNodeTypes } from './n8nCustomNodes';
@@ -221,8 +223,69 @@ export default function WorkflowStudioView() {
   ]);
 
   // Calculate live total revenue from rows
-  const totalRevenue = liveRows.reduce((acc, row) => acc + row.amount, 0) + 15450; // Base historical total
+  const totalRevenue = liveRows.reduce((acc, row) => acc + (Number(row.amount) || 0), 0) + 15450;
   const totalInvoices = liveRows.length + 29;
+
+  // 1. Fetch live transactions from backend on mount & listen to real-time events
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const token = localStorage.getItem('actionmate_token');
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const res = await fetch('/api/transactions?limit=25', { headers });
+        if (res.ok) {
+          const txs = await res.json();
+          if (Array.isArray(txs) && txs.length > 0) {
+            const mapped = txs.map((tx, idx) => ({
+              id: tx.id ? `INV-2026-${String(tx.id).replace(/\D/g, '').slice(-3) || String(idx + 41).padStart(3, '0')}` : `INV-2026-0${idx + 41}`,
+              time: tx.timestamp ? new Date(tx.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Today',
+              customer: tx.customerName || 'Store Patron',
+              amount: Number(tx.amount) || 450,
+              mode: tx.paymentMode || 'Paytm UPI QR',
+              gst: Number(((Number(tx.amount) || 450) * 0.05).toFixed(2)),
+              status: 'SUCCESS',
+              isNew: false
+            }));
+            setLiveRows(mapped);
+          }
+        }
+      } catch (e) {
+        console.warn('Could not fetch backend transactions for live table:', e);
+      }
+    };
+
+    fetchTransactions();
+
+    // Listen for real-time transactions broadcast via WebSocket or Copilot
+    const handleIncomingTxn = (event) => {
+      const detail = event.detail || {};
+      const tx = detail.transaction;
+      const inv = detail.invoice;
+      if (!tx) return;
+
+      const newRow = {
+        id: inv?.invoiceNumber || (tx.id ? `INV-2026-${String(tx.id).replace(/\D/g, '').slice(-3) || '999'}` : `INV-2026-0${Date.now().toString().slice(-3)}`),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        customer: tx.customerName || 'Store Patron',
+        amount: Number(tx.amount) || 450,
+        mode: tx.paymentMode || 'Paytm UPI QR',
+        gst: Number(((Number(tx.amount) || 450) * 0.05).toFixed(2)),
+        status: 'SUCCESS',
+        isNew: true
+      };
+
+      setLiveRows(prev => {
+        if (prev.some(r => r.id === newRow.id)) return prev;
+        return [newRow, ...prev];
+      });
+
+      setToastMsg(`⚡ Real-time payment of ₹${newRow.amount} received! Appended row to connected Google Sheet.`);
+      setTimeout(() => setToastMsg(''), 4000);
+    };
+
+    window.addEventListener('actionmate:transaction', handleIncomingTxn);
+    return () => window.removeEventListener('actionmate:transaction', handleIncomingTxn);
+  }, []);
 
   // Handle Google Sheet Connect & Verification
   const handleConnectSheet = () => {
@@ -290,44 +353,92 @@ export default function WorkflowStudioView() {
   };
 
   // Simulate a live customer payment (+₹450) and watch it append to Google Sheet & Soundbox!
-  const handleSimulatePayment = () => {
-    const customerNames = ['Rohan Kapoor', 'Ananya Mehta', 'Deepak Joshi', 'Neha Reddy', 'Rahul Bhatt'];
+  const handleSimulatePayment = async (amountInput = 450, itemLabel = 'Cold Brew & Toast') => {
+    const customerNames = ['Rohan Kapoor', 'Ananya Mehta', 'Deepak Joshi', 'Neha Reddy', 'Rahul Bhatt', 'Preeti Mahajan', 'Vikram Iyer'];
     const randomCustomer = customerNames[Math.floor(Math.random() * customerNames.length)];
-    const paymentAmount = 450;
-    const newInvoiceId = `INV-2026-0${liveRows.length + 46}`;
+    const paymentAmount = Number(amountInput) || 450;
 
-    const newRow = {
-      id: newInvoiceId,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      customer: randomCustomer,
-      amount: paymentAmount,
-      mode: 'Paytm UPI QR',
-      gst: 22.50,
-      status: 'SUCCESS'
-    };
-
-    setLiveRows(prev => [newRow, ...prev]);
-
-    // Play Soundbox chime audio
+    // Play Soundbox chime audio immediately
     playPaytmChime(`Paytm Soundbox 3.0: ₹${paymentAmount} received via UPI.`);
 
-    setToastMsg(`⚡ Payment of ₹${paymentAmount} received! Appended row #${liveRows.length + 1} to connected Google Sheet.`);
+    try {
+      const token = localStorage.getItem('actionmate_token');
+      const res = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          amount: paymentAmount,
+          customerName: randomCustomer,
+          paymentMode: 'Paytm UPI QR',
+          description: `${itemLabel} • Counter Checkout`
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const tx = data.transaction;
+        const inv = data.invoice;
+        const newRow = {
+          id: inv?.invoiceNumber || `INV-2026-0${liveRows.length + 46}`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          customer: randomCustomer,
+          amount: paymentAmount,
+          mode: 'Paytm UPI QR',
+          gst: Number((paymentAmount * 0.05).toFixed(2)),
+          status: 'SUCCESS',
+          isNew: true
+        };
+        setLiveRows(prev => {
+          if (prev.some(r => r.id === newRow.id)) return prev;
+          return [newRow, ...prev];
+        });
+        setToastMsg(`⚡ Payment of ₹${paymentAmount} received! Appended row #${liveRows.length + 1} to connected Google Sheet.`);
+      }
+    } catch (err) {
+      const newInvoiceId = `INV-2026-0${liveRows.length + 46}`;
+      const newRow = {
+        id: newInvoiceId,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        customer: randomCustomer,
+        amount: paymentAmount,
+        mode: 'Paytm UPI QR',
+        gst: Number((paymentAmount * 0.05).toFixed(2)),
+        status: 'SUCCESS',
+        isNew: true
+      };
+      setLiveRows(prev => [newRow, ...prev]);
+      setToastMsg(`⚡ Payment of ₹${paymentAmount} received! Appended row #${liveRows.length + 1} to connected Google Sheet.`);
+    }
+
+    setTimeout(() => setToastMsg(''), 4000);
+  };
+
+  // Direct 1-Click WhatsApp Connection Test
+  const handleTestWhatsApp = () => {
+    const clean = normalizeWhatsAppNumber(whatsappNumber);
+    if (!clean) {
+      alert('Please enter a valid phone number');
+      return;
+    }
+    const testMsg = `👋 Hello from Arc Mate! Athees Café store automation is active. Google Sheet & Soundbox sync is connected!`;
+    const { url } = openWhatsAppChat(clean, testMsg);
+    setToastMsg(`✓ Opening WhatsApp test chat for +${clean}...`);
     setTimeout(() => setToastMsg(''), 4000);
   };
 
   // Dispatch Daily 6:00 PM Summary to WhatsApp (Opens WhatsApp with exact message & sheet link!)
   const handleSendWhatsApp6pmSummary = () => {
+    const cleanPhone = normalizeWhatsAppNumber(whatsappNumber);
     const message = `✨ Athees Café — Daily 6:00 PM Store Summary\n\n📊 Total Revenue: ₹${totalRevenue.toLocaleString('en-IN')} across ${totalInvoices} invoices\n💳 UPI: ₹${(totalRevenue - 3450).toLocaleString('en-IN')} | Cash: ₹3,450\n🔥 Peak Rush: 4:30 PM - 6:00 PM (Evening Chai & Snacks)\n🏆 Top Customer of the Day: Rishi Sharma\n\n🔗 Live Google Sheet Ledger:\n${googleSheetLink}\n\n⚡ Powered by Arc Mate Autonomous Store Engine`;
 
     // Trigger Soundbox chime confirmation
     playPaytmChime('Ding! 6:00 PM daily store summary and Google Sheet link sent to your WhatsApp.');
 
-    // Construct WhatsApp click-to-chat URL
-    const cleanPhone = whatsappNumber.replace(/[^0-9]/g, '');
-    const waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
-
-    // Open WhatsApp Web or mobile app in new tab
-    window.open(waUrl, '_blank');
+    // Construct WhatsApp click-to-chat URL & attempt open
+    const { url } = openWhatsAppChat(cleanPhone, message);
 
     setExecutionResult({
       executionId: `exec_${Date.now().toString(36)}`,
@@ -335,14 +446,15 @@ export default function WorkflowStudioView() {
       invoicesProcessed: totalInvoices,
       todayRevenue: `₹${totalRevenue.toLocaleString('en-IN')}`,
       excelRowAdded: `Google Sheet updated (${liveRows.length} live invoices today)`,
-      whatsappDelivered: `Summary delivered to ${whatsappNumber}`,
+      whatsappDelivered: `Summary delivered to +${cleanPhone || whatsappNumber}`,
+      whatsappUrl: url,
       soundboxChime: 'Played 784Hz / 1046Hz Chime',
       timestamp: '6:00 PM Daily Auto-Reconciliation',
-      targetPhone: whatsappNumber,
+      targetPhone: `+${cleanPhone || whatsappNumber}`,
       messagePreview: message
     });
 
-    setToastMsg(`✓ Dispatched Daily 6:00 PM Summary with Google Sheet link to ${whatsappNumber}!`);
+    setToastMsg(`✓ Dispatched Daily 6:00 PM Summary with Google Sheet link to +${cleanPhone}!`);
     setTimeout(() => setToastMsg(''), 4000);
   };
 
@@ -366,6 +478,22 @@ export default function WorkflowStudioView() {
     setIsRunning(false);
 
     handleSendWhatsApp6pmSummary();
+  };
+
+  // Download Live Invoices as CSV File
+  const handleExportCSV = () => {
+    const headers = ['Invoice Number', 'Time', 'Customer Name', 'Amount (INR)', 'Payment Method', 'GST (5%)', 'Status'];
+    const rows = liveRows.map(r => [r.id, r.time, `"${r.customer}"`, r.amount, r.mode, r.gst, r.status]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Athees_Cafe_Invoices_Ledger_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setToastMsg('✓ Downloaded live invoice ledger CSV file!');
+    setTimeout(() => setToastMsg(''), 4000);
   };
 
   // Active parameters of the currently selected node
@@ -486,8 +614,10 @@ export default function WorkflowStudioView() {
           {/* Column B (5 cols): WhatsApp Number & Closing Time */}
           <div className="md:col-span-5 space-y-2">
             <label className="text-[10px] font-mono uppercase text-zinc-400 font-semibold flex items-center justify-between">
-              <span>Step 2: WhatsApp Number & Closing Schedule</span>
-              <span className="text-zinc-500 text-[9px]">Automated 6 PM Dispatch</span>
+              <span>Step 2: WhatsApp Mobile & Schedule</span>
+              <span className="text-emerald-400 text-[10px] font-mono">
+                +{normalizeWhatsAppNumber(whatsappNumber) || '91...'}
+              </span>
             </label>
 
             <div className="flex gap-2">
@@ -502,6 +632,16 @@ export default function WorkflowStudioView() {
                 />
               </div>
 
+              <button
+                type="button"
+                onClick={handleTestWhatsApp}
+                className="px-3 py-2 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 font-semibold text-xs transition cursor-pointer flex items-center gap-1 shrink-0 shadow-sm"
+                title="Test WhatsApp connection to this phone number"
+              >
+                <MessageSquare size={13} />
+                <span>Test Link ↗</span>
+              </button>
+
               <select
                 value={dailyTime}
                 onChange={(e) => setDailyTime(e.target.value)}
@@ -514,9 +654,10 @@ export default function WorkflowStudioView() {
               </select>
             </div>
 
-            <p className="text-[10px] text-zinc-400">
-              Daily revenue summary & Google Sheet link will be sent to this number at {dailyTime}.
-            </p>
+            <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+              <span>Daily summary sent to <strong className="text-emerald-400">+{normalizeWhatsAppNumber(whatsappNumber) || '91...'}</strong> at {dailyTime}</span>
+              <span className="text-zinc-500">Auto-prefixes +91</span>
+            </div>
           </div>
 
         </div>
@@ -526,18 +667,36 @@ export default function WorkflowStudioView() {
           
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[10px] font-mono text-zinc-400 uppercase font-semibold">
-              Live Demo Actions:
+              Live Demo:
             </span>
 
-            {/* Simulate Payment Button */}
+            {/* Simulate Payment Presets */}
             <button
               type="button"
-              onClick={handleSimulatePayment}
-              className="px-3.5 py-1.5 rounded-full bg-[#ed6f5c]/20 hover:bg-[#ed6f5c]/30 border border-[#ed6f5c]/40 text-white text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-sm"
-              title="Simulates an incoming customer payment and appends row to Google Sheet"
+              onClick={() => handleSimulatePayment(450, 'Cold Brew & Avocado Toast')}
+              className="px-3 py-1.5 rounded-full bg-[#ed6f5c]/20 hover:bg-[#ed6f5c]/30 border border-[#ed6f5c]/40 text-white text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-sm"
+              title="Simulate customer payment of ₹450 (Cold Brew & Toast)"
             >
               <Zap size={13} className="text-[#ed6f5c]" />
-              <span>⚡ Simulate ₹450 Customer Payment</span>
+              <span>⚡ +₹450 (Brew & Toast)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSimulatePayment(120, 'Filter Kaapi Double')}
+              className="px-2.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-200 text-xs font-medium transition cursor-pointer flex items-center gap-1"
+              title="Simulate ₹120 Filter Kaapi payment"
+            >
+              <span>+₹120 (Kaapi)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSimulatePayment(890, 'Artisan Pastry & Pour-over Combo')}
+              className="px-2.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-200 text-xs font-medium transition cursor-pointer flex items-center gap-1"
+              title="Simulate ₹890 Specialty Combo payment"
+            >
+              <span>+₹890 (Combo)</span>
             </button>
 
             {/* Trigger 6 PM WhatsApp Now */}
@@ -548,7 +707,18 @@ export default function WorkflowStudioView() {
               title="Dispatches the 6 PM daily summary with sheet link to WhatsApp"
             >
               <MessageSquare size={13} className="text-emerald-400" />
-              <span>📲 Trigger 6:00 PM WhatsApp Summary Now</span>
+              <span>📲 Dispatch 6 PM WhatsApp Summary</span>
+            </button>
+
+            {/* Export CSV Button */}
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              className="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-zinc-300 hover:text-white text-xs font-mono transition cursor-pointer flex items-center gap-1"
+              title="Export all live synchronized invoices to CSV"
+            >
+              <Download size={12} />
+              <span>CSV Ledger</span>
             </button>
           </div>
 
@@ -599,17 +769,30 @@ export default function WorkflowStudioView() {
                     <MessageSquare size={13} />
                     <span>WhatsApp Message Content Delivered to Owner:</span>
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const cleanPhone = whatsappNumber.replace(/[^0-9]/g, '');
-                      window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(executionResult.messagePreview)}`, '_blank');
-                    }}
-                    className="text-xs text-white underline hover:text-emerald-400 flex items-center gap-1"
-                  >
-                    <span>Open in WhatsApp</span>
-                    <ExternalLink size={11} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(executionResult.messagePreview);
+                        setToastMsg('✓ Copied WhatsApp message text to clipboard!');
+                        setTimeout(() => setToastMsg(''), 3000);
+                      }}
+                      className="text-[10px] text-zinc-300 hover:text-white px-2 py-1 rounded-lg bg-white/10 flex items-center gap-1 cursor-pointer transition"
+                    >
+                      <Copy size={11} />
+                      <span>Copy</span>
+                    </button>
+
+                    <a
+                      href={executionResult.whatsappUrl || buildWhatsAppUrl(executionResult.targetPhone, executionResult.messagePreview)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-emerald-300 hover:text-emerald-200 underline font-semibold flex items-center gap-1"
+                    >
+                      <span>Open in WhatsApp</span>
+                      <ExternalLink size={11} />
+                    </a>
+                  </div>
                 </div>
                 <pre className="text-zinc-200 font-mono whitespace-pre-wrap leading-relaxed text-[11px]">
                   {executionResult.messagePreview}
@@ -799,11 +982,21 @@ export default function WorkflowStudioView() {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={handleSimulatePayment}
+              onClick={() => handleSimulatePayment(450, 'Cold Brew & Avocado Toast')}
               className="px-3 py-1.5 rounded-xl bg-[#ed6f5c] hover:bg-[#de5e4b] text-white text-xs font-medium transition cursor-pointer flex items-center gap-1 shadow-sm"
             >
               <Plus size={13} />
-              <span>Add Test Payment (+₹450)</span>
+              <span>Simulate Payment (+₹450)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              className="px-3 py-1.5 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 text-xs font-mono transition cursor-pointer flex items-center gap-1 shadow-sm"
+              title="Download entire ledger as CSV file"
+            >
+              <Download size={13} />
+              <span>Export CSV</span>
             </button>
 
             <button
@@ -818,9 +1011,9 @@ export default function WorkflowStudioView() {
         </div>
 
         {/* The Live Synchronized Invoices Table */}
-        <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/40">
+        <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/40 max-h-[380px] overflow-y-auto">
           <table className="w-full text-left text-xs font-mono">
-            <thead>
+            <thead className="sticky top-0 bg-[#14120f] z-10">
               <tr className="border-b border-white/10 text-zinc-400 bg-white/[0.02]">
                 <th className="p-2.5">Invoice #</th>
                 <th className="p-2.5">Time</th>
@@ -833,8 +1026,14 @@ export default function WorkflowStudioView() {
             </thead>
             <tbody className="divide-y divide-white/[0.06] text-zinc-200">
               {liveRows.map((row, idx) => (
-                <tr key={idx} className="hover:bg-white/[0.03] transition">
-                  <td className="p-2.5 font-bold text-white">{row.id}</td>
+                <tr 
+                  key={row.id || idx} 
+                  className={`transition-all duration-300 ${row.isNew ? 'bg-emerald-500/25 ring-1 ring-emerald-400/60 font-semibold' : 'hover:bg-white/[0.03]'}`}
+                >
+                  <td className="p-2.5 font-bold text-white flex items-center gap-1.5">
+                    {row.isNew && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />}
+                    <span>{row.id}</span>
+                  </td>
                   <td className="p-2.5 text-zinc-400">{row.time}</td>
                   <td className="p-2.5 font-sans font-medium text-zinc-100">{row.customer}</td>
                   <td className="p-2.5 font-bold text-emerald-400">₹{row.amount.toFixed(2)}</td>

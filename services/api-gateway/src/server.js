@@ -250,6 +250,35 @@ app.get('/api/transactions', async (req, res) => {
   res.json(txs);
 });
 
+app.post('/api/transactions', async (req, res) => {
+  try {
+    const { amount, paymentMode, customerName, description, item } = req.body;
+    const result = await dataStore.createTransaction(req.merchantId, {
+      amount,
+      paymentMode,
+      customerName,
+      description,
+      item
+    });
+
+    // Broadcast real-time transaction event to connected WebSocket clients
+    actionMateOrchestrator.broadcast({
+      type: 'TRANSACTION_CREATED',
+      transaction: result.transaction,
+      invoice: result.invoice,
+      soundboxText: `Paytm Soundbox 3.0: ₹${result.transaction.amount} received via ${result.transaction.paymentMode || 'UPI'}.`
+    }, req.merchantId);
+
+    res.json({
+      success: true,
+      transaction: result.transaction,
+      invoice: result.invoice
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/invoices', async (req, res) => {
   const invoices = await dataStore.getInvoices(req.merchantId);
   res.json(invoices);
