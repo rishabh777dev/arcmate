@@ -40,23 +40,25 @@ export const PRESET_WORKFLOWS_DATA = [
         }
       },
 
-      // Action 1: Excel Append
+      // Action 1: Google Sheet Append
       {
         id: 'node_excel_sync',
         type: 'n8nNode',
         position: { x: 380, y: 80 },
         data: {
-          name: 'Auto-Update Excel Sheet',
-          subtitle: 'append new invoice row',
+          name: 'Auto-Sync to Google Sheet',
+          subtitle: 'append invoice row real-time',
           category: 'action',
           iconName: 'FileSpreadsheet',
           color: '#10b981',
           status: 'ready',
           parameters: {
-            spreadsheetName: 'Daily_Store_Sales_2026.xlsx',
+            googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit',
+            spreadsheetName: 'Athees_Cafe_Sales_Ledger',
             worksheet: 'Invoices_Log',
-            action: 'APPEND_ROW',
-            columns: ['Invoice #', 'Date & Time', 'Customer', 'Amount (₹)', 'Payment Method', 'GST (5%)']
+            action: 'APPEND_ROW_ON_PAYMENT',
+            connectionStatus: 'VERIFIED_CONNECTED',
+            columns: ['Invoice #', 'Date & Time', 'Customer', 'Amount (₹)', 'Payment Method', 'GST (5%)', 'Status']
           }
         }
       },
@@ -81,22 +83,23 @@ export const PRESET_WORKFLOWS_DATA = [
         }
       },
 
-      // End of Day Trigger (10 PM)
+      // End of Day Trigger (6:00 PM Closing)
       {
         id: 'node_eod_cron',
         type: 'n8nNode',
         position: { x: 80, y: 390 },
         data: {
-          name: 'End of Day Trigger (10:00 PM)',
+          name: 'End of Day Trigger (6:00 PM)',
           subtitle: 'daily closing cron schedule',
           category: 'trigger',
           iconName: 'Clock',
           color: '#f59e0b',
           status: 'ready',
           parameters: {
-            cronExpression: '0 22 * * *',
+            cronExpression: '0 18 * * *',
+            closingTime: '6:00 PM (18:00 IST)',
             timezone: 'Asia/Kolkata',
-            description: 'Triggers automatically every evening at 10 PM closing'
+            description: 'Triggers automatically every evening at 6:00 PM store closing'
           }
         }
       },
@@ -107,39 +110,41 @@ export const PRESET_WORKFLOWS_DATA = [
         type: 'n8nNode',
         position: { x: 380, y: 390 },
         data: {
-          name: 'Compile Today\'s Revenue & Invoices',
-          subtitle: 'aggregate daily collections',
+          name: 'Compile 6 PM Daily Highlights',
+          subtitle: 'aggregate collections & highlights',
           category: 'action',
           iconName: 'Database',
           color: '#38bdf8',
           status: 'ready',
           parameters: {
-            source: 'Daily_Store_Sales_2026.xlsx + Supabase Ledger',
+            source: 'Google_Sheet_Ledger + Live Invoices',
             metricsToCompute: [
               'Total Revenue Collected',
               'Total Invoices Count',
               'UPI vs Cash Breakdown',
-              'Peak Sales Hour'
+              'Highlight of the Day',
+              'Peak Hour'
             ]
           }
         }
       },
 
-      // WhatsApp Summary to Merchant
+      // WhatsApp Summary to Merchant (with Google Sheet link!)
       {
         id: 'node_whatsapp_summary',
         type: 'n8nNode',
         position: { x: 680, y: 390 },
         data: {
-          name: 'Send WhatsApp Revenue Report',
-          subtitle: 'daily store summary to owner',
+          name: 'Send WhatsApp 6 PM Summary',
+          subtitle: 'daily highlight & sheet link',
           category: 'action',
           iconName: 'MessageSquare',
           color: '#22c55e',
           status: 'ready',
           parameters: {
-            recipient: 'Store Owner (Registered Phone)',
-            messageFormat: 'Namaste! Aaj ki kul bikri: ₹{totalRevenue} across {totalInvoices} invoices. (UPI: ₹{upiTotal}, Cash: ₹{cashTotal}). Excel Sheet updated.',
+            recipientPhone: '+91 98765 43210',
+            googleSheetUrl: 'https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit',
+            messageFormat: '✨ Store 6:00 PM Daily Summary:\n\n📊 Total Revenue: ₹{totalRevenue} across {totalInvoices} invoices\n💳 UPI: ₹15,450 | Cash: ₹3,450\n🔥 Peak Rush: 4:30 PM - 6:00 PM\n\n🔗 Live Google Sheet Ledger:\n{googleSheetUrl}',
             attachPdfSummary: true
           }
         }
