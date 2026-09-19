@@ -24,6 +24,7 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function LunorDashboard({ 
   summary, 
@@ -33,6 +34,7 @@ export default function LunorDashboard({
   onApproveAction,
   onNavigateTab
 }) {
+  const { isDark } = useTheme();
   const [invoices, setInvoices] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -217,14 +219,14 @@ export default function LunorDashboard({
               </defs>
               <XAxis 
                 dataKey="label" 
-                stroke="#6e6860" 
+                stroke={isDark ? "#6e6860" : "#a1a1aa"} 
                 fontSize={10} 
                 fontFamily="JetBrains Mono"
                 tickLine={false} 
                 axisLine={false} 
               />
               <YAxis 
-                stroke="#6e6860" 
+                stroke={isDark ? "#6e6860" : "#a1a1aa"} 
                 fontSize={10} 
                 fontFamily="JetBrains Mono"
                 tickLine={false} 
@@ -232,10 +234,11 @@ export default function LunorDashboard({
               />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#161410', 
-                  borderColor: 'rgba(242,235,216,0.12)', 
+                  backgroundColor: isDark ? '#161410' : '#ffffff', 
+                  borderColor: isDark ? 'rgba(242,235,216,0.12)' : 'rgba(0,0,0,0.08)', 
                   borderRadius: '12px',
-                  color: '#f2ebd8',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  color: isDark ? '#f2ebd8' : '#111111',
                   fontSize: '12px',
                   fontFamily: 'Inter Tight'
                 }} 
@@ -251,7 +254,7 @@ export default function LunorDashboard({
               <Line 
                 type="monotone" 
                 dataKey="lastWeek" 
-                stroke="rgba(242,235,216,0.25)" 
+                stroke={isDark ? "rgba(242,235,216,0.25)" : "rgba(0,0,0,0.18)"} 
                 strokeWidth={1.5} 
                 strokeDasharray="4 4" 
                 dot={false} 

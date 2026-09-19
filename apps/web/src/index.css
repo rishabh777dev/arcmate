@@ -2,100 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    font-family: var(--sans);
-    background-color: #0e0d0a;
-    color: #f2ebd8;
-    overflow-x: hidden;
-  }
-}
-
-/* Atelier Zero Minimalist Surfaces */
-.lunor-bg {
-  background-color: #0e0d0a;
-  color: #f2ebd8;
-}
-
-.lunor-sidebar {
-  background-color: rgba(18, 16, 13, 0.92);
-  backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(242, 235, 216, 0.08);
-}
-
-.lunor-card {
-  background-color: rgba(22, 20, 16, 0.85);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(242, 235, 216, 0.08);
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.lunor-card:hover {
-  border-color: rgba(242, 235, 216, 0.16);
-}
-
-.lunor-inset {
-  background-color: rgba(30, 28, 24, 0.75);
-  border: 1px solid rgba(242, 235, 216, 0.06);
-}
-
-.lunor-pill-active {
-  background-color: rgba(237, 111, 92, 0.14);
-  color: #f2ebd8;
-  border: 1px solid rgba(237, 111, 92, 0.35);
-}
-
-.lunor-nav-active {
-  background-color: rgba(237, 111, 92, 0.12);
-  color: #f2ebd8;
-  border: 1px solid rgba(237, 111, 92, 0.3);
-}
-
-.lunor-nav-inactive {
-  color: #9a9382;
-  border: 1px solid transparent;
-}
-.lunor-nav-inactive:hover {
-  color: #f2ebd8;
-  background-color: rgba(242, 235, 216, 0.04);
-}
-
-.lunor-button-subtle {
-  background-color: rgba(30, 28, 24, 0.8);
-  border: 1px solid rgba(242, 235, 216, 0.1);
-  color: #c8c0a8;
-  transition: all 0.18s ease;
-}
-.lunor-button-subtle:hover {
-  background-color: rgba(242, 235, 216, 0.08);
-  border-color: rgba(237, 111, 92, 0.4);
-  color: #ffffff;
-}
-
-/* Minimalist Scrollbar */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(242, 235, 216, 0.15);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(237, 111, 92, 0.5);
-}
-
 /* ==========================================================================
-   Atelier Zero Editorial Design Tokens & System (from index.zip)
+   Atelier Zero Editorial Design Tokens & System
    ========================================================================== */
 
-:root {
+:root,
+.dark {
+  color-scheme: dark;
   --paper: #0e0d0a;
   --paper-warm: #161410;
   --paper-dark: #23201c;
+  --paper-elevated: #1e1c18;
+  --card-bg: rgba(22, 20, 16, 0.85);
+  --sidebar-bg: rgba(18, 16, 13, 0.94);
+  --header-bg: rgba(18, 16, 13, 0.88);
+  --inset-bg: rgba(30, 28, 24, 0.75);
   --ink: #f2ebd8;
   --ink-soft: #c8c0a8;
   --ink-mute: #9a9382;
@@ -108,6 +29,7 @@
   --line: rgba(242, 235, 216, 0.12);
   --line-soft: rgba(242, 235, 216, 0.07);
   --line-faint: rgba(242, 235, 216, 0.04);
+  --line-hover: rgba(242, 235, 216, 0.22);
   --shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.55);
   --serif: 'Playfair Display', Georgia, serif;
   --sans: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -115,7 +37,123 @@
   --mono: 'JetBrains Mono', SF Mono, Menlo, monospace;
 }
 
-/* Side Rails — vertical editorial text on viewport edges */
+.light {
+  color-scheme: light;
+  --paper: #fbfaf8;
+  --paper-warm: #ffffff;
+  --paper-dark: #f0eee8;
+  --paper-elevated: #ffffff;
+  --card-bg: #ffffff;
+  --sidebar-bg: rgba(251, 250, 248, 0.96);
+  --header-bg: rgba(255, 255, 255, 0.92);
+  --inset-bg: #f4f3ef;
+  --ink: #111111;
+  --ink-soft: #4a4742;
+  --ink-mute: #71717a;
+  --ink-faint: #a1a1aa;
+  --coral: #e0533c;
+  --coral-soft: #ea6b56;
+  --mustard: #b88610;
+  --olive: #5b6238;
+  --bone: #eae7df;
+  --line: rgba(0, 0, 0, 0.08);
+  --line-soft: rgba(0, 0, 0, 0.04);
+  --line-faint: rgba(0, 0, 0, 0.03);
+  --line-hover: rgba(0, 0, 0, 0.16);
+  --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+@layer base {
+  body {
+    font-family: var(--sans);
+    background-color: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+/* Minimalist Surfaces */
+.lunor-bg {
+  background-color: var(--paper) !important;
+  color: var(--ink) !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.lunor-sidebar {
+  background-color: var(--sidebar-bg) !important;
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--line) !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.lunor-card {
+  background-color: var(--card-bg) !important;
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--line) !important;
+  box-shadow: var(--shadow);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lunor-card:hover {
+  border-color: var(--line-hover) !important;
+}
+
+.lunor-inset {
+  background-color: var(--inset-bg) !important;
+  border: 1px solid var(--line-faint) !important;
+}
+
+.lunor-pill-active {
+  background-color: rgba(237, 111, 92, 0.14) !important;
+  color: var(--ink) !important;
+  border: 1px solid rgba(237, 111, 92, 0.35) !important;
+}
+
+.lunor-nav-active {
+  background-color: rgba(237, 111, 92, 0.12) !important;
+  color: var(--coral) !important;
+  border: 1px solid rgba(237, 111, 92, 0.3) !important;
+}
+
+.lunor-nav-inactive {
+  color: var(--ink-mute) !important;
+  border: 1px solid transparent;
+}
+.lunor-nav-inactive:hover {
+  color: var(--ink) !important;
+  background-color: var(--line-faint) !important;
+}
+
+.lunor-button-subtle {
+  background-color: var(--inset-bg) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink-soft) !important;
+  transition: all 0.18s ease;
+}
+.lunor-button-subtle:hover {
+  background-color: var(--line-soft) !important;
+  border-color: rgba(237, 111, 92, 0.4) !important;
+  color: var(--ink) !important;
+}
+
+/* Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 117, 109, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(237, 111, 92, 0.5);
+}
+
+/* Side Rails */
 .side-rail {
   position: fixed;
   top: 0;
@@ -146,7 +184,7 @@
 .topbar {
   border-bottom: 1px solid var(--line);
   padding: 10px 0;
-  background: rgba(14, 13, 10, 0.7);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   position: relative;
   z-index: 40;
@@ -297,24 +335,24 @@
   white-space: nowrap;
 }
 .btn-editorial-primary {
-  background: var(--coral);
-  color: #ffffff;
+  background: var(--coral) !important;
+  color: #ffffff !important;
   box-shadow: 0 10px 24px -10px rgba(237, 111, 92, 0.7);
 }
 .btn-editorial-primary:hover {
   transform: translateY(-1px);
-  background: #e25e4a;
+  background: #e25e4a !important;
   box-shadow: 0 14px 28px -10px rgba(237, 111, 92, 0.9);
 }
 .btn-editorial-ghost {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--line-faint);
   color: var(--ink);
   border: 1px solid var(--line);
 }
 .btn-editorial-ghost:hover {
-  background: rgba(242, 235, 216, 0.08);
+  background: var(--line-soft);
   border-color: var(--coral-soft);
-  color: #ffffff;
+  color: var(--ink);
 }
 
 /* Pill navigation & filters */
@@ -326,7 +364,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   border: 1px solid var(--line);
-  background: rgba(30, 28, 24, 0.6);
+  background: var(--inset-bg);
   color: var(--ink-soft);
   transition: all 0.18s ease;
   cursor: pointer;
@@ -336,7 +374,7 @@
 }
 .editorial-pill:hover,
 .editorial-pill.active {
-  background: rgba(242, 235, 216, 0.12);
+  background: var(--line-soft);
   border-color: var(--coral);
   color: var(--ink);
 }
@@ -418,27 +456,27 @@
   100% { transform: translateX(0%); }
 }
 
-/* n8n Canvas Dark Mode Theme for @xyflow/react */
-.react-flow__background {
+/* n8n Canvas Theme for @xyflow/react */
+.dark .react-flow__background {
   background-color: #0c0b09 !important;
 }
-.react-flow__edge-path {
+.dark .react-flow__edge-path {
   stroke: #52525b !important;
   stroke-width: 2px !important;
   transition: stroke 0.3s ease;
 }
-.react-flow__edge.animated .react-flow__edge-path {
+.dark .react-flow__edge.animated .react-flow__edge-path {
   stroke: #ed6f5c !important;
   stroke-width: 2.5px !important;
 }
-.react-flow__controls {
+.dark .react-flow__controls {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   background: #18181b !important;
   border-radius: 14px !important;
   overflow: hidden;
 }
-.react-flow__controls-button {
+.dark .react-flow__controls-button {
   background: #18181b !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   color: #a1a1aa !important;
@@ -446,12 +484,12 @@
   width: 32px !important;
   height: 32px !important;
 }
-.react-flow__controls-button:hover {
+.dark .react-flow__controls-button:hover {
   background: #27272a !important;
   color: #ffffff !important;
   fill: #ffffff !important;
 }
-.react-flow__controls-button svg {
+.dark .react-flow__controls-button svg {
   fill: currentColor !important;
   max-width: 14px !important;
   max-height: 14px !important;
@@ -461,128 +499,155 @@
 }
 
 /* ==========================================================================
-   Light Theme Utility Overrides & Adaptations
+   Light Theme Direct Overrides (Matching Reference Image)
    ========================================================================== */
 
-.light {
-  color-scheme: light;
+/* Page Backgrounds */
+.light body {
+  background-color: #fbfaf8 !important;
+  color: #111111 !important;
 }
 
-/* Base text color mappings */
-.light .text-\[\#f2ebd8\] {
-  color: var(--ink) !important;
+.light .lunor-bg,
+.light [class*="bg-[#0e0d0a]"] {
+  background-color: #fbfaf8 !important;
 }
-.light .text-\[\#c8c0a8\] {
-  color: var(--ink-soft) !important;
+
+/* Header */
+.light header {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
 }
-.light .text-\[\#9a9382\] {
-  color: var(--ink-mute) !important;
+
+/* Sidebar */
+.light aside.lunor-sidebar,
+.light .lunor-sidebar {
+  background-color: rgba(251, 250, 248, 0.96) !important;
+  border-color: rgba(0, 0, 0, 0.07) !important;
 }
-.light .text-\[\#6e6860\] {
-  color: var(--ink-faint) !important;
+
+/* Cards: Pure Crisp White with Soft Ambient Shadow */
+.light .lunor-card,
+.light [class*="bg-[#161410]"],
+.light [class*="bg-[#18181b]"],
+.light [class*="bg-[#1c1c1f]"] {
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02) !important;
 }
+
+/* Inset / Pills / Inner Rows */
+.light [class*="bg-[#1e1c18]"],
+.light .lunor-inset {
+  background-color: #f5f4ef !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+.light [class*="bg-[#1e1c18]/80"],
+.light [class*="bg-[#1e1c18]/70"],
+.light [class*="bg-[#1e1c18]/90"] {
+  background-color: #f5f4ef !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Text: Crisp High-Contrast Black & Slate Grays */
+.light [class*="text-[#f2ebd8]"],
+.light .display-title,
+.light .display-title em {
+  color: #111111 !important;
+}
+
+.light [class*="text-[#c8c0a8]"] {
+  color: #4a4742 !important;
+}
+
+.light [class*="text-[#9a9382]"],
+.light [class*="text-[#6e6860]"] {
+  color: #71717a !important;
+}
+
 .light .text-zinc-100,
 .light .text-zinc-200 {
-  color: var(--ink) !important;
-}
-.light .text-zinc-300 {
-  color: var(--ink-soft) !important;
-}
-.light .text-zinc-400 {
-  color: var(--ink-mute) !important;
-}
-.light .text-zinc-500 {
-  color: var(--ink-faint) !important;
-}
-.light .text-white {
-  color: var(--ink) !important;
+  color: #111111 !important;
 }
 
-/* Surface backgrounds */
-.light .bg-\[\#0e0d0a\] {
-  background-color: var(--paper) !important;
+.light .text-zinc-300,
+.light .text-zinc-400 {
+  color: #52525b !important;
 }
-.light .bg-\[\#0e0d0a\]\/85,
-.light .bg-\[\#0e0d0a\]\/90,
-.light .bg-\[\#12100d\]\/85 {
-  background-color: var(--header-bg) !important;
+
+.light .text-zinc-500 {
+  color: #71717a !important;
 }
-.light .bg-\[\#161410\],
-.light .bg-\[\#161410\]\/90 {
-  background-color: var(--card-bg) !important;
-}
-.light .bg-\[\#1e1c18\],
-.light .bg-\[\#1e1c18\]\/70,
-.light .bg-\[\#1e1c18\]\/80,
-.light .bg-\[\#1e1c18\]\/90 {
-  background-color: var(--inset-bg) !important;
-}
-.light .bg-\[\#18181b\],
-.light .bg-\[\#18181b\]\/95,
-.light .bg-\[\#1c1c1f\]\/95,
-.light .bg-\[\#202024\] {
-  background-color: var(--paper-warm) !important;
-}
-.light .bg-white\/\[0\.05\],
-.light .bg-white\/\[0\.06\] {
-  background-color: rgba(20, 18, 14, 0.05) !important;
-}
-.light .hover\:bg-white\/\[0\.09\]:hover,
-.light .hover\:bg-white\/\[0\.1\]:hover {
-  background-color: rgba(20, 18, 14, 0.09) !important;
-}
-.light .bg-white\/10 {
-  background-color: rgba(20, 18, 14, 0.08) !important;
-}
-.light .hover\:bg-white\/20:hover {
-  background-color: rgba(20, 18, 14, 0.14) !important;
+
+.light .text-white:not(.btn-editorial-primary, .btn-editorial-primary *) {
+  color: #111111 !important;
 }
 
 /* Borders */
-.light .border-\[rgba\(242\,235\,216\,0\.04\)\],
-.light .border-\[rgba\(242\,235\,216\,0\.06\)\],
-.light .border-\[rgba\(242\,235\,216\,0\.08\)\],
-.light .border-\[rgba\(242\,235\,216\,0\.1\)\],
-.light .border-\[rgba\(242\,235\,216\,0\.12\)\],
-.light .border-\[rgba\(242\,235\,216\,0\.14\)\],
-.light .border-\[rgba\(242\,235\,216\,0\.15\)\],
-.light .border-\[rgba\(242\,235\,216\,0\.2\)\] {
-  border-color: var(--line) !important;
-}
-.light .border-white\/10,
-.light .border-white\/15,
-.light .border-white\/20,
-.light .border-white\/30,
-.light .border-white\/\[0\.06\] {
-  border-color: var(--line) !important;
+.light [class*="border-[rgba(242,235,216"] {
+  border-color: rgba(0, 0, 0, 0.07) !important;
 }
 
-/* Light Theme overrides for n8n XYFlow Workflow Studio */
+.light [class*="border-white/"] {
+  border-color: rgba(0, 0, 0, 0.07) !important;
+}
+
+/* Stat Rings in Light Mode */
+.light .stat-ring {
+  background-color: #f5f4ef !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #111111 !important;
+}
+.light .stat-ring.coral {
+  background-color: rgba(224, 83, 60, 0.08) !important;
+  border-color: var(--coral) !important;
+  color: var(--coral) !important;
+}
+.light .stat-ring.mustard {
+  background-color: rgba(184, 134, 16, 0.08) !important;
+  border-color: var(--mustard) !important;
+  color: var(--mustard) !important;
+}
+
+/* Buttons in Light Mode */
+.light .btn-editorial-ghost {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+.light .btn-editorial-ghost:hover {
+  background-color: #f5f4ef !important;
+  color: #111111 !important;
+}
+
+.light .btn-editorial-primary,
+.light .btn-editorial-primary * {
+  color: #ffffff !important;
+}
+
+/* XYFlow in Light Mode */
 .light .react-flow__background {
-  background-color: #f4efe6 !important;
+  background-color: #f5f4ef !important;
 }
 .light .react-flow__edge-path {
-  stroke: #a8a29e !important;
+  stroke: #a1a1aa !important;
 }
 .light .react-flow__controls {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(20, 18, 14, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
   background: #ffffff !important;
 }
 .light .react-flow__controls-button {
   background: #ffffff !important;
-  border-bottom: 1px solid rgba(20, 18, 14, 0.06) !important;
-  color: #78716c !important;
-  fill: #78716c !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  color: #71717a !important;
+  fill: #71717a !important;
 }
 .light .react-flow__controls-button:hover {
-  background: #f5f2eb !important;
-  color: #1c1917 !important;
-  fill: #1c1917 !important;
-}
-
-/* Light Theme primary button text must stay crisp white */
-.light .btn-editorial-primary,
-.light .btn-editorial-primary * {
-  color: #ffffff !important;
+  background: #f5f4ef !important;
+  color: #111111 !important;
+  fill: #111111 !important;
 }

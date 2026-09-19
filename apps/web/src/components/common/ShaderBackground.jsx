@@ -22,13 +22,23 @@ export default function ShaderBackground({ className = "", opacity, style = {} }
   const [hasShaderError, setHasShaderError] = useState(false);
   const { isDark } = useTheme();
 
+  // In light mode, return clean, luminous off-white backdrop with no murky dark shaders
+  if (!isDark) {
+    return (
+      <div 
+        className={`fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#fbfaf8] ${className}`}
+        style={{ ...style }}
+      />
+    );
+  }
+
   if (hasShaderError) {
-    return <FlutedCanvas className={className} style={style} opacity={opacity} isDark={isDark} />;
+    return <FlutedCanvas className={className} style={style} opacity={opacity} isDark={true} />;
   }
 
   return (
     <div 
-      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden ${isDark ? 'bg-[#0e0d0a]' : 'bg-[#f8f6f0]'} ${className}`}
+      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#0e0d0a] ${className}`}
       style={{ ...style, ...(opacity !== undefined ? { opacity } : {}) }}
     >
       <Shader 
@@ -40,8 +50,8 @@ export default function ShaderBackground({ className = "", opacity, style = {} }
       >
         {/* 1. Base Ambient Paper Backdrop Shader */}
         <LinearGradient
-          colorA={isDark ? "#0e0d0a" : "#f8f6f0"}
-          colorB={isDark ? "#161410" : "#eee8dc"}
+          colorA="#0e0d0a"
+          colorB="#161410"
           colorSpace="hsl"
           end={{ x: 0, y: 1 }}
           start={{ x: 0, y: 0 }}
