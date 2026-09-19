@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ShaderBackground from '../common/ShaderBackground';
 import ArcMateLogo from '../common/ArcMateLogo';
+import ThemeToggle from '../common/ThemeToggle';
 import { playPaytmChime } from '../../services/soundboxAudio';
 
 export default function LoginPage({ onLoginSuccess, onGoHome }) {
@@ -132,7 +133,7 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-[#0e0d0a] font-sans selection:bg-[#ed6f5c]/30">
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 lunor-bg font-sans selection:bg-[#ed6f5c]/30">
       {/* Background with WebGPU Procedural Shaders */}
       <ShaderBackground opacity={0.38} />
 
@@ -147,9 +148,12 @@ export default function LoginPage({ onLoginSuccess, onGoHome }) {
             <ChevronLeft size={14} className="text-[#ed6f5c]" /> Return to Portal
           </button>
           
-          <div className="flex items-center gap-2 bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] text-[#c8c0a8] px-3 py-1 rounded-full text-[11px] font-mono backdrop-blur-md">
-            <span className="pulse-dot" />
-            <span>Cloud Database Connected</span>
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 bg-[#1e1c18]/80 border border-[rgba(242,235,216,0.1)] text-[#c8c0a8] px-3 py-1 rounded-full text-[11px] font-mono backdrop-blur-md">
+              <span className="pulse-dot" />
+              <span>Cloud Database Connected</span>
+            </div>
+            <ThemeToggle variant="icon" />
           </div>
         </div>
 

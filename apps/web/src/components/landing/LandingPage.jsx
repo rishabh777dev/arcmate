@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ShaderBackground from '../common/ShaderBackground';
 import ArcMateLogo from '../common/ArcMateLogo';
+import ThemeToggle from '../common/ThemeToggle';
 import { playPaytmChime } from '../../services/soundboxAudio';
 
 export default function LandingPage({ onLaunchApp, onGoLogin }) {
@@ -94,7 +95,7 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
     : labItems.filter(item => item.category === activeLabFilter);
 
   return (
-    <div className="min-h-screen bg-[#0e0d0a] text-[#f2ebd8] relative overflow-x-hidden selection:bg-[#ed6f5c]/30 selection:text-white">
+    <div className="min-h-screen lunor-bg relative overflow-x-hidden selection:bg-[#ed6f5c]/30 selection:text-white">
       {/* 1. Mouse-Reactive WebGPU Ambient Shader Canvas */}
       <ShaderBackground opacity={0.35} />
 
@@ -132,8 +133,9 @@ export default function LandingPage({ onLaunchApp, onGoLogin }) {
             </a>
           </nav>
 
-          {/* Single Header Action Button */}
-          <div className="flex items-center">
+          {/* Header Action Buttons */}
+          <div className="flex items-center gap-3">
+            <ThemeToggle variant="icon" />
             <button
               onClick={onLaunchApp}
               className="btn-editorial btn-editorial-primary text-xs py-2 px-5 shadow-lg flex items-center gap-2"

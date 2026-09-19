@@ -14,6 +14,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import ArcMateLogo from '../common/ArcMateLogo';
+import ThemeToggle from '../common/ThemeToggle';
 
 export default function LunorSidebar({ 
   activeTab, 
@@ -159,22 +160,26 @@ export default function LunorSidebar({
         </div>
 
         {/* Action Controls */}
-        <div className="grid grid-cols-2 gap-1.5">
-          <button
-            onClick={onOpenSettings}
-            className="py-2 px-2.5 rounded-xl bg-[#1e1c18]/80 hover:bg-[rgba(242,235,216,0.08)] text-[#c8c0a8] hover:text-white border border-[rgba(242,235,216,0.08)] flex items-center justify-center gap-1.5 transition text-[11px] font-medium"
-          >
-            <Settings className="w-3 h-3 text-[#9a9382]" />
-            <span>Store Info</span>
-          </button>
+        <div className="space-y-1.5">
+          <ThemeToggle variant="sidebar" />
 
-          <button
-            onClick={onLogout}
-            className="py-2 px-2.5 rounded-xl bg-[#1e1c18]/80 hover:bg-[#ed6f5c]/10 text-[#c8c0a8] hover:text-[#ed6f5c] border border-[rgba(242,235,216,0.08)] hover:border-[#ed6f5c]/20 flex items-center justify-center gap-1.5 transition text-[11px] font-medium"
-          >
-            <LogOut className="w-3 h-3" />
-            <span>Sign Out</span>
-          </button>
+          <div className="grid grid-cols-2 gap-1.5">
+            <button
+              onClick={onOpenSettings}
+              className="py-2 px-2.5 rounded-xl bg-[#1e1c18]/80 hover:bg-[rgba(242,235,216,0.08)] text-[#c8c0a8] hover:text-white border border-[rgba(242,235,216,0.08)] flex items-center justify-center gap-1.5 transition text-[11px] font-medium"
+            >
+              <Settings className="w-3 h-3 text-[#9a9382]" />
+              <span>Store Info</span>
+            </button>
+
+            <button
+              onClick={onLogout}
+              className="py-2 px-2.5 rounded-xl bg-[#1e1c18]/80 hover:bg-[#ed6f5c]/10 text-[#c8c0a8] hover:text-[#ed6f5c] border border-[rgba(242,235,216,0.08)] hover:border-[#ed6f5c]/20 flex items-center justify-center gap-1.5 transition text-[11px] font-medium"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
 
         <button

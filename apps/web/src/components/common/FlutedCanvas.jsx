@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from 'react';
  * Inspired by Emily's FallbackAuthCanvas and SavedMinds WebGPU ChromaFlow
  * Features fluid inertia mouse-tracking, radial color bloom, and fluted light ribs
  */
-export default function FlutedCanvas({ className = "", opacity, style = {} }) {
+export default function FlutedCanvas({ className = "", opacity, style = {}, isDark = true }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -49,8 +49,8 @@ export default function FlutedCanvas({ className = "", opacity, style = {} }) {
       current.x += velocity.x;
       current.y += velocity.y;
 
-      // Deep dark paper background
-      ctx.fillStyle = '#0e0d0a';
+      // Deep dark paper background or warm editorial paper
+      ctx.fillStyle = isDark ? '#0e0d0a' : '#f8f6f0';
       ctx.fillRect(0, 0, width, height);
 
       // Primary Luminous Radial Bloom (Warm Coral + Amber/Gold)
@@ -65,10 +65,17 @@ export default function FlutedCanvas({ className = "", opacity, style = {} }) {
         current.y,
         bloomRadius
       );
-      grad.addColorStop(0, 'rgba(237, 111, 92, 0.22)');     // Warm Coral
-      grad.addColorStop(0.35, 'rgba(233, 185, 74, 0.16)');  // Warm Gold/Amber
-      grad.addColorStop(0.7, 'rgba(110, 116, 72, 0.10)');   // Olive/Earth
-      grad.addColorStop(1, 'rgba(14, 13, 10, 0)');
+      if (isDark) {
+        grad.addColorStop(0, 'rgba(237, 111, 92, 0.22)');     // Warm Coral
+        grad.addColorStop(0.35, 'rgba(233, 185, 74, 0.16)');  // Warm Gold/Amber
+        grad.addColorStop(0.7, 'rgba(110, 116, 72, 0.10)');   // Olive/Earth
+        grad.addColorStop(1, 'rgba(14, 13, 10, 0)');
+      } else {
+        grad.addColorStop(0, 'rgba(224, 83, 60, 0.14)');      // Warm Coral on light
+        grad.addColorStop(0.35, 'rgba(217, 152, 36, 0.10)');  // Warm Gold/Amber on light
+        grad.addColorStop(0.7, 'rgba(91, 98, 56, 0.06)');     // Olive on light
+        grad.addColorStop(1, 'rgba(248, 246, 240, 0)');
+      }
 
       ctx.fillStyle = grad;
       ctx.beginPath();
@@ -86,10 +93,17 @@ export default function FlutedCanvas({ className = "", opacity, style = {} }) {
       for (let i = -totalRibs / 2; i < totalRibs / 2; i++) {
         const x = i * ribW + Math.sin(time * 0.3 + i * 0.15) * 4;
         const ribGrad = ctx.createLinearGradient(x, -diag, x + ribW, -diag);
-        ribGrad.addColorStop(0, 'rgba(242, 235, 216, 0.02)');
-        ribGrad.addColorStop(0.2, 'rgba(242, 235, 216, 0.006)');
-        ribGrad.addColorStop(0.8, 'rgba(14, 13, 10, 0.04)');
-        ribGrad.addColorStop(1.0, 'rgba(242, 235, 216, 0.012)');
+        if (isDark) {
+          ribGrad.addColorStop(0, 'rgba(242, 235, 216, 0.02)');
+          ribGrad.addColorStop(0.2, 'rgba(242, 235, 216, 0.006)');
+          ribGrad.addColorStop(0.8, 'rgba(14, 13, 10, 0.04)');
+          ribGrad.addColorStop(1.0, 'rgba(242, 235, 216, 0.012)');
+        } else {
+          ribGrad.addColorStop(0, 'rgba(20, 18, 14, 0.015)');
+          ribGrad.addColorStop(0.2, 'rgba(20, 18, 14, 0.004)');
+          ribGrad.addColorStop(0.8, 'rgba(248, 246, 240, 0.03)');
+          ribGrad.addColorStop(1.0, 'rgba(20, 18, 14, 0.008)');
+        }
         ctx.fillStyle = ribGrad;
         ctx.fillRect(x, -diag, ribW, diag * 2);
       }
@@ -105,7 +119,7 @@ export default function FlutedCanvas({ className = "", opacity, style = {} }) {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isDark]);
 
   return (
     <canvas 

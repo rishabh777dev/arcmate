@@ -13,6 +13,7 @@ import {
   Layers,
   ArrowRight
 } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 
 const CATEGORY_COLORS = {
   MERCHANT: { bg: 'bg-[#ed6f5c]/10', border: 'border-[#ed6f5c]/40', text: 'text-[#ed6f5c]', dot: '#ed6f5c' },
@@ -25,6 +26,7 @@ const CATEGORY_COLORS = {
 };
 
 export default function KnowledgeGraphView() {
+  const { isDark } = useTheme();
   const [graphData, setGraphData] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -193,7 +195,7 @@ export default function KnowledgeGraphView() {
                 <svg className="w-full h-full" viewBox="0 0 680 440">
                   <defs>
                     <marker id="arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6e6860" />
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill={isDark ? "#6e6860" : "#a8a29e"} />
                     </marker>
                     <marker id="arrow-active" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                       <path d="M 0 0 L 10 5 L 0 10 z" fill="#ed6f5c" />
@@ -215,7 +217,7 @@ export default function KnowledgeGraphView() {
                           y1={src.y}
                           x2={tgt.x}
                           y2={tgt.y}
-                          stroke={isConnected ? '#ed6f5c' : 'rgba(242, 235, 216, 0.15)'}
+                          stroke={isConnected ? '#ed6f5c' : (isDark ? 'rgba(242, 235, 216, 0.15)' : 'rgba(20, 18, 14, 0.15)')}
                           strokeWidth={isConnected ? 2 : 1.2}
                           strokeDasharray={isConnected ? 'none' : '4,3'}
                           markerEnd={isConnected ? 'url(#arrow-active)' : 'url(#arrow)'}
@@ -223,7 +225,7 @@ export default function KnowledgeGraphView() {
                         <text
                           x={(src.x + tgt.x) / 2}
                           y={(src.y + tgt.y) / 2 - 5}
-                          fill={isConnected ? '#ed6f5c' : '#9a9382'}
+                          fill={isConnected ? '#ed6f5c' : (isDark ? '#9a9382' : '#78716c')}
                           fontSize="8"
                           textAnchor="middle"
                           className="select-none font-mono"
@@ -251,7 +253,7 @@ export default function KnowledgeGraphView() {
                       >
                         <circle
                           r={node.category === 'MERCHANT' ? 28 : 20}
-                          fill={isSelected ? '#1e1c18' : '#161410'}
+                          fill={isSelected ? (isDark ? '#1e1c18' : '#eee8dc') : (isDark ? '#161410' : '#ffffff')}
                           stroke={isSelected ? '#ed6f5c' : catTheme.dot}
                           strokeWidth={isSelected ? 2.5 : 1.5}
                           className="group-hover:scale-110 transition-transform"
@@ -268,7 +270,7 @@ export default function KnowledgeGraphView() {
                         )}
                         <text
                           y={3}
-                          fill="#f2ebd8"
+                          fill={isDark ? '#f2ebd8' : '#14120e'}
                           fontSize={node.category === 'MERCHANT' ? '10' : '9'}
                           fontWeight="bold"
                           textAnchor="middle"
@@ -278,7 +280,7 @@ export default function KnowledgeGraphView() {
                         </text>
                         <text
                           y={node.category === 'MERCHANT' ? 42 : 32}
-                          fill={isSelected ? '#f2ebd8' : '#9a9382'}
+                          fill={isSelected ? (isDark ? '#f2ebd8' : '#14120e') : (isDark ? '#9a9382' : '#57534e')}
                           fontSize="9"
                           fontWeight={isSelected ? 'bold' : 'normal'}
                           textAnchor="middle"

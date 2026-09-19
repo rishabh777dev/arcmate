@@ -8,25 +8,27 @@ import {
   FilmGrain 
 } from 'shaders/react';
 import FlutedCanvas from './FlutedCanvas';
+import { useTheme } from '../../context/ThemeContext';
 
 /**
  * ShaderBackground:
  * Renders BOTH the interactive spotlight and the particle field directly using WebGPU shaders ('shaders/react').
  * - Spotlight: WebGPU <ChromaFlow visible={true}> creates a fluid, luminous cursor-tracking spotlight bloom
- * - Particles: WebGPU <DotGrid> mapped to chroma trail flow, masked with <LinearGradient> for Paytm cyan/violet sheen
+ * - Particles: WebGPU <DotGrid> mapped to chroma trail flow, masked with <LinearGradient> for sheen
  * - Interactive dynamics: <CursorRipples> and <FilmGrain>
  * - Fallback: Automatic seamless fallback to FlutedCanvas if WebGPU is unsupported
  */
 export default function ShaderBackground({ className = "", opacity, style = {} }) {
   const [hasShaderError, setHasShaderError] = useState(false);
+  const { isDark } = useTheme();
 
   if (hasShaderError) {
-    return <FlutedCanvas className={className} style={style} opacity={opacity} />;
+    return <FlutedCanvas className={className} style={style} opacity={opacity} isDark={isDark} />;
   }
 
   return (
     <div 
-      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#0e0d0a] ${className}`}
+      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden ${isDark ? 'bg-[#0e0d0a]' : 'bg-[#f8f6f0]'} ${className}`}
       style={{ ...style, ...(opacity !== undefined ? { opacity } : {}) }}
     >
       <Shader 
@@ -36,10 +38,10 @@ export default function ShaderBackground({ className = "", opacity, style = {} }
           setHasShaderError(true);
         }}
       >
-        {/* 1. Base Ambient Dark Paper Backdrop Shader */}
+        {/* 1. Base Ambient Paper Backdrop Shader */}
         <LinearGradient
-          colorA="#0e0d0a"
-          colorB="#161410"
+          colorA={isDark ? "#0e0d0a" : "#f8f6f0"}
+          colorB={isDark ? "#161410" : "#eee8dc"}
           colorSpace="hsl"
           end={{ x: 0, y: 1 }}
           start={{ x: 0, y: 0 }}
@@ -78,18 +80,18 @@ export default function ShaderBackground({ className = "", opacity, style = {} }
 
         {/* 4. Linear Gradient masked to DotGrid particles for warm coral & amber sheen */}
         <LinearGradient
-          colorA="#ed6f5c"
-          colorB="#e9b94a"
+          colorA={isDark ? "#ed6f5c" : "#e0533c"}
+          colorB={isDark ? "#e9b94a" : "#d99824"}
           colorSpace="hsl"
           end={{ x: 1, y: 0 }}
           maskSource="trailDots"
           start={{ x: 0, y: 1 }}
-          blendMode="screen"
+          blendMode={isDark ? "screen" : "multiply"}
         />
 
         {/* 5. Real-time Cursor Waves & Cinematic Grain */}
         <CursorRipples />
-        <FilmGrain strength={0.06} />
+        <FilmGrain strength={isDark ? 0.06 : 0.03} />
       </Shader>
     </div>
   );

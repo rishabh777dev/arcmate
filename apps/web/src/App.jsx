@@ -12,6 +12,7 @@ import CopilotChat from './components/copilot/CopilotChat';
 import AccountSettingsModal from './components/common/AccountSettingsModal';
 import ShaderBackground from './components/common/ShaderBackground';
 import ArcMateLogo from './components/common/ArcMateLogo';
+import ThemeToggle from './components/common/ThemeToggle';
 import { playPaytmChime } from './services/soundboxAudio';
 
 export default function App() {
@@ -321,7 +322,7 @@ export default function App() {
 
   // ROUTE: Merchant App Shell
   return (
-    <div className="flex h-screen bg-[#0e0d0a] text-[#f2ebd8] overflow-hidden font-sans relative">
+    <div className="flex h-screen lunor-bg overflow-hidden font-sans relative">
       {/* Background WebGPU Shader Spotlight & Ripples */}
       <ShaderBackground opacity={0.35} />
 
@@ -355,6 +356,9 @@ export default function App() {
               <span className="text-[10px] font-mono uppercase tracking-widest text-[#9a9382]">Store Intelligence</span>
               <span className="text-[10px] font-bold text-[#ed6f5c] font-mono">LIVE</span>
             </div>
+
+            {/* Sun / Moon Theme Toggle */}
+            <ThemeToggle variant="icon" />
           </div>
         </header>
 
