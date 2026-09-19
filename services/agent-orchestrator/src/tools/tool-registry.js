@@ -1,6 +1,7 @@
 import { getSalesSummary, diagnoseSalesDecline, dataStore } from '@actionmate/data-service';
 import { knowledgeEngine } from '@actionmate/knowledge-service';
 import { nlWorkflowGenerator, executeWorkflow } from '@actionmate/workflow-engine';
+import { financialAdvisor } from '../brain/financial-advisor.js';
 
 export const TOOL_REGISTRY = {
   get_sales_summary: async (merchantId) => await getSalesSummary(merchantId),
@@ -53,5 +54,35 @@ export const TOOL_REGISTRY = {
   add_policy: async (merchantId, policy) => await dataStore.addPolicy(merchantId, policy),
   get_documents: async (merchantId) => await dataStore.getDocuments(merchantId),
   add_document: async (merchantId, docData) => await dataStore.addDocument(merchantId, docData),
-  delete_document: async (merchantId, docId) => await dataStore.deleteDocument(merchantId, docId)
+  delete_document: async (merchantId, docId) => await dataStore.deleteDocument(merchantId, docId),
+  get_balance_sheet: async (merchantId) => await dataStore.getBalanceSheet(merchantId),
+  
+  // Financial Advisor Tool Functions
+  get_profit_margin_advice: async (merchantId) => {
+    const audit = await dataStore.getStoreAudit(merchantId);
+    const docs = await dataStore.getDocuments(merchantId);
+    return financialAdvisor.generateProfitMarginAdvice(audit, docs);
+  },
+  get_cost_reduction_plan: async (merchantId) => {
+    const audit = await dataStore.getStoreAudit(merchantId);
+    const comps = await dataStore.getCompanies(merchantId);
+    const docs = await dataStore.getDocuments(merchantId);
+    return financialAdvisor.generateCostReductionPlan(audit, comps, docs);
+  },
+  get_working_capital_advice: async (merchantId) => {
+    const bs = await dataStore.getBalanceSheet(merchantId);
+    const invs = await dataStore.getInvoices(merchantId);
+    return financialAdvisor.generateWorkingCapitalAdvice(bs, invs);
+  },
+  evaluate_discount: async (merchantId, pct, category = 'General') => {
+    return financialAdvisor.evaluateDiscountRequest(pct, category);
+  },
+  get_tax_summary: async (merchantId) => {
+    const audit = await dataStore.getStoreAudit(merchantId);
+    const invs = await dataStore.getInvoices(merchantId);
+    return financialAdvisor.generateTaxSummary(audit, invs);
+  },
+  query_cognee_documents: async (merchantId, query) => {
+    return await knowledgeEngine.queryKnowledge(query, merchantId);
+  }
 };
