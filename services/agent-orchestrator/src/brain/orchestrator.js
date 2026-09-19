@@ -219,7 +219,7 @@ export class ActionMateOrchestrator {
     // ==========================================
     if ((pLower.includes('create workflow') || pLower.includes('build workflow') || pLower.includes('new workflow') || pLower.includes('n8n') || pLower.includes('bhejo') || pLower.includes('automate sending')) && !isBugCheck) {
       this.broadcast({ step: 'WORKFLOW_SYNTHESIS', status: 'IN_PROGRESS', details: 'Synthesizing prompt into executable automation workflow...' }, merchant.id);
-      const wf = await TOOL_REGISTRY.generate_workflow(merchantText);
+      const wf = await TOOL_REGISTRY.generate_workflow(merchantText, merchant.id);
       await dataStore.saveWorkflow(merchant.id, wf);
       this.broadcast({ step: 'WORKFLOW_SYNTHESIS', status: 'COMPLETED', details: `Automation workflow "${wf.name}" created.`, workflow: wf }, merchant.id);
       

@@ -1034,16 +1034,27 @@ class DataStore {
     return [];
   }
 
-  async saveWorkflow(merchantId, wf) {
-    const m = await this.getMerchant(merchantId);
+  async saveWorkflow(merchantIdOrWf, maybeWf = null) {
+    let mId = null;
+    let wf = null;
+
+    if (maybeWf) {
+      mId = merchantIdOrWf;
+      wf = maybeWf;
+    } else {
+      wf = merchantIdOrWf || {};
+      mId = wf.merchantId || null;
+    }
+
+    const m = await this.getMerchant(mId);
     const sb = this.getSupabase();
     const row = {
       merchant_id: m.id,
-      name: wf.name || 'New Automation',
-      description: wf.description || '',
-      trigger_type: wf.triggerType || 'manual',
-      nodes: wf.nodes || [],
-      edges: wf.edges || [],
+      name: wf?.name || 'New Automation',
+      description: wf?.description || '',
+      trigger_type: wf?.triggerType || 'manual',
+      nodes: wf?.nodes || [],
+      edges: wf?.edges || [],
       status: 'active'
     };
 

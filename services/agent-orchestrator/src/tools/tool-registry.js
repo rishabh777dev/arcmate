@@ -31,8 +31,8 @@ export const TOOL_REGISTRY = {
     await dataStore.saveActionDraft(draft);
     return draft;
   },
-  generate_workflow: async (prompt) => {
-    return await nlWorkflowGenerator.generateWorkflowFromPrompt(prompt);
+  generate_workflow: async (prompt, merchantId) => {
+    return await nlWorkflowGenerator.generateWorkflowFromPrompt(prompt, merchantId);
   },
   execute_approved_action: async (actionId, merchantId) => {
     const m = await dataStore.getMerchant(merchantId);

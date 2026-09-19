@@ -91,7 +91,7 @@ export class NLWorkflowGenerator {
       }
     };
 
-    dataStore.saveWorkflow(workflow);
+    await dataStore.saveWorkflow(merchantId, workflow);
     dataStore.logAuditEvent(
       'ACTIONMATE_AGENT',
       'WORKFLOW_SYNTHESIZED',
