@@ -11,7 +11,8 @@ import {
   Home,
   Settings,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  HeartHandshake
 } from 'lucide-react';
 import ArcMateLogo from '../common/ArcMateLogo';
 import ThemeToggle from '../common/ThemeToggle';
@@ -30,6 +31,7 @@ export default function LunorSidebar({
     { id: 'overview', label: 'Dashboard', icon: LayoutGrid },
     { id: 'copilot', label: 'AI Assistant', icon: Bot, badge: 'AI', dot: true },
     { id: 'customers', label: 'Patrons & Cohorts', icon: Users, alertDot: true },
+    { id: 'reviews', label: 'Support & Reviews', icon: HeartHandshake, badge: '4.8★' },
     { id: 'workflow', label: 'Automation Studio', icon: Workflow },
     { id: 'knowledge', label: 'Store Knowledge & Rules', icon: Database },
     { id: 'approvals', label: 'Action Approvals', icon: ShieldAlert, count: pendingApprovalsCount }

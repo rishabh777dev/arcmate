@@ -8,6 +8,7 @@ import CustomersView from './components/customers/CustomersView';
 import ApprovalsView from './components/approvals/ApprovalsView';
 import KnowledgeGraphView from './components/knowledge/KnowledgeGraphView';
 import WorkflowStudioView from './components/workflow/WorkflowStudioView';
+import CustomerSupportView from './components/support/CustomerSupportView';
 import CopilotChat from './components/copilot/CopilotChat';
 import AccountSettingsModal from './components/common/AccountSettingsModal';
 import ShaderBackground from './components/common/ShaderBackground';
@@ -437,6 +438,13 @@ export default function App() {
 
           {activeTab === 'customers' && (
             <CustomersView />
+          )}
+
+          {activeTab === 'reviews' && (
+            <CustomerSupportView 
+              activeMerchant={activeMerchant}
+              onNavigateTab={(tab) => setActiveTab(tab)}
+            />
           )}
 
           {activeTab === 'workflow' && (
