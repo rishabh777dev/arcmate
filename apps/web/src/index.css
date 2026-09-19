@@ -418,3 +418,44 @@
   100% { transform: translateX(0%); }
 }
 
+/* n8n Canvas Dark Mode Theme for @xyflow/react */
+.react-flow__background {
+  background-color: #0c0b09 !important;
+}
+.react-flow__edge-path {
+  stroke: #52525b !important;
+  stroke-width: 2px !important;
+  transition: stroke 0.3s ease;
+}
+.react-flow__edge.animated .react-flow__edge-path {
+  stroke: #ed6f5c !important;
+  stroke-width: 2.5px !important;
+}
+.react-flow__controls {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: #18181b !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+.react-flow__controls-button {
+  background: #18181b !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #a1a1aa !important;
+  fill: #a1a1aa !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+.react-flow__controls-button:hover {
+  background: #27272a !important;
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+.react-flow__controls-button svg {
+  fill: currentColor !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+}
+.react-flow__attribution {
+  display: none !important;
+}
