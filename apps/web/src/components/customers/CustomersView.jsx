@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Search, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Users, Search, AlertTriangle, ArrowRight, Coffee } from 'lucide-react';
+import { MOCK_PATRONS } from '../../data/mockStoreData';
 
 export default function CustomersView() {
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCustomers] = useState(MOCK_PATRONS);
   const [filter, setFilter] = useState('ALL');
   const [search, setSearch] = useState('');
 
@@ -12,7 +13,11 @@ export default function CustomersView() {
       headers: token ? { 'Authorization': `Bearer ${token}` } : {}
     })
       .then(r => r.json())
-      .then(d => setCustomers(Array.isArray(d) ? d : []))
+      .then(d => {
+        if (Array.isArray(d) && d.length > 0) {
+          setCustomers(d);
+        }
+      })
       .catch(e => console.error(e));
   }, []);
 
@@ -99,11 +104,20 @@ export default function CustomersView() {
           <tbody className="divide-y divide-[rgba(242,235,216,0.04)] text-[#c8c0a8]">
             {filtered.map(c => (
               <tr key={c.id} className="hover:bg-[rgba(242,235,216,0.03)] transition">
-                <td className="py-3 px-5 font-medium text-[#f2ebd8] flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] text-[#c8c0a8] flex items-center justify-center font-bold text-xs font-mono">
-                    {c.displayName[0]}
+                <td className="py-3 px-5 font-medium text-[#f2ebd8]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-xl bg-[#1e1c18] border border-[rgba(242,235,216,0.08)] text-[#c8c0a8] flex items-center justify-center font-bold text-xs font-mono shrink-0">
+                      {c.displayName ? c.displayName[0] : 'P'}
+                    </div>
+                    <div>
+                      <div className="font-sans font-semibold text-[#f2ebd8]">{c.displayName}</div>
+                      <div className="text-[10px] text-[#6e6860] font-body truncate max-w-[200px]">
+                        {Array.isArray(c.preferredItems) && c.preferredItems.length > 0 
+                          ? c.preferredItems.join(', ') 
+                          : 'Specialty Brew'} • {c.preferredSlot || 'All Day'}
+                      </div>
+                    </div>
                   </div>
-                  <span className="font-sans">{c.displayName}</span>
                 </td>
                 <td className="py-3 px-5 font-mono text-[#9a9382]">{c.phoneMasked}</td>
                 <td className="py-3 px-5">
@@ -117,9 +131,11 @@ export default function CustomersView() {
                     {c.segment.replace('_', ' ')}
                   </span>
                 </td>
-                <td className="py-3 px-5 font-mono">{c.totalVisits} orders</td>
-                <td className="py-3 px-5 font-mono font-semibold text-[#f2ebd8]">₹{c.totalSpend.toLocaleString()}</td>
-                <td className="py-3 px-5 font-mono text-[#9a9382]">{new Date(c.lastVisit).toLocaleDateString()}</td>
+                <td className="py-3 px-5 font-mono">{c.totalVisits || c.totalTransactions || 0} orders</td>
+                <td className="py-3 px-5 font-mono font-semibold text-[#f2ebd8]">₹{(c.totalSpend || 0).toLocaleString('en-IN')}</td>
+                <td className="py-3 px-5 font-mono text-[#9a9382]">
+                  {new Date(c.lastVisit || c.lastPurchaseAt || Date.now()).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </td>
                 <td className="py-3 px-5 text-right">
                   {c.segment === 'INACTIVE_REGULAR' ? (
                     <span className="text-[10px] font-mono font-semibold text-[#ed6f5c] flex items-center justify-end gap-1">

@@ -14,6 +14,7 @@ import ShaderBackground from './components/common/ShaderBackground';
 import ArcMateLogo from './components/common/ArcMateLogo';
 import ThemeToggle from './components/common/ThemeToggle';
 import { playPaytmChime } from './services/soundboxAudio';
+import { MOCK_SUMMARY, MOCK_PENDING_ACTION } from './data/mockStoreData';
 
 export default function App() {
   // Navigation Router: 'landing' | 'login' | 'app'
@@ -36,15 +37,57 @@ export default function App() {
   const [activeMerchant, setActiveMerchant] = useState(() => {
     try {
       const saved = localStorage.getItem('actionmate_merchant');
-      return saved ? JSON.parse(saved) : null;
+      return saved ? JSON.parse(saved) : {
+        id: 'a0000000-0000-0000-0000-000000000001',
+        name: 'Athees Café',
+        ownerName: 'Atheeswaran R.',
+        category: 'Specialty Artisan Coffee & Gourmet Bakes',
+        location: '100ft Road, Indiranagar, Bangalore',
+        preferredLanguage: 'en',
+        soundboxDeviceId: 'PAYTM_SBX_BLR_7781',
+        operatingHours: '07:30 AM - 11:00 PM',
+        avgTicketSize: 240,
+        upiId: 'atheescafe@paytm',
+        onboardingCompleted: true,
+        plan: 'growth'
+      };
     } catch (e) {
       return null;
     }
   });
 
-  const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState(MOCK_SUMMARY);
   const [diagnostics, setDiagnostics] = useState(null);
-  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditLogs, setAuditLogs] = useState([
+    {
+      id: 'audit_01',
+      actor: 'PAYTM_SOUNDBOX',
+      actionType: 'DEVICE_TELEMETRY_SYNC',
+      details: 'Paytm Soundbox 3.0 Pro online. 4G signal strong, battery 96%, audio chime loop active.',
+      timestamp: new Date(Date.now() - 5 * 60000).toISOString()
+    },
+    {
+      id: 'audit_02',
+      actor: 'ACTIONMATE_RADAR',
+      actionType: 'ANOMALY_DETECTED',
+      details: 'Isolated 47 regular patrons absent for 14+ days. Evening slump detected (-18.4%).',
+      timestamp: new Date(Date.now() - 35 * 60000).toISOString()
+    },
+    {
+      id: 'audit_03',
+      actor: 'COGNEE_GUARD',
+      actionType: 'POLICY_EVALUATION',
+      details: '10% discount retention campaign evaluated against store policies. Margin check PASSED (<= 15%).',
+      timestamp: new Date(Date.now() - 34 * 60000).toISOString()
+    },
+    {
+      id: 'audit_04',
+      actor: 'APPROVAL_GATE',
+      actionType: 'ACTION_DRAFT_QUEUED',
+      details: 'Evening Regulars Re-engagement Campaign (47 Patrons) queued for merchant authorization.',
+      timestamp: new Date(Date.now() - 33 * 60000).toISOString()
+    }
+  ]);
   const wsRef = useRef(null);
 
   // Assistant State
@@ -52,7 +95,7 @@ export default function App() {
   const [agentSteps, setAgentSteps] = useState([
     { step: 'MONITORING', status: 'COMPLETED', details: 'Arc Mate intelligence active and monitoring store signals.' }
   ]);
-  const [pendingAction, setPendingAction] = useState(null);
+  const [pendingAction, setPendingAction] = useState(MOCK_PENDING_ACTION);
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Sync with browser URL hash

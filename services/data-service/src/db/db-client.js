@@ -1,6 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 import WebSocket from 'ws';
 import dotenv from 'dotenv';
+import { 
+  SEED_PATRONS, 
+  SEED_TRANSACTIONS, 
+  SEED_RETAIL_INVOICES, 
+  SEED_SUPPLIER_INVOICES, 
+  INITIAL_PENDING_ACTION 
+} from './seedData.js';
 
 dotenv.config();
 
@@ -286,9 +293,11 @@ class DataStore {
             displayName: c.display_name,
             phoneMasked: c.phone_masked,
             segment: (c.segment || 'occasional').toUpperCase(),
-            totalTransactions: c.total_transactions || 0,
+            totalTransactions: c.total_transactions || c.total_visits || 0,
+            totalVisits: c.total_visits || c.total_transactions || 0,
             totalSpend: Number(c.total_spend) || 0,
-            lastPurchaseAt: c.last_purchase_at,
+            lastPurchaseAt: c.last_purchase_at || c.last_visit,
+            lastVisit: c.last_visit || c.last_purchase_at,
             preferredItems: c.preferred_items || ['Specialty Brew', 'Pastry'],
             preferredSlot: c.preferred_slot || 'All Day'
           }));
@@ -298,20 +307,18 @@ class DataStore {
       }
     }
 
-    return [
-      {
-        id: 'cust_1',
-        merchantId: m.id,
-        displayName: 'Rahul Deshmukh',
-        phoneMasked: '+91 98860 ***742',
-        segment: 'ACTIVE_REGULAR',
-        totalTransactions: 34,
-        totalSpend: 8250,
-        lastPurchaseAt: new Date().toISOString(),
-        preferredItems: ['Cold Brew', 'Avocado Toast'],
-        preferredSlot: 'Evening (5 PM - 8 PM)'
-      }
-    ];
+    // Comprehensive 74-patron fallback (47 Inactive Regulars, 18 Active Regulars, 9 Occasional)
+    let list = SEED_PATRONS.map(c => ({
+      ...c,
+      merchantId: m.id
+    }));
+
+    if (segment && segment !== 'ALL') {
+      const segUpper = segment.toUpperCase();
+      list = list.filter(c => c.segment === segUpper);
+    }
+
+    return list;
   }
 
   // 5. Transactions
@@ -327,7 +334,7 @@ class DataStore {
           .order('created_at', { ascending: false })
           .limit(limit);
 
-        if (!error && data) {
+        if (!error && data && data.length > 0) {
           return data.map(t => ({
             id: t.id,
             merchantId: t.merchant_id,
@@ -335,7 +342,9 @@ class DataStore {
             status: t.status,
             paymentMode: t.payment_mode,
             description: t.description,
+            customerName: t.customer_name || 'Store Patron',
             settled: t.settled,
+            soundboxChime: true,
             timestamp: t.created_at
           }));
         }
@@ -343,7 +352,11 @@ class DataStore {
         console.warn('[DataStore] getTransactions error:', err.message);
       }
     }
-    return [];
+
+    return SEED_TRANSACTIONS.slice(0, limit).map(t => ({
+      ...t,
+      merchantId: m.id
+    }));
   }
 
   // 6. Invoices
@@ -378,89 +391,10 @@ class DataStore {
       }
     }
 
-    // Default Seed Invoices for Store Analytics & Inquiries
+    // Default Seed Invoices (Retail Customer Checkout Bills + Supplier Restock Invoices)
     return [
-      {
-        id: 'inv_041',
-        merchantId: m.id,
-        invoiceNumber: 'INV-2026-041',
-        vendor: 'Blue Tokai Coffee Roasters',
-        items: [
-          { name: 'Arabica AA Attikan Estate Special Roast (15kg)', qty: 15, unitPrice: 580, total: 8700 },
-          { name: 'French Roast Dark Espresso Beans (10kg)', qty: 10, unitPrice: 580, total: 5800 }
-        ],
-        subtotal: 14500,
-        tax: 725,
-        total: 15225,
-        status: 'paid',
-        createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-        paidAt: new Date(Date.now() - 2 * 86400000 + 3600000).toISOString()
-      },
-      {
-        id: 'inv_042',
-        merchantId: m.id,
-        invoiceNumber: 'INV-2026-042',
-        vendor: 'Country Delight Organic Dairy',
-        items: [
-          { name: 'Pasteurized Whole Buffalo Milk (60L)', qty: 60, unitPrice: 64, total: 3840 },
-          { name: 'Barista Almond Milk cartons (10L)', qty: 10, unitPrice: 200, total: 2000 }
-        ],
-        subtotal: 5840,
-        tax: 292,
-        total: 6132,
-        status: 'paid',
-        createdAt: new Date(Date.now() - 1 * 86400000).toISOString(),
-        paidAt: new Date(Date.now() - 1 * 86400000 + 7200000).toISOString()
-      },
-      {
-        id: 'inv_043',
-        merchantId: m.id,
-        invoiceNumber: 'INV-2026-043',
-        vendor: 'Mysore Bakery & Flour Mills',
-        items: [
-          { name: 'Artisan Sourdough Boule (30 units)', qty: 30, unitPrice: 85, total: 2550 },
-          { name: 'Butter Croissant Pre-laminated Dough (25 units)', qty: 25, unitPrice: 68, total: 1700 }
-        ],
-        subtotal: 4250,
-        tax: 212,
-        total: 4462,
-        status: 'paid',
-        createdAt: new Date(Date.now() - 1 * 86400000).toISOString(),
-        paidAt: new Date(Date.now() - 1 * 86400000 + 10800000).toISOString()
-      },
-      {
-        id: 'inv_044',
-        merchantId: m.id,
-        invoiceNumber: 'INV-2026-044',
-        vendor: 'Monin Gourmet Syrups India',
-        items: [
-          { name: 'Madagascar Vanilla Syrup 750ml (4 bottles)', qty: 4, unitPrice: 580, total: 2320 },
-          { name: 'Salted Caramel Syrup 750ml (4 bottles)', qty: 4, unitPrice: 580, total: 2320 },
-          { name: 'Roasted Hazelnut Syrup 750ml (4 bottles)', qty: 4, unitPrice: 565, total: 2260 }
-        ],
-        subtotal: 6900,
-        tax: 345,
-        total: 7245,
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        paidAt: null
-      },
-      {
-        id: 'inv_045',
-        merchantId: m.id,
-        invoiceNumber: 'INV-2026-045',
-        vendor: 'EcoWare Packaging Co.',
-        items: [
-          { name: 'PLA Biodegradable 8oz Coffee Cups (1000 pcs)', qty: 1000, unitPrice: 2.2, total: 2200 },
-          { name: 'Bagasse Sip Lids (1000 pcs)', qty: 1000, unitPrice: 0.95, total: 950 }
-        ],
-        subtotal: 3150,
-        tax: 157,
-        total: 3307,
-        status: 'paid',
-        createdAt: new Date(Date.now() - 4 * 86400000).toISOString(),
-        paidAt: new Date(Date.now() - 4 * 86400000 + 7200000).toISOString()
-      }
+      ...SEED_RETAIL_INVOICES.map(i => ({ ...i, merchantId: m.id })),
+      ...SEED_SUPPLIER_INVOICES.map(i => ({ ...i, merchantId: m.id }))
     ];
   }
 
@@ -717,7 +651,7 @@ class DataStore {
     const overheadDaily = Math.round(todayRev * 0.12); // ~12% Utilities & Rent ~₹2,982
     const netProfitDaily = todayRev - cogsDaily - laborDaily - overheadDaily; // ~₹7,853 (~31.6% net margin)
 
-    const inactiveCount = customers.filter(c => c.segment === 'INACTIVE_REGULAR').length || 38;
+    const inactiveCount = customers.filter(c => c.segment === 'INACTIVE_REGULAR').length || 47;
 
     return {
       storeName: m.name,
@@ -748,10 +682,10 @@ class DataStore {
         pendingInvoicesDue: pendingInvoices
       },
       growthAudit: {
-        totalPatrons: customers.length || 142,
-        activeRegulars: customers.filter(c => c.segment === 'ACTIVE_REGULAR').length || 76,
+        totalPatrons: customers.length || 74,
+        activeRegulars: customers.filter(c => c.segment === 'ACTIVE_REGULAR').length || 18,
         atRiskDormantRegulars: inactiveCount,
-        potentialRecoverableRevenue: inactiveCount * (m.avgTicketSize || 240) * 4, // ~₹36,480 / month
+        potentialRecoverableRevenue: inactiveCount * (m.avgTicketSize || 240) * 4, // ~₹45,120 / month
         topGrowthLevers: [
           {
             lever: 'Evening Slump Flash Combo (Tea/Coffee + Baked Treat)',
@@ -760,8 +694,8 @@ class DataStore {
           },
           {
             lever: 'VIP Regular Patron Re-engagement (WhatsApp)',
-            impact: '+₹36,480 / month',
-            details: 'Automatically re-activate the 38 dormant patrons who haven\'t visited in 14+ days.'
+            impact: '+₹45,120 / month',
+            details: `Automatically re-activate the ${inactiveCount} dormant patrons who haven't visited in 14+ days.`
           },
           {
             lever: 'Vendor Bulk Discount on Coffee Beans',
@@ -1047,6 +981,9 @@ class DataStore {
       } catch (err) {
         console.warn('[DataStore] getAction error:', err.message);
       }
+    }
+    if (id === 'camp_init_47' || !id || id.startsWith('camp_')) {
+      return { ...INITIAL_PENDING_ACTION, id: id || INITIAL_PENDING_ACTION.id };
     }
     return null;
   }

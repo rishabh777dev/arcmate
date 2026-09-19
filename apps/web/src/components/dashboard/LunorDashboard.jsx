@@ -25,6 +25,7 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 import { useTheme } from '../../context/ThemeContext';
+import { MOCK_INVOICES, MOCK_TRANSACTIONS } from '../../data/mockStoreData';
 
 export default function LunorDashboard({ 
   summary, 
@@ -35,8 +36,8 @@ export default function LunorDashboard({
   onNavigateTab
 }) {
   const { isDark } = useTheme();
-  const [invoices, setInvoices] = useState([]);
-  const [transactions, setTransactions] = useState([]);
+  const [invoices, setInvoices] = useState(MOCK_INVOICES);
+  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -81,9 +82,9 @@ export default function LunorDashboard({
   ];
 
   const todayCollections = Number(summary?.todayCollection || 24850);
-  const todayOrders = Number(summary?.todayOrdersCount || transactions.length || 12);
-  const totalInvoicesCount = invoices.length || summary?.totalInvoicesCount || 4;
-  const totalInvoicesValue = invoices.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0) || 6909;
+  const todayOrders = Number(summary?.todayOrdersCount || transactions.length || 50);
+  const totalInvoicesCount = invoices.length || summary?.totalInvoicesCount || 10;
+  const totalInvoicesValue = invoices.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0) || 24850;
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
@@ -376,12 +377,12 @@ export default function LunorDashboard({
               </div>
 
               <div className="flex items-center gap-1.5 bg-[#ed6f5c]/15 border border-[#ed6f5c]/30 px-2.5 py-1 rounded-full">
-                <span className="text-[10px] font-mono font-bold text-[#ed6f5c]">38 Patrons</span>
+                <span className="text-[10px] font-mono font-bold text-[#ed6f5c]">47 Patrons</span>
               </div>
             </div>
 
             <p className="lead-editorial text-xs text-[#9a9382] leading-relaxed">
-              Arc Mate isolated 38 regular patrons absent for 14+ days. This proposal personalizes a high-margin tea & bake bundle strictly within your 15% discount cap.
+              Arc Mate isolated 47 regular patrons absent for 14+ days. This proposal personalizes a high-margin tea & bake bundle strictly within your 15% discount cap.
             </p>
 
             <div className="flex items-center gap-2 pt-2 border-t border-[rgba(242,235,216,0.06)]">

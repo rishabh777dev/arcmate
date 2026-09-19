@@ -71,9 +71,9 @@ export default function FlutedCanvas({ className = "", opacity, style = {}, isDa
         grad.addColorStop(0.7, 'rgba(110, 116, 72, 0.10)');   // Olive/Earth
         grad.addColorStop(1, 'rgba(14, 13, 10, 0)');
       } else {
-        grad.addColorStop(0, 'rgba(237, 111, 92, 0.22)');     // Warm Coral on light
-        grad.addColorStop(0.35, 'rgba(245, 158, 11, 0.18)');  // Golden Sunlight Amber
-        grad.addColorStop(0.7, 'rgba(237, 111, 92, 0.08)');   // Soft Coral
+        grad.addColorStop(0, 'rgba(224, 83, 60, 0.10)');      // Soft Atelier Coral
+        grad.addColorStop(0.35, 'rgba(251, 146, 60, 0.06)');  // Warm Apricot
+        grad.addColorStop(0.7, 'rgba(212, 163, 115, 0.03)');  // Warm Champagne
         grad.addColorStop(1, 'rgba(251, 250, 248, 0)');
       }
 
@@ -99,10 +99,10 @@ export default function FlutedCanvas({ className = "", opacity, style = {}, isDa
           ribGrad.addColorStop(0.8, 'rgba(14, 13, 10, 0.04)');
           ribGrad.addColorStop(1.0, 'rgba(242, 235, 216, 0.012)');
         } else {
-          ribGrad.addColorStop(0, 'rgba(237, 111, 92, 0.035)');
-          ribGrad.addColorStop(0.2, 'rgba(245, 158, 11, 0.02)');
-          ribGrad.addColorStop(0.8, 'rgba(0, 0, 0, 0.015)');
-          ribGrad.addColorStop(1.0, 'rgba(237, 111, 92, 0.025)');
+          ribGrad.addColorStop(0, 'rgba(224, 83, 60, 0.012)');
+          ribGrad.addColorStop(0.2, 'rgba(251, 146, 60, 0.008)');
+          ribGrad.addColorStop(0.8, 'rgba(0, 0, 0, 0.006)');
+          ribGrad.addColorStop(1.0, 'rgba(224, 83, 60, 0.01)');
         }
         ctx.fillStyle = ribGrad;
         ctx.fillRect(x, -diag, ribW, diag * 2);

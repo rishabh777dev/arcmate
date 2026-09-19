@@ -10,7 +10,7 @@ export const TOOL_REGISTRY = {
   create_campaign_draft: async (merchantId, params) => {
     const m = await dataStore.getMerchant(merchantId);
     const inactive = await dataStore.getCustomers(m.id, 'INACTIVE_REGULAR');
-    const audienceSize = inactive.length || params.audienceSize || 38;
+    const audienceSize = inactive.length || params.audienceSize || 47;
 
     const draft = {
       id: `camp_${Date.now()}`,
@@ -37,7 +37,7 @@ export const TOOL_REGISTRY = {
     const m = await dataStore.getMerchant(merchantId);
     const inactive = await dataStore.getCustomers(m.id, 'INACTIVE_REGULAR');
     return await executeWorkflow(actionId, { 
-      audienceSize: inactive.length || 38,
+      audienceSize: inactive.length || 47,
       merchantId: m.id,
       merchantName: m.name
     });

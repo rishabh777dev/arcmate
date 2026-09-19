@@ -21,7 +21,7 @@ import { useTheme } from '../../context/ThemeContext';
 export default function ShaderBackground({ className = "", opacity, style = {} }) {
   const [hasShaderError, setHasShaderError] = useState(false);
   const { isDark } = useTheme();
-  const effectiveOpacity = opacity !== undefined ? (isDark ? opacity : Math.min(1, opacity + 0.15)) : (isDark ? 0.35 : 0.5);
+  const effectiveOpacity = opacity !== undefined ? (isDark ? opacity : 0.18) : (isDark ? 0.35 : 0.18);
 
   if (hasShaderError) {
     return <FlutedCanvas className={className} style={style} opacity={effectiveOpacity} isDark={isDark} />;
@@ -48,51 +48,56 @@ export default function ShaderBackground({ className = "", opacity, style = {} }
           start={{ x: 0, y: 0 }}
         />
 
-        {/* 2. Interactive WebGPU Shader Simulation (ChromaFlow drives cursor fluid physics without murky body) */}
+        {/* 2. Interactive WebGPU Shader Simulation (Warm Atelier Coral & Apricot for Light, Ember for Dark) */}
         <ChromaFlow
           id="trailFlow"
           baseColor="#00000000"
           upColor={isDark ? "#ed6f5c" : "#e0533c"}
-          downColor={isDark ? "#e9b94a" : "#f59e0b"}
-          leftColor={isDark ? "#d95a47" : "#f43f5e"}
-          rightColor={isDark ? "#f08e7c" : "#fb923c"}
-          intensity={isDark ? 1.2 : 1.3}
-          radius={2.8}
-          momentum={24}
+          downColor={isDark ? "#e9b94a" : "#fb923c"}
+          leftColor={isDark ? "#d95a47" : "#f87171"}
+          rightColor={isDark ? "#f08e7c" : "#fdba74"}
+          intensity={isDark ? 1.2 : 0.7}
+          radius={isDark ? 2.8 : 2.0}
+          momentum={isDark ? 24 : 16}
           visible={false}
         />
 
         {/* 3. Interactive Particle Grid driven by ChromaFlow liquid light */}
         <DotGrid
           id="trailDots"
-          density={38}
+          density={isDark ? 38 : 22}
           dotSize={{
             type: "map",
             source: "trailFlow",
             channel: "alpha",
             inputMax: 1,
             inputMin: 0,
-            outputMax: 1,
+            outputMax: isDark ? 1 : 0.25,
             outputMin: 0
           }}
-          twinkle={0.8}
+          twinkle={isDark ? 0.8 : 0.35}
           visible={false}
         />
 
-        {/* 4. Linear Gradient masked to DotGrid particles for warm coral & amber sheen */}
+        {/* 4. Linear Gradient masked to DotGrid particles (soft normal blend in light mode) */}
         <LinearGradient
           colorA={isDark ? "#ed6f5c" : "#e0533c"}
-          colorB={isDark ? "#e9b94a" : "#d99824"}
+          colorB={isDark ? "#e9b94a" : "#fb923c"}
           colorSpace="hsl"
           end={{ x: 1, y: 0 }}
           maskSource="trailDots"
           start={{ x: 0, y: 1 }}
-          blendMode={isDark ? "screen" : "multiply"}
+          blendMode={isDark ? "screen" : "normal"}
         />
 
         {/* 5. Real-time Cursor Waves & Cinematic Grain */}
-        <CursorRipples />
-        <FilmGrain strength={isDark ? 0.06 : 0.03} />
+        <CursorRipples 
+          intensity={isDark ? 10 : 2}
+          decay={isDark ? 10 : 14}
+          radius={isDark ? 0.5 : 0.3}
+          chromaticSplit={isDark ? 1 : 0}
+        />
+        <FilmGrain strength={isDark ? 0.06 : 0.005} />
       </Shader>
     </div>
   );
