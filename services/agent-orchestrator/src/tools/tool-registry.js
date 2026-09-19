@@ -84,5 +84,10 @@ export const TOOL_REGISTRY = {
   },
   query_cognee_documents: async (merchantId, query) => {
     return await knowledgeEngine.queryKnowledge(query, merchantId);
-  }
+  },
+  get_reviews: async (merchantId) => await dataStore.getReviews(merchantId),
+  reply_to_review: async (merchantId, reviewId, replyText) => await dataStore.addReviewReply(merchantId, reviewId, replyText),
+  get_support_tickets: async (merchantId) => await dataStore.getSupportTickets(merchantId),
+  get_customer_suggestions: async (merchantId) => await dataStore.getCustomerSuggestions(merchantId),
+  get_daily_eyes_report: async (merchantId) => await dataStore.getDailyEyesReport(merchantId)
 };

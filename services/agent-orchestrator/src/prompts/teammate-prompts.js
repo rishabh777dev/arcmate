@@ -44,18 +44,18 @@ COMMUNICATION STYLE:
 /**
  * Builds dynamic system prompt incorporating live data from data-service and Cognee
  */
-export function buildSystemPrompt(merchant = {}, storeAudit = {}, documents = [], companies = [], balanceSheet = {}) {
+export function buildSystemPrompt(merchant = {}, storeAudit = {}, documents = [], companies = [], balanceSheet = {}, reviewsData = {}, tickets = []) {
   const storeName = merchant.name || 'Athees Café';
   const owner = merchant.ownerName || 'Atheeswaran R.';
   const location = merchant.location || '100ft Road, Indiranagar, Bangalore';
   const category = merchant.category || 'Specialty Artisan Coffee & Gourmet Bakes';
   const upiId = merchant.upiId || 'atheescafe@paytm';
 
-  const todayRev = storeAudit.revenueAudit?.todayTotal || balanceSheet.todayCollections || 58450;
-  const monthlyRev = storeAudit.revenueAudit?.monthlyProjected || 1680000;
+  const todayRev = storeAudit.revenueAudit?.todayTotal || balanceSheet.todayCollections || 24850;
+  const monthlyRev = storeAudit.revenueAudit?.monthlyProjected || 733075;
   const cogsPct = storeAudit.costingAudit?.cogsPercent || '38.4%';
-  const cogsAmt = storeAudit.costingAudit?.cogsDailyAmount || 22445;
-  const netProfit = storeAudit.costingAudit?.netProfitDaily || 18470;
+  const cogsAmt = storeAudit.costingAudit?.cogsDailyAmount || 9542;
+  const netProfit = storeAudit.costingAudit?.netProfitDaily || 7853;
   const netMargin = storeAudit.costingAudit?.netMarginPercent || '31.6%';
 
   const docRulesSummary = (documents || []).map((d, i) => 
@@ -66,6 +66,21 @@ export function buildSystemPrompt(merchant = {}, storeAudit = {}, documents = []
     `• ${c.name} (${c.category}): Spend ₹${(c.monthlySpend || 0).toLocaleString('en-IN')}/mo, Terms: ${c.paymentTerms || 'Net 15'}`
   ).join('\n');
 
+  const openTicketsSummary = (tickets || []).filter(t => t.status !== 'RESOLVED').map(t => 
+    `• [${t.ticketNumber}] ${t.subject} (${t.priority} priority, Customer: ${t.customerName})`
+  ).join('\n');
+
+  const revSummary = reviewsData.summary || {
+    totalReviews: 482,
+    averageRating: 4.8,
+    platformBreakdown: {
+      google: { rating: 4.8, count: 290 },
+      zomato: { rating: 4.6, count: 118 },
+      swiggy: { rating: 4.7, count: 54 },
+      directQr: { rating: 4.9, count: 20 }
+    }
+  };
+
   return `You are Arc Mate — the Autonomous Business Financial Advisor, Chief Operating Officer, and Strategic Co-Pilot for ${storeName} (${category}), owned by ${owner} in ${location}.
 
 ACTIVE STORE CONTEXT & LIVE METRICS:
@@ -75,6 +90,16 @@ ACTIVE STORE CONTEXT & LIVE METRICS:
 - Cost of Goods Sold (COGS): ${cogsPct} (₹${cogsAmt.toLocaleString('en-IN')}/day)
 - Daily Net Operating Profit: ₹${netProfit.toLocaleString('en-IN')} (${netMargin} net margin)
 - Cashflow & Working Capital: Positive cash generation (+₹${netProfit.toLocaleString('en-IN')}/day). Negative working capital cycle; no costly loans required.
+
+REPUTATION & REVIEWS PULSE:
+- Store Overall Rating: ${revSummary.averageRating} ★ (${revSummary.totalReviews} total reviews)
+- Google Maps: ${revSummary.platformBreakdown?.google?.rating || 4.8} ★ (${revSummary.platformBreakdown?.google?.count || 290} reviews)
+- Zomato Dining: ${revSummary.platformBreakdown?.zomato?.rating || 4.6} ★ (${revSummary.platformBreakdown?.zomato?.count || 118} reviews)
+- Swiggy Dineout: ${revSummary.platformBreakdown?.swiggy?.rating || 4.7} ★ (${revSummary.platformBreakdown?.swiggy?.count || 54} reviews)
+- Sentiment: 92% Positive, 5% Neutral, 3% Critical. Praises 12h cold brew & sourdough; evening seat wait (5:30-7 PM) is primary complaint.
+
+ACTIVE SUPPORT TICKETS & ISSUES:
+${openTicketsSummary || '• No critical issues open'}
 
 REGISTERED SUPPLIERS:
 ${supplierSummary || '• Blue Tokai Coffee Roasters (Net 15)\n• Country Delight Dairy (Net 7)\n• Monin Gourmet Syrups (Net 30)\n• EcoWare Packaging (Net 15)'}
@@ -89,7 +114,7 @@ CRITICAL POLICIES & GUARDRAILS:
 4. GROWTH FOCUS: Reactivate 47 dormant regular patrons (+₹45,120/mo) and resolve the 4-6 PM evening slump with savory pairings (+₹18,500/mo).
 
 TONE & BEHAVIOR:
-- Respond as an executive partner who knows every rupee, margin percentage, supplier agreement, and store rule.
+- Respond as an executive partner who knows every rupee, margin percentage, supplier agreement, customer review, and store rule.
 - Answer queries directly, concisely, and with practical shopkeeper-friendly math and rupee (₹) figures.
 - Never give generic filler responses. Always ground answers in ${storeName}'s actual data and Cognee knowledge.`;
 }

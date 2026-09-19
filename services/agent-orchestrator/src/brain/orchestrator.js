@@ -5,6 +5,7 @@ import { riskEvaluator } from '../policy/risk-evaluator.js';
 import { dataStore } from '@actionmate/data-service';
 import { financialAdvisor } from './financial-advisor.js';
 import { knowledgeEngine } from '@actionmate/knowledge-service';
+import { dailyEyesReporter } from './daily-eyes.js';
 
 export class ActionMateOrchestrator {
   constructor() {
@@ -59,8 +60,115 @@ export class ActionMateOrchestrator {
     
     if (isGreeting || pLower === 'who are you' || pLower === 'what can you do' || pLower === 'help') {
       return {
-        reply: `Hello ${ownerGreeting}! I'm **Arc Mate**, your autonomous business financial advisor and store co-pilot for **${merchant.name}**.\n\nHere is how I can advise and manage your operations today:\n\n• 📈 **Financial Advisory**: Margin expansion (31.6% → 35%+), COGS reduction, and cash flow liquidity.\n• 💡 **Cost Cutting**: Supplier pricing optimizations across Blue Tokai, Country Delight, and packaging.\n• 🛡️ **Pricing & Guardrail Checks**: Real-time evaluation of discount requests against your 15% ceiling.\n• 🏦 **Working Capital & Loans**: Evaluation of credit lines, debt capacity, and vendor credit terms.\n• 🔍 **Automation Bug Check**: Zero-latency diagnostics across all your webhooks and n8n flows.\n• 📁 **Cognee Knowledge**: Instant answers regarding supplier contracts, barista voice talks, and store SOPs.\n• ⚡ **Live Payments & Invoices**: Record counter transactions, log supplier bills, or track shipments.\n\nWhat would you like to review?`,
+        reply: `Hello ${ownerGreeting}! I'm **Arc Mate**, your autonomous business financial advisor and store co-pilot for **${merchant.name}**.\n\nHere is how I can advise and manage your operations today:\n\n• 👁️ **Daily Store Eyes**: Instant 360° metrics report covering revenue, customer reviews, open tickets, vendor bills, and inbound logistics.\n• ⭐ **Customer Reviews & Sentiment**: Live pulse across 482 reviews (4.8★ avg) on Google, Zomato, Swiggy, and QR with 1-tap reply publishing.\n• ⚠️ **Issues & Support Tickets**: Triage active customer tickets (lost and found, corporate B2B GST tax invoices, catering inquiries).\n• 📈 **Financial Advisory**: Margin expansion (31.6% → 35%+), COGS reduction, and cash flow liquidity.\n• 💡 **Cost Cutting**: Supplier pricing optimizations across Blue Tokai, Country Delight, and packaging.\n• 🛡️ **Pricing & Guardrail Checks**: Real-time evaluation of discount requests against your 15% ceiling.\n• 🏦 **Working Capital & Loans**: Evaluation of credit lines, debt capacity, and vendor credit terms.\n• 🔍 **Automation Bug Check**: Zero-latency diagnostics across all your webhooks and n8n flows.\n• 📁 **Cognee Knowledge**: Instant answers regarding supplier contracts, barista voice talks, and store SOPs.\n• ⚡ **Live Payments & Invoices**: Record counter transactions, log supplier bills, or track shipments.\n\nWhat would you like to review?`,
         state: 'IDLE'
+      };
+    }
+
+    // ==========================================
+    // 1b. DAILY EYES 360° METRICS BRIEFING
+    // ==========================================
+    const isDailyEyesQuery = pLower.includes('daily eyes') || 
+      pLower.includes('store eyes') || 
+      pLower.includes('daily report') || 
+      pLower.includes('daily briefing') || 
+      pLower.includes('morning brief') || 
+      pLower.includes('evening brief') || 
+      pLower.includes('daily metrics') || 
+      pLower.includes('store pulse') || 
+      pLower.includes('how did we do today') || 
+      pLower.includes('daily summary') ||
+      pLower.includes('today report') ||
+      pLower.includes('eyes report') ||
+      (pLower.includes('report') && (pLower.includes('metric') || pLower.includes('today') || pLower.includes('daily')));
+
+    if (isDailyEyesQuery) {
+      this.broadcast({ step: 'DAILY_EYES_REPORT', status: 'IN_PROGRESS', details: 'Synthesizing 360° metrics across revenue, reviews, tickets, payables, and logistics...' }, merchant.id);
+      
+      const dailyEyesData = await dataStore.getDailyEyesReport(merchant.id);
+      const reply = dailyEyesReporter.generateDailyEyesBriefing(dailyEyesData);
+
+      this.broadcast({ 
+        step: 'DAILY_EYES_REPORT', 
+        status: 'COMPLETED', 
+        details: `Daily Store Eyes briefing compiled: ₹${dailyEyesData.revenueMetrics.todayTotal.toLocaleString('en-IN')} revenue, ${dailyEyesData.reputationPulse.averageRating}★ rating across ${dailyEyesData.reputationPulse.totalReviews} reviews.`,
+        data: dailyEyesData 
+      }, merchant.id);
+
+      return {
+        reply,
+        dailyEyes: dailyEyesData,
+        state: 'DAILY_EYES_REPORT'
+      };
+    }
+
+    // ==========================================
+    // 1c. CUSTOMER REVIEWS & ONLINE RATINGS INTELLIGENCE
+    // ==========================================
+    const isReviewQuery = pLower.includes('review') || 
+      pLower.includes('reviews') || 
+      pLower.includes('rating') || 
+      pLower.includes('ratings') || 
+      pLower.includes('google maps') || 
+      pLower.includes('zomato') || 
+      pLower.includes('swiggy') || 
+      pLower.includes('customer feedback') || 
+      pLower.includes('what are people saying') || 
+      pLower.includes('what are customers saying') ||
+      pLower.includes('reputation');
+
+    if (isReviewQuery) {
+      this.broadcast({ step: 'REVIEWS_ANALYSIS', status: 'IN_PROGRESS', details: 'Analyzing customer reviews and sentiment across Google, Zomato, Swiggy, and QR...' }, merchant.id);
+      
+      const reviewsData = await dataStore.getReviews(merchant.id);
+      const reply = dailyEyesReporter.generateReviewsAnalysis(reviewsData);
+
+      this.broadcast({ 
+        step: 'REVIEWS_ANALYSIS', 
+        status: 'COMPLETED', 
+        details: `Audited ${reviewsData.summary.totalReviews} reviews: ${reviewsData.summary.averageRating}★ average rating. 92% positive sentiment.` 
+      }, merchant.id);
+
+      return {
+        reply,
+        reviews: reviewsData,
+        state: 'REVIEWS_ANALYZED'
+      };
+    }
+
+    // ==========================================
+    // 1d. STORE ISSUES, COMPLAINTS & SUPPORT TICKETS
+    // ==========================================
+    const isSupportTicketQuery = pLower.includes('issue') || 
+      pLower.includes('issues') || 
+      pLower.includes('ticket') || 
+      pLower.includes('tickets') || 
+      pLower.includes('complaint') || 
+      pLower.includes('complaints') || 
+      pLower.includes('customer problem') || 
+      pLower.includes('lost and found') || 
+      pLower.includes('what happened') || 
+      pLower.includes('issues occurred') ||
+      pLower.includes('support ticket');
+
+    if (isSupportTicketQuery) {
+      this.broadcast({ step: 'ISSUES_TRIAGE', status: 'IN_PROGRESS', details: 'Triaging open customer tickets, operational friction, and staff notes...' }, merchant.id);
+      
+      const tickets = await dataStore.getSupportTickets(merchant.id);
+      const suggestions = await dataStore.getCustomerSuggestions(merchant.id);
+      const reply = dailyEyesReporter.generateIssuesTriage(tickets, suggestions);
+
+      this.broadcast({ 
+        step: 'ISSUES_TRIAGE', 
+        status: 'COMPLETED', 
+        details: `Triaged ${tickets.filter(t => t.status !== 'RESOLVED').length} open tickets.` 
+      }, merchant.id);
+
+      return {
+        reply,
+        tickets,
+        suggestions,
+        state: 'ISSUES_TRIAGED'
       };
     }
 
@@ -712,11 +820,13 @@ export class ActionMateOrchestrator {
     const documents = await dataStore.getDocuments(merchant.id);
     const companies = await dataStore.getCompanies(merchant.id);
     const balanceSheet = await dataStore.getBalanceSheet(merchant.id);
+    const reviewsData = await dataStore.getReviews(merchant.id);
+    const tickets = await dataStore.getSupportTickets(merchant.id);
 
     // If Gemini client has API Key, call LLM with complete store context and dynamic system prompt
     if (geminiClient.getStatus().hasKey) {
       try {
-        const dynamicSystemPrompt = buildSystemPrompt(merchant, audit, documents, companies, balanceSheet);
+        const dynamicSystemPrompt = buildSystemPrompt(merchant, audit, documents, companies, balanceSheet, reviewsData, tickets);
         const userPrompt = `Store: ${merchant.name} (${merchant.ownerName}, ${merchant.location})\n` +
           `Today's Sales: ₹${audit.revenueAudit?.todayTotal || 58450} | Net Margin: ${audit.costingAudit?.netMarginPercent || '31.6%'}\n` +
           `User Prompt: "${merchantText}"\n\n` +

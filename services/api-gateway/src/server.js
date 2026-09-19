@@ -309,6 +309,34 @@ app.get(['/api/audit', '/api/audit/store'], async (req, res) => {
 });
 
 // ==========================================
+// 6b. Reviews, Support Tickets & Daily Eyes
+// ==========================================
+app.get('/api/reviews', async (req, res) => {
+  const reviewsData = await dataStore.getReviews(req.merchantId);
+  res.json(reviewsData);
+});
+
+app.post('/api/reviews/:id/reply', async (req, res) => {
+  try {
+    const { replyText } = req.body;
+    const result = await dataStore.addReviewReply(req.merchantId, req.params.id, replyText);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/support-tickets', async (req, res) => {
+  const tickets = await dataStore.getSupportTickets(req.merchantId);
+  res.json(tickets);
+});
+
+app.get('/api/daily-eyes', async (req, res) => {
+  const dailyEyes = await dataStore.getDailyEyesReport(req.merchantId);
+  res.json(dailyEyes);
+});
+
+// ==========================================
 // 7. AI Assistant & Copilot
 // ==========================================
 app.post('/api/copilot/message', async (req, res) => {
