@@ -1555,6 +1555,38 @@ class DataStore {
     return this.supportTickets;
   }
 
+  async createSupportTicket(merchantId, ticketData = {}) {
+    await this.getSupportTickets(merchantId);
+    const newTicket = {
+      id: `tkt_${Date.now()}`,
+      ticketNumber: `SUP-BLR-${Math.floor(100 + Math.random() * 900)}`,
+      customerName: ticketData.customerName || 'Anonymous Patron',
+      customerPhone: ticketData.customerPhone || '+91 98000 00000',
+      category: ticketData.category || 'GENERAL_INQUIRY',
+      priority: ticketData.priority || 'MEDIUM',
+      status: 'OPEN',
+      subject: ticketData.subject || 'Customer Inquiry',
+      details: ticketData.details || '',
+      orderRef: ticketData.orderRef || 'Counter Inquiry',
+      assignedTo: 'Store Manager',
+      openedAt: new Date().toISOString(),
+      aiDraftResponse: `Hello ${ticketData.customerName || 'there'}! Thank you for reaching out to Athees Café. We have received your inquiry regarding "${ticketData.subject || 'your visit'}" and our store team is attending to it immediately!`
+    };
+    this.supportTickets.unshift(newTicket);
+    return newTicket;
+  }
+
+  async resolveSupportTicket(merchantId, ticketId) {
+    await this.getSupportTickets(merchantId);
+    const ticket = this.supportTickets.find(t => t.id === ticketId);
+    if (ticket) {
+      ticket.status = 'RESOLVED';
+      ticket.resolvedAt = new Date().toISOString();
+      return ticket;
+    }
+    return null;
+  }
+
   // ==========================================
   // 11. Customer Suggestions & Feedback Points
   // ==========================================

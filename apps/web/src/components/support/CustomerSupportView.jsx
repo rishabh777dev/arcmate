@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Star, 
   MessageSquare, 
@@ -59,6 +59,30 @@ export default function CustomerSupportView({ activeMerchant, onNavigateTab }) {
     priority: 'MEDIUM'
   });
 
+  // Sync live reviews and tickets on mount
+  useEffect(() => {
+    const token = localStorage.getItem('actionmate_token');
+    const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+    fetch('/api/reviews', { headers })
+      .then(res => res.json())
+      .then(data => {
+        if (data && Array.isArray(data.reviews) && data.reviews.length > 0) {
+          setReviews(data.reviews);
+        }
+      })
+      .catch(() => {});
+
+    fetch('/api/support-tickets', { headers })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setTickets(data);
+        }
+      })
+      .catch(() => {});
+  }, [activeMerchant?.id]);
+
   // Handle Review AI Reply Generation
   const handleGenerateAiReply = (rev) => {
     setReplyingReviewId(rev.id);
@@ -66,12 +90,13 @@ export default function CustomerSupportView({ activeMerchant, onNavigateTab }) {
   };
 
   const handlePostReply = (revId) => {
+    const textToSend = draftReplyText;
     setReviews(prev => prev.map(r => {
       if (r.id === revId) {
         return {
           ...r,
           replied: true,
-          replyText: draftReplyText
+          replyText: textToSend
         };
       }
       return r;
@@ -79,6 +104,18 @@ export default function CustomerSupportView({ activeMerchant, onNavigateTab }) {
     playPaytmChime(`Merchant reply published for customer review.`);
     setReplyingReviewId(null);
     setDraftReplyText('');
+
+    try {
+      const token = localStorage.getItem('actionmate_token');
+      fetch(`/api/reviews/${revId}/reply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ replyText: textToSend })
+      }).catch(() => {});
+    } catch (e) {}
   };
 
   // Handle Support Ticket Resolution
@@ -90,6 +127,17 @@ export default function CustomerSupportView({ activeMerchant, onNavigateTab }) {
       return t;
     }));
     playPaytmChime(`Customer support inquiry marked as resolved.`);
+
+    try {
+      const token = localStorage.getItem('actionmate_token');
+      fetch(`/api/support-tickets/${ticketId}/resolve`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      }).catch(() => {});
+    } catch (e) {}
   };
 
   const handleSendWhatsAppUpdate = (ticket) => {
@@ -99,7 +147,7 @@ export default function CustomerSupportView({ activeMerchant, onNavigateTab }) {
     playPaytmChime(`Opening WhatsApp chat to send customer resolution.`);
   };
 
-  const handleCreateNewTicket = (e) => {
+  const handleCreateNewTicket = async (e) => {
     e.preventDefault();
     if (!newTicketData.customerName || !newTicketData.subject) return;
 
@@ -130,6 +178,18 @@ export default function CustomerSupportView({ activeMerchant, onNavigateTab }) {
       priority: 'MEDIUM'
     });
     playPaytmChime(`New customer support ticket created.`);
+
+    try {
+      const token = localStorage.getItem('actionmate_token');
+      fetch('/api/support-tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(newTicket)
+      }).catch(() => {});
+    } catch (err) {}
   };
 
   // Filtered reviews

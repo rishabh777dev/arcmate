@@ -91,15 +91,15 @@ export class NLWorkflowGenerator {
       }
     };
 
-    await dataStore.saveWorkflow(merchantId, workflow);
+    const saved = await dataStore.saveWorkflow(merchantId, workflow);
     dataStore.logAuditEvent(
       'ACTIONMATE_AGENT',
       'WORKFLOW_SYNTHESIZED',
       `Natural language prompt converted to n8n workflow: "${workflow.name}"`,
-      { workflowId: wfId, discountProposed: discount }
+      { workflowId: saved?.id || wfId, discountProposed: discount }
     );
 
-    return workflow;
+    return saved || workflow;
   }
 }
 

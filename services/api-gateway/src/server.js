@@ -331,6 +331,24 @@ app.get('/api/support-tickets', async (req, res) => {
   res.json(tickets);
 });
 
+app.post('/api/support-tickets', async (req, res) => {
+  try {
+    const ticket = await dataStore.createSupportTicket(req.merchantId, req.body);
+    res.json({ success: true, ticket });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/support-tickets/:id/resolve', async (req, res) => {
+  try {
+    const ticket = await dataStore.resolveSupportTicket(req.merchantId, req.params.id);
+    res.json({ success: true, ticket });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/api/daily-eyes', async (req, res) => {
   const dailyEyes = await dataStore.getDailyEyesReport(req.merchantId);
   res.json(dailyEyes);
@@ -499,12 +517,11 @@ app.post('/api/workflows/generate', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Prompt required' });
 
-  const wf = await nlWorkflowGenerator.generateWorkflowFromPrompt(prompt);
-  const saved = await dataStore.saveWorkflow(req.merchantId, wf);
+  const wf = await nlWorkflowGenerator.generateWorkflowFromPrompt(prompt, req.merchantId);
   
   res.json({
-    workflow: saved,
-    reactFlowGraph: convertN8nToReactFlow(saved)
+    workflow: wf,
+    reactFlowGraph: convertN8nToReactFlow(wf)
   });
 });
 
