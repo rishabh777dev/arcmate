@@ -8,15 +8,17 @@
     "dev": "node --watch src/server.js"
   },
   "dependencies": {
-    "@actionmate/shared-schema": "*",
+    "@actionmate/agent-orchestrator": "*",
     "@actionmate/data-service": "*",
     "@actionmate/knowledge-service": "*",
-    "@actionmate/workflow-engine": "*",
+    "@actionmate/shared-schema": "*",
     "@actionmate/voice-service": "*",
-    "@actionmate/agent-orchestrator": "*",
-    "express": "^4.21.2",
+    "@actionmate/workflow-engine": "*",
     "cors": "^2.8.5",
-    "ws": "^8.18.0",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.7.2",
+    "helmet": "^8.3.0",
+    "ws": "^8.18.0"
   }
 }

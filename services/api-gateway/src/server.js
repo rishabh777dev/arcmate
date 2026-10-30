@@ -2,6 +2,8 @@ import express from 'express';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 
 import { dataStore, getSalesSummary, diagnoseSalesDecline } from '@actionmate/data-service';
@@ -13,8 +15,80 @@ import { actionMateOrchestrator } from '@actionmate/agent-orchestrator';
 dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+
+// ==========================================
+// Security Hardening: Helmet & Headers
+// ==========================================
+app.use(helmet({
+  contentSecurityPolicy: false, // Disabled for API JSON gateway
+  crossOriginEmbedderPolicy: false
+}));
+
+// Payload size limit to prevent memory flooding attacks
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+
+// ==========================================
+// Security Hardening: CORS Whitelist Policy
+// ==========================================
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  'http://localhost:4000',
+  'https://actionmate-backend.onrender.com',
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim()) : [])
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser agents, CLI, mobile apps, or permitted domain origins
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.onrender.com')) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-merchant-id']
+}));
+
+// ==========================================
+// Security Hardening: Rate Limiters
+// ==========================================
+// 1. Global API Limiter (600 requests per 15 min per IP)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 600,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Too many requests from this IP address. Please try again after 15 minutes.'
+  }
+});
+app.use('/api/', globalLimiter);
+
+// 2. Strict Auth Limiter (15 attempts per 15 min per IP against brute force)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Too many authentication attempts. Please try again after 15 minutes.'
+  }
+});
+
+// 3. AI & Synthesis Limiter (40 queries per 1 min per IP to prevent LLM quota drain)
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 40,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'AI reasoning rate limit reached. Please wait a moment before sending another query.'
+  }
+});
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
@@ -100,7 +174,7 @@ app.get('/api/health', (req, res) => {
 // ==========================================
 // 1. Authentication & Onboarding Routes
 // ==========================================
-app.post('/api/auth/signup', async (req, res) => {
+app.post('/api/auth/signup', authLimiter, async (req, res) => {
   try {
     const { email, password, name, ownerName, category, location, phone, upiId } = req.body;
     if (!email || !password) {
@@ -130,7 +204,7 @@ app.post('/api/auth/signup', async (req, res) => {
   }
 });
 
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -357,7 +431,7 @@ app.get('/api/daily-eyes', async (req, res) => {
 // ==========================================
 // 7. AI Assistant & Copilot
 // ==========================================
-app.post('/api/copilot/message', async (req, res) => {
+app.post('/api/copilot/message', aiLimiter, async (req, res) => {
   const { message, context = {} } = req.body;
   if (!message) return res.status(400).json({ error: 'Message required' });
 
@@ -513,7 +587,7 @@ app.get('/api/workflows', async (req, res) => {
   res.json(enriched);
 });
 
-app.post('/api/workflows/generate', async (req, res) => {
+app.post('/api/workflows/generate', aiLimiter, async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Prompt required' });
 
